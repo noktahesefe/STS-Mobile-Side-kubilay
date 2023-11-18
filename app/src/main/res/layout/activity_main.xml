@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    tools:context=".MainActivity">
+    tools:context=".activities.MainActivity">
     <!-- Add your view components here -->
 
     <TextView
@@ -46,7 +46,7 @@
         android:background="#30ffffff"
         android:drawableLeft="@drawable/baseline_person_outline_24"
         android:drawablePadding="20dp"
-        android:enabled="false"
+        android:enabled="true"
         android:hint="Kullanici Adi"
         android:padding="20dp"
         android:textColor="@color/white"
@@ -67,6 +67,7 @@
         android:drawableLeft="@drawable/baseline_key_24"
         android:drawablePadding="20dp"
         android:hint="Parola"
+        android:inputType="textPassword"
         android:padding="20dp"
         android:textColor="@color/white"
         android:textColorHint="@color/white"

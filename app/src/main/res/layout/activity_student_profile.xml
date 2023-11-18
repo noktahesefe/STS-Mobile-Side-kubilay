@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.StudentProfile">
+
+
+    <ImageView
+        android:id="@+id/student_profilePicture"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="200dp"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="448dp"
+        android:text="Load Image from Gallery"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        android:id="@+id/student_gallery" />
+
+    <TextView
+        android:id="@+id/student_name_surname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="320dp"
+        android:text="textView"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/student_classroom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="360dp"
+        android:text="textView"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/student_school_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="400dp"
+        android:text="textView"
+        android:textSize="18sp"/>
+
+    <Button
+        android:id="@+id/student_announcements"
+        android:layout_width="190dp"
+        android:layout_height="wrap_content"
+        android:text="Announcements"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="440dp"
+        android:textSize="18sp"/>
+
+    <Button
+        android:layout_width="190dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/student_homeworks"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="500dp"
+        android:text="Homeworks"
+        android:textSize="18sp"/>
+
+
+</RelativeLayout>
