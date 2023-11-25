@@ -1,4 +1,4 @@
-package com.example.birdaha.activities;
+package com.example.birdaha.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,10 +10,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.birdaha.R;
-import com.example.birdaha.users.Parent;
-import com.example.birdaha.users.Student;
-import com.example.birdaha.users.Teacher;
-import com.example.birdaha.users.User;
+import com.example.birdaha.Users.Parent;
+import com.example.birdaha.Users.Student;
+import com.example.birdaha.Users.Teacher;
+import com.example.birdaha.Users.User;
 import com.google.android.material.button.MaterialButton;
 
 public class MainActivity extends AppCompatActivity {
@@ -55,7 +55,9 @@ public class MainActivity extends AppCompatActivity {
                         }
                         else if(user instanceof Parent){
                             Toast.makeText(MainActivity.this, "Parent logged in!", Toast.LENGTH_SHORT).show();
-
+                            Intent intent = new Intent(MainActivity.this, HomePage.class);
+                            intent.putExtra("user",user);
+                            startActivity(intent);
                         }
                     }
                 }

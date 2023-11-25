@@ -1,4 +1,4 @@
-package com.example.birdaha.users;
+package com.example.birdaha.Users;
 
 import android.graphics.Bitmap;
 
