@@ -1,6 +1,6 @@
-package com.example.birdaha.general;
+package com.example.birdaha.Classrooms;
 
-public class GeneralAnnouncement {
+public class ClassAnnouncement {
     private String title;
     private String details;
 

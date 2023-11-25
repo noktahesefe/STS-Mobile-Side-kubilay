@@ -1,4 +1,4 @@
-package com.example.birdaha.activities;
+package com.example.birdaha.Activities;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -22,15 +22,14 @@ import android.widget.Toast;
 
 import com.example.birdaha.R;
 
-public class StudentProfile extends AppCompatActivity {
+public class TeacherProfile extends AppCompatActivity {
     private static final int REQUEST_READ_EXTERNAL_STORAGE = 1;
-    TextView nameSurname, classroom, schoolNumber;
+    TextView nameSurname;
+    TextView lectures;
     Button changeProfilePicture;
-    Button homeworks;
-    Button announcements;
+    Button classes;
     ImageView profilePicture;
     boolean isGranted = false;
-
     private final ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -47,17 +46,15 @@ public class StudentProfile extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_student_profile);
+        setContentView(R.layout.activity_teacher_profile);
 
-        nameSurname = (TextView) findViewById(R.id.student_name_surname);
-        classroom = (TextView) findViewById(R.id.student_classroom);
-        schoolNumber = (TextView) findViewById(R.id.student_school_number);
+        nameSurname = (TextView) findViewById(R.id.teacher_name_surname);
+        lectures = (TextView) findViewById(R.id.teacher_lectures);
 
-        changeProfilePicture = (Button) findViewById(R.id.student_gallery);
-        homeworks = (Button) findViewById(R.id.student_homeworks);
-        announcements = (Button) findViewById(R.id.student_announcements);
+        changeProfilePicture = (Button) findViewById(R.id.teacher_gallery);
+        classes = (Button) findViewById(R.id.teacher_classes);
 
-        profilePicture = (ImageView) findViewById(R.id.student_profilePicture);
+        profilePicture = (ImageView) findViewById(R.id.teacher_profilePicture);
 
         changeProfilePicture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,9 +64,9 @@ public class StudentProfile extends AppCompatActivity {
         });
     }
 
-    private void checkPermissionAndOpenGallery(String permission, int requestCode){
+    public void checkPermissionAndOpenGallery(String permission, int requestCode){
         if(!isGranted){
-            ActivityCompat.requestPermissions(StudentProfile.this, new String[] {permission}, requestCode);
+            ActivityCompat.requestPermissions(TeacherProfile.this, new String[] {permission}, requestCode);
         }
         else{
             openGallery();
@@ -98,7 +95,7 @@ public class StudentProfile extends AppCompatActivity {
                         .setNegativeButton("Reddet", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                Toast.makeText(StudentProfile.this, "İzin verilmedi. Galeriye erişilemiyor!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(TeacherProfile.this, "İzin verilmedi. Galeriye erişilemiyor!", Toast.LENGTH_SHORT).show();
                             }
                         })
                         .show();
@@ -119,4 +116,5 @@ public class StudentProfile extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         imagePickerLauncher.launch(intent);
     }
+
 }

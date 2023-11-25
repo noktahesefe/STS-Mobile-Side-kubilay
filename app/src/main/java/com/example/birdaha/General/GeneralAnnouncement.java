@@ -1,8 +1,13 @@
-package com.example.birdaha.classrooms;
+package com.example.birdaha.General;
 
-public class ClassAnnouncement {
+public class GeneralAnnouncement {
     private String title;
     private String details;
+
+    public GeneralAnnouncement(String title, String details){
+        this.title = title;
+        this.details = details;
+    }
 
     public String getTitle() {
         return title;

@@ -1,7 +1,7 @@
-package com.example.birdaha.users;
+package com.example.birdaha.Users;
 
-import com.example.birdaha.classrooms.Classroom;
-import com.example.birdaha.classrooms.Lecture;
+import com.example.birdaha.Classrooms.Classroom;
+import com.example.birdaha.Classrooms.Lecture;
 
 import java.util.ArrayList;
 import java.util.List;

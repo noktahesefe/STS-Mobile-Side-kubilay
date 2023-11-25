@@ -1,4 +1,4 @@
-package com.example.birdaha.classrooms;
+package com.example.birdaha.Classrooms;
 
 public class Lecture {
     private String name;
