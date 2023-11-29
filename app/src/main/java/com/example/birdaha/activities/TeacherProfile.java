@@ -1,4 +1,4 @@
-package com.example.birdaha.activities;
+package com.example.birdaha.Activities;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -46,7 +46,7 @@ public class TeacherProfile extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_teacher_profile);
+        setContentView(R.layout.fragment_teacher_profile);
 
         nameSurname = (TextView) findViewById(R.id.teacher_name_surname);
         lectures = (TextView) findViewById(R.id.teacher_lectures);

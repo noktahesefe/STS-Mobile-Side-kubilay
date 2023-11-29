@@ -1,63 +1,94 @@
-package com.example.birdaha.activities;
+package com.example.birdaha.Activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
+
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.birdaha.R;
-import com.example.birdaha.fragments.*;
+import com.example.birdaha.Users.Parent;
+import com.example.birdaha.Users.Student;
+import com.example.birdaha.Users.Teacher;
+import com.example.birdaha.Users.User;
+import com.google.android.material.button.MaterialButton;
 
-import com.google.android.material.navigation.NavigationView;
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private DrawerLayout drawerLayout;
+public class MainActivity extends AppCompatActivity {
+    EditText username;
+    EditText password;
+    CheckBox checkBox;
+    MaterialButton loginButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar); //Ignore red line errors
-        setSupportActionBar(toolbar);
-        drawerLayout = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_nav,
-                R.string.close_nav);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
-            navigationView.setCheckedItem(R.id.nav_home);
+
+        username = (EditText)findViewById(R.id.username);
+        password = (EditText)findViewById(R.id.password);
+        checkBox = (CheckBox) findViewById(R.id.saveLoginCheckBox);
+        loginButton = (MaterialButton) findViewById(R.id.loginButton);
+
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(checkEditText()){
+                    User user = identifyUser();
+                    if(user == null){
+                        Toast.makeText(MainActivity.this, "Invalid username.", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        if(user instanceof Student){
+                            Toast.makeText(MainActivity.this, "Student logged in!", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(MainActivity.this, StudentMainActivity.class);
+                            intent.putExtra("user",user); // Send the object information to StudentProfile class
+                            startActivity(intent);
+                        }
+                        else if(user instanceof Teacher){
+                            Toast.makeText(MainActivity.this, "Teacher logged in!", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(MainActivity.this, TeacherMainActivity.class);
+                            intent.putExtra("user",user);
+                            startActivity(intent);
+                        }
+                        else if(user instanceof Parent){
+                            Toast.makeText(MainActivity.this, "Parent logged in!", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(MainActivity.this, ParentMainActivity.class);
+                            intent.putExtra("user",user);
+                            startActivity(intent);
+                        }
+                    }
+                }
+                else{
+                    Toast.makeText(MainActivity.this, "Please enter your username or password!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    public boolean checkEditText(){ // Checks whether the edit texts are empty or not
+        String name = username.getText().toString();
+        String pass = password.getText().toString();
+
+        return !name.isEmpty() && !pass.isEmpty();
+    }
+
+    public User identifyUser(){ // Identifies the user from the entered nickname
+        String name = username.getText().toString();
+        char firstChar = name.charAt(0);
+        if(firstChar == 'T'){
+            return new Teacher(username.getText().toString(), password.getText().toString());
         }
-    }
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int val = item.getItemId();
-
-        if (R.id.nav_home == val)
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
-        else if(R.id.nav_settings == val)
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SettingsFragment()).commit();
-        else if(R.id.nav_share == val)
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ShareFragment()).commit();
-        else if(R.id.nav_about == val)
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AboutFragment()).commit();
-        else if(R.id.nav_logout == val)
-            Toast.makeText(this, "Logout!", Toast.LENGTH_SHORT).show();
-
-        drawerLayout.closeDrawer(GravityCompat.START);
-        return true;
-    }
-    @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+        else if(firstChar == 'S'){
+            return new Student(username.getText().toString(), password.getText().toString());
+        }
+        else if(firstChar == 'P'){
+            return new Parent(username.getText().toString(), password.getText().toString());
+        }
+        else{
+            return null;
         }
     }
 }
