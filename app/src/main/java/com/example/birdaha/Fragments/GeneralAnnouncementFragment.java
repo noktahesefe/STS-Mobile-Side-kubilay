@@ -49,6 +49,21 @@ public class GeneralAnnouncementFragment extends Fragment implements GeneralAnno
 
     @Override
     public void onGeneralAnnouncementItemClick(int position) {
+        GeneralAnnouncement current = generalAnnouncements.get(position);
 
+        GeneralAnnouncementDetailFragment detailFragment = new GeneralAnnouncementDetailFragment();
+
+        Bundle args = new Bundle();
+        args.putString("title",current.getTitle());
+        args.putString("details", current.getDetails());
+        detailFragment.setArguments(args);
+
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.announcement_container, detailFragment)
+                .addToBackStack("Announcement Fragment") // Allows user to navigate back
+                .setReorderingAllowed(true)
+                .commit();
+
+        generalAnnouncements.clear(); // This line might change
     }
 }

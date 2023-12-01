@@ -43,6 +43,21 @@ public class EventFragment extends Fragment implements EventRecyclerViewInterfac
 
     @Override
     public void onEventItemClick(int position) { // This will be done later
+        Event currentEvent = events.get(position);
 
+        EventDetailFragment eventDetailFragment = new EventDetailFragment();
+
+        Bundle args = new Bundle();
+        args.putInt("image",currentEvent.getImageResource());
+        args.putString("details",currentEvent.getDetails());
+        eventDetailFragment.setArguments(args);
+
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.event_container, eventDetailFragment)
+                .addToBackStack("Event Fragment")
+                .setReorderingAllowed(true)
+                .commit();
+
+        events.clear(); // This line might change
     }
 }

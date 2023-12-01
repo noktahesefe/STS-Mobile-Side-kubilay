@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.birdaha.R;
 
 public class TeacherProfile extends AppCompatActivity {
@@ -108,7 +109,11 @@ public class TeacherProfile extends AppCompatActivity {
         super.onActivityResult(requestCode,resultCode,data);
         if(resultCode == RESULT_OK && data != null){
             Uri selectedImage = data.getData();
-            profilePicture.setImageURI(selectedImage);
+            Glide.with(this)
+                    .load(selectedImage)
+                    .circleCrop()
+                    .into(profilePicture);
+            //profilePicture.setImageURI(selectedImage);
         }
     }
 
