@@ -1,5 +1,6 @@
 package com.example.birdaha.Fragments;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.birdaha.Adapters.EventAdapter;
 import com.example.birdaha.General.Event;
@@ -42,22 +45,20 @@ public class EventFragment extends Fragment implements EventRecyclerViewInterfac
 
 
     @Override
-    public void onEventItemClick(int position) { // This will be done later
+    public void onEventItemClick(int position, View view) { // This will be done later
         Event currentEvent = events.get(position);
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+        LayoutInflater inflater = LayoutInflater.from(view.getContext());
+        View overlayView = inflater.inflate(R.layout.event_detail_overlay, null);
+        ImageView imageView = overlayView.findViewById(R.id.event_detail_image);
+        TextView detail = overlayView.findViewById(R.id.event_detail);
 
-        EventDetailFragment eventDetailFragment = new EventDetailFragment();
+        imageView.setImageResource(currentEvent.getImageResource());
+        detail.setText(currentEvent.getDetails());
 
-        Bundle args = new Bundle();
-        args.putInt("image",currentEvent.getImageResource());
-        args.putString("details",currentEvent.getDetails());
-        eventDetailFragment.setArguments(args);
+        builder.setView(overlayView);
 
-        getParentFragmentManager().beginTransaction()
-                .replace(R.id.event_container, eventDetailFragment)
-                .addToBackStack("Event Fragment")
-                .setReorderingAllowed(true)
-                .commit();
-
-        events.clear(); // This line might change
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

@@ -43,19 +43,19 @@ public class MainActivity extends AppCompatActivity {
                     else{
                         if(user instanceof Student){
                             Toast.makeText(MainActivity.this, "Student logged in!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(MainActivity.this, StudentProfile.class);
+                            Intent intent = new Intent(MainActivity.this, StudentMainActivity.class);
                             intent.putExtra("user",user); // Send the object information to StudentProfile class
                             startActivity(intent);
                         }
                         else if(user instanceof Teacher){
                             Toast.makeText(MainActivity.this, "Teacher logged in!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(MainActivity.this, TeacherProfile.class);
+                            Intent intent = new Intent(MainActivity.this, TeacherMainActivity.class);
                             intent.putExtra("user",user);
                             startActivity(intent);
                         }
                         else if(user instanceof Parent){
                             Toast.makeText(MainActivity.this, "Parent logged in!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(MainActivity.this, HomePage.class);
+                            Intent intent = new Intent(MainActivity.this, ParentMainActivity.class);
                             intent.putExtra("user",user);
                             startActivity(intent);
                         }

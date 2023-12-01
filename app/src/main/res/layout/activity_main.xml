@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:background="@drawable/background"
     tools:context=".Activities.MainActivity">
-    <!-- Add your view components here -->
 
     <TextView
         android:id="@+id/header"

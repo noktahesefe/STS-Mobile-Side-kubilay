@@ -59,7 +59,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                     if(eventRecyclerViewInterface != null){
                         int pos = getAdapterPosition();
                         if(pos != RecyclerView.NO_POSITION){
-                            eventRecyclerViewInterface.onEventItemClick(pos);
+                            eventRecyclerViewInterface.onEventItemClick(pos, itemView);
                         }
                     }
                 }
