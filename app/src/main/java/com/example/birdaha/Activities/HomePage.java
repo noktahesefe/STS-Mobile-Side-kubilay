@@ -13,7 +13,8 @@ public class HomePage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_page);
+
+        setContentView(R.layout.fragment_home_page);
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.event_container, new EventFragment())

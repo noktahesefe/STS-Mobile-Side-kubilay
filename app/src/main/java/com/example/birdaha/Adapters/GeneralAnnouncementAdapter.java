@@ -57,7 +57,7 @@ public class GeneralAnnouncementAdapter extends RecyclerView.Adapter<GeneralAnno
                     if(generalAnnouncementViewInterface != null){
                         int pos = getAdapterPosition();
                         if(pos != RecyclerView.NO_POSITION){
-                            generalAnnouncementViewInterface.onGeneralAnnouncementItemClick(pos);
+                            generalAnnouncementViewInterface.onGeneralAnnouncementItemClick(pos, itemView);
                         }
                     }
                 }

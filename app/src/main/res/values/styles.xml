@@ -3,6 +3,16 @@
         <!-- App theme attributes -->
     </style>
 
+    <style name="TransparentActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="colorPrimary">#00FFFFFF</item>
+        <item name="colorPrimaryDark">#00FFFFFF</item>
+        <item name="colorAccent">#00FFFFFF</item>
+    </style>
+
     <style name="student_info_green">
         <item name="android:textSize">15sp</item>
         <item name="android:shadowColor">#40000000</item>

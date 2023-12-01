@@ -1,5 +1,6 @@
 package com.example.birdaha.Fragments;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.birdaha.Adapters.GeneralAnnouncementAdapter;
 import com.example.birdaha.General.GeneralAnnouncement;
@@ -48,22 +50,21 @@ public class GeneralAnnouncementFragment extends Fragment implements GeneralAnno
     }
 
     @Override
-    public void onGeneralAnnouncementItemClick(int position) {
+    public void onGeneralAnnouncementItemClick(int position, View view) {
         GeneralAnnouncement current = generalAnnouncements.get(position);
 
-        GeneralAnnouncementDetailFragment detailFragment = new GeneralAnnouncementDetailFragment();
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+        LayoutInflater inflater = LayoutInflater.from(view.getContext());
+        View overlayView = inflater.inflate(R.layout.announcement_detail_overlay,null);
+        TextView title = overlayView.findViewById(R.id.announcement_detail_title);
+        TextView detail = overlayView.findViewById(R.id.announcement_detail);
 
-        Bundle args = new Bundle();
-        args.putString("title",current.getTitle());
-        args.putString("details", current.getDetails());
-        detailFragment.setArguments(args);
+        title.setText(current.getTitle());
+        detail.setText(current.getDetails());
 
-        getParentFragmentManager().beginTransaction()
-                .replace(R.id.announcement_container, detailFragment)
-                .addToBackStack("Announcement Fragment") // Allows user to navigate back
-                .setReorderingAllowed(true)
-                .commit();
+        builder.setView(overlayView);
 
-        generalAnnouncements.clear(); // This line might change
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

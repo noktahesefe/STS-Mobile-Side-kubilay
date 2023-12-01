@@ -5,7 +5,12 @@
     <string name="student_classroom_info">9-B</string>
     <string name="student_school_number">Okul No:</string>
     <string name="student_school_number_info">21</string>
+
     <string name="app_name">Your App Name</string>
     <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+
 </resources>
