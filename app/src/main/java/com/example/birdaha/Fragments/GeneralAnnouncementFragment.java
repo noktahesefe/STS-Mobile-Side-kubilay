@@ -3,6 +3,8 @@ package com.example.birdaha.Fragments;
 import android.app.AlertDialog;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,10 +22,45 @@ import com.example.birdaha.Utilities.GeneralAnnouncementViewInterface;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * A fragment displaying a list of general announcements using a vertical RecyclerView.
+ * Implements the GeneralAnnouncementViewInterface to handle item click events.
+ */
 public class GeneralAnnouncementFragment extends Fragment implements GeneralAnnouncementViewInterface {
+
+    // RecyclerView to display general announcements
     private RecyclerView generalAnnouncementrecyclerView;
+
+    // List of general announcements
     private List<GeneralAnnouncement> generalAnnouncements = new ArrayList<>();
+
+    /**
+     * Empty constructor for the GeneralAnnouncementFragment.
+     */
+    public GeneralAnnouncementFragment(){
+        // Required empty public constructor
+    }
+
+    /**
+     * Called when the fragment is created.
+     *
+     * @param savedInstanceState A Bundle containing the saved state of the fragment,
+     *                            or null if there is no saved state.
+     */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
+
+    /**
+     * Called to have the fragment instantiate its user interface view.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate views.
+     * @param container          If non-null, this is the parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
+     * @return The View for the fragment's UI.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -66,5 +103,19 @@ public class GeneralAnnouncementFragment extends Fragment implements GeneralAnno
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    /**
+     * Called immediately after onCreateView() has returned, but before any saved state has been restored
+     * in to the view. This gives subclasses a chance to initialize themselves once they know their view
+     * hierarchy has been completely created.
+     *
+     * @param view               The View returned by onCreateView().
+     * @param savedInstanceState A Bundle containing the saved state of the fragment,
+     *                           or null if there is no saved state.
+     */
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 }

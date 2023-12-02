@@ -54,6 +54,13 @@ public class HomePageFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        getChildFragmentManager().beginTransaction()
+                .replace(R.id.event_container, new EventFragment())
+                .commit();
+
+        getChildFragmentManager().beginTransaction()
+                .replace(R.id.announcement_container, new GeneralAnnouncementFragment())
+                .commit();
     }
 
     /**
