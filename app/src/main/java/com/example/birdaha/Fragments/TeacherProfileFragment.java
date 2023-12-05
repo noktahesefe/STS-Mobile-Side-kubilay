@@ -39,6 +39,7 @@ public class TeacherProfileFragment extends Fragment {
     Button changeProfilePicture;
     Button classes;
     ImageView profilePicture;
+    View teacherClassroomsContainer;
     boolean isGranted = false;
 
     // Activity result launcher for requesting gallery access permission
@@ -72,7 +73,7 @@ public class TeacherProfileFragment extends Fragment {
             openGallery();
         } else {
             // Permission denied, inform the user and ask again
-            new AlertDialog.Builder(requireActivity())
+            new AlertDialog.Builder(requireActivity(), R.style.AlertDialogTheme)
                     .setTitle("İzin gerekiyor")
                     .setMessage("Galerinize erişim sağlamak için izin gerekiyor!")
                     .setPositiveButton("İzin ver", new DialogInterface.OnClickListener() {
@@ -155,6 +156,25 @@ public class TeacherProfileFragment extends Fragment {
         profilePicture = view.findViewById(R.id.teacher_profilePicture);
 
         changeProfilePicture.setOnClickListener(v -> checkPermissionAndOpenGallery());
+
+        teacherClassroomsContainer = view.findViewById(R.id.teacher_classes_container);
+        getChildFragmentManager().beginTransaction()
+                .replace(R.id.teacher_classes_container,new TeacherClassroomsFragment())
+                .addToBackStack(null)
+                .commit();
+        teacherClassroomsContainer.setVisibility(View.INVISIBLE);
+
+        classes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(teacherClassroomsContainer.getVisibility() == View.INVISIBLE){
+                    teacherClassroomsContainer.setVisibility(View.VISIBLE);
+                }
+                else{
+                    teacherClassroomsContainer.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
 
         return view;
     }

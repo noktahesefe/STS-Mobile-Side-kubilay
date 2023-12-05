@@ -74,7 +74,7 @@ public class StudentProfileFragment extends Fragment {
             openGallery();
         } else {
             // Permission denied, inform the user and ask again
-            new AlertDialog.Builder(requireActivity())
+            new AlertDialog.Builder(requireActivity(), R.style.AlertDialogTheme)
                     .setTitle("İzin gerekiyor")
                     .setMessage("Galerinize erişim sağlamak için izin gerekiyor!")
                     .setPositiveButton("İzin ver", new DialogInterface.OnClickListener() {
