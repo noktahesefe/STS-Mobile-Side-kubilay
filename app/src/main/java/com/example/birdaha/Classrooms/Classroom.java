@@ -12,6 +12,10 @@ public class Classroom {
     private List<Homework> homeworks;
     private List<ClassAnnouncement> classAnnouncements;
 
+    public Classroom(String name){
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
