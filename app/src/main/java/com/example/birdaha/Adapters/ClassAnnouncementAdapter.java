@@ -49,7 +49,7 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
      * @param position The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(@NonNull ClassAnnouncementAdapter.ClassAnnouncementViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ClassAnnouncementViewHolder holder, int position) {
         holder.textViewTitle.setText(classAnnouncementModels.get(position).getTitle());
     }
 

@@ -16,18 +16,19 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.birdaha.Fragments.HomePageFragment;
 import com.example.birdaha.Fragments.NotificationFragment;
-import com.example.birdaha.Fragments.StudentProfileFragment;
+import com.example.birdaha.Fragments.TeacherProfileFragment;
 import com.example.birdaha.Helper.FragmentNavigationManager;
 import com.example.birdaha.Interface.NavigationManager;
 import com.example.birdaha.R;
 
+
 /**
- * The StudentMainActivity class represents the main activity for student users within the application.
+ * The TeacherMainActivity class represents the primary activity for teacher users within the application.
  * This activity manages a navigation drawer using a DrawerLayout and handles fragment transactions
- * based on user interaction with the navigation drawer items.
- * It extends AppCompatActivity to ensure compatibility across various Android versions.
+ * based on user interactions with the navigation drawer items. It extends AppCompatActivity for compatibility
+ * across different Android versions.
  */
-public class StudentMainActivity extends AppCompatActivity {
+public class TeacherMainActivity extends AppCompatActivity {
 
     /***
      * DrawerLayout for menu usage
@@ -44,7 +45,6 @@ public class StudentMainActivity extends AppCompatActivity {
      */
     private NavigationManager navigationManager;
 
-
     /**
      * Called when the activity is created.
      *
@@ -59,7 +59,7 @@ public class StudentMainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_student_main);
+        setContentView(R.layout.activity_teacher_main);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.DrawerLayout_window_field);
 
@@ -74,13 +74,11 @@ public class StudentMainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-
-
         TextView TextView_profile = findViewById(R.id.TextView_profile);
         TextView_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigationManager.showFragment(StudentProfileFragment.newInstance("stuId"), false);
+                navigationManager.showFragment(TeacherProfileFragment.newInstance("teachId"), false);
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
@@ -102,6 +100,7 @@ public class StudentMainActivity extends AppCompatActivity {
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
+
 
     }
 
@@ -173,7 +172,9 @@ public class StudentMainActivity extends AppCompatActivity {
 
         drawerToggle.setDrawerIndicatorEnabled(true);
         drawerLayout.addDrawerListener(drawerToggle);
+
     }
+
 
     /**
      * Initialize the contents of the Activity's options menu.
@@ -191,7 +192,6 @@ public class StudentMainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         return true;
     }
-
 
     /**
      * Called when a menu item in the options menu is selected.

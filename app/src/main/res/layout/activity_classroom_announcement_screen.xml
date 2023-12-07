@@ -9,26 +9,32 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/caRecyclerView_classroom"
-        android:layout_width="331dp"
-        android:layout_height="300dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="200dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="200dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <SearchView
+    <androidx.appcompat.widget.SearchView
         android:id="@+id/searchView2"
         android:layout_width="331dp"
         android:layout_height="57dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
         app:layout_constraintBottom_toTopOf="@+id/caRecyclerView_classroom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
     <Button
         android:id="@+id/button2"
-        android:layout_width="37dp"
-        android:layout_height="35dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginTop="68dp"
         android:background="@drawable/circular_button"
         android:drawableStart="@drawable/baseline_add_24"

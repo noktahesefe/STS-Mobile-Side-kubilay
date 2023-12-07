@@ -24,7 +24,7 @@
         <item>Homework Name 7</item>
 
     </string-array>
-    
+
     <string-array name="ClassroomHomeworks">
 
         <item>Homework Name 1</item>
@@ -50,7 +50,7 @@
 
 
     </string-array>
-    
+
     <string-array name="ClassroomAnnouncements">
 
         <item>Announcement Name 1</item>
@@ -63,6 +63,4 @@
 
 
     </string-array>
-
-
 </resources>

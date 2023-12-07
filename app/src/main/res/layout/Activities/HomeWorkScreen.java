@@ -6,6 +6,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.CheckBox;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,14 +18,19 @@ import com.example.birdaha.R;
 
 import java.util.ArrayList;
 
-public class ClassroomHomeworkScreen extends AppCompatActivity {
+/**
+ * This activity displays a list of homework modules.
+ */
+public class HomeWorkScreen extends AppCompatActivity {
+
 
     ArrayList<HwModel> hwModels = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_classroom_homework_screen);
-        RecyclerView recyclerView = findViewById(R.id.hwRecyclerView_classroom);
+        setContentView(R.layout.activity_home_work_screen);
+
+        RecyclerView recyclerView = findViewById(R.id.hwRecyclerView);
 
         setHwModules();
         HomeworkAdapter homeworkAdapter = new HomeworkAdapter(this, hwModels);
@@ -38,11 +44,12 @@ public class ClassroomHomeworkScreen extends AppCompatActivity {
                 showOverlay();
             }
         });
+
     }
 
     private void setHwModules(){
 
-        String[] titles = getResources().getStringArray(R.array.ClassroomHomeworks);
+        String[] titles = getResources().getStringArray(R.array.Homeworks);
         for (int i = 0; i < titles.length; i++) {
             hwModels.add(new HwModel(titles[i]));
         }
@@ -64,6 +71,12 @@ public class ClassroomHomeworkScreen extends AppCompatActivity {
         layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
         layoutParams.gravity = Gravity.TOP | Gravity.CENTER;
         dialog.getWindow().setAttributes(layoutParams);
+
+        // Find the checkboxes in the overlay layout
+        CheckBox checkBox1 = overlayView.findViewById(R.id.checkBox);
+        CheckBox checkBox2 = overlayView.findViewById(R.id.checkBox2);
+
+        // Add any additional customization or logic to the checkboxes here
 
         dialog.show();
     }

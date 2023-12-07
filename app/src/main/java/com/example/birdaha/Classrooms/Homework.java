@@ -7,12 +7,6 @@ public class Homework {
     private Date dueDate;
     private int grade;
 
-    public Homework(Lecture lecture, Date dueDate, int grade) {
-        this.lecture = lecture;
-        this.dueDate = dueDate;
-        this.grade = grade;
-    }
-
     public Lecture getLecture() {
         return lecture;
     }

@@ -1,34 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.birdaha">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.example.birdaha"
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- İzinler -->
-    <uses-permission android:name="android.permission.INTERNET" /> <!-- Diğer izinler burada tanımlanabilir -->
-    <!-- Gereksinimler -->
-    <uses-feature android:name="android.hardware.camera" />
+    xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        />
+
+    <!-- Uygulamanın adı ve ikonu -->
     <application
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label=" "
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
-        android:theme="@style/Theme.BirDaha">
-        <activity
-            android:name=".Activities.ClassroomHomeworkScreen"
-            android:exported="false" />
-        <activity
-            android:name=".Activities.ClassRoomAnnouncementScreen"
-            android:exported="false" />
-        <activity
-            android:name=".Activities.ClassAnnouncementScreen"
-            android:exported="false" />
-        <activity
-            android:name=".Activities.ClassroomScreen"
-            android:exported="false" />
-        <!--
-    <activity android:name="com.example.birdaha.Activities.ParentMainActivity"
+        android:theme="@style/Theme.BirDaha" >
+        <!-- <activity android:name="com.example.birdaha.Activities.ParentMainActivity"
              android:exported="true">
 
         <intent-filter>
@@ -36,28 +22,44 @@
 
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
-    </activity>
-        -->
+    </activity>-->
         <activity
             android:name=".Activities.StudentMainActivity"
             android:exported="false"
-            android:theme="@style/TransparentActionBar" />
+            android:theme="@style/TransparentActionBar"
+            />
+        <activity
+            android:name=".Activities.ClassAnnouncementScreen"
+            android:exported="false"
+            android:theme="@style/TransparentActionBar"/>
+        <activity
+            android:name=".Activities.ClassRoomAnnouncementScreen"
+            android:exported="false"
+            android:theme="@style/TransparentActionBar"/>
+        <activity
+            android:name=".Activities.ClassroomHomeworkScreen"
+            android:exported="false"
+            android:theme="@style/TransparentActionBar"/>
         <activity
             android:name=".Activities.HomeWorkScreen"
             android:exported="false"
-            android:theme="@style/TransparentActionBar" />
+            android:theme="@style/TransparentActionBar"/>
+        <activity
+            android:name=".Activities.ClassroomScreen"
+            android:exported="false"
+            android:theme="@style/TransparentActionBar"/>
+
         <activity
             android:name=".Activities.TeacherMainActivity"
             android:exported="false"
-            android:theme="@style/TransparentActionBar" />
+            android:theme="@style/TransparentActionBar"/>
         <activity
             android:name=".Activities.ParentMainActivity"
             android:exported="false"
-            android:theme="@style/TransparentActionBar" />
-        <activity
-            android:name=".Activities.MainActivity"
-            android:exported="true">
-
+            android:theme="@style/TransparentActionBar"/>
+        <activity android:name="com.example.birdaha.Activities.MainActivity"
+            android:exported="true"
+            >
             <!-- Ana aktivite -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -65,6 +67,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- Diğer aktiviteler, servisler, alıcılar (receivers) burada tanımlanabilir -->
     </application>
+
+    <!-- İzinler -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Diğer izinler burada tanımlanabilir -->
+
+    <!-- Gereksinimler -->
+    <uses-feature android:name="android.hardware.camera" />
+    <!-- Diğer gereksinimler burada tanımlanabilir -->
 
 </manifest>

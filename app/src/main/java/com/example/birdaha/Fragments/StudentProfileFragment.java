@@ -26,6 +26,9 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.birdaha.Activities.ClassAnnouncementScreen;
+import com.example.birdaha.Activities.ClassRoomAnnouncementScreen;
+import com.example.birdaha.Activities.ClassroomHomeworkScreen;
+import com.example.birdaha.Activities.ClassroomScreen;
 import com.example.birdaha.Activities.HomeWorkScreen;
 import com.example.birdaha.R;
 
@@ -76,7 +79,7 @@ public class StudentProfileFragment extends Fragment {
             openGallery();
         } else {
             // Permission denied, inform the user and ask again
-            new AlertDialog.Builder(requireActivity())
+            new AlertDialog.Builder(requireActivity(), R.style.AlertDialogTheme)
                     .setTitle("İzin gerekiyor")
                     .setMessage("Galerinize erişim sağlamak için izin gerekiyor!")
                     .setPositiveButton("İzin ver", new DialogInterface.OnClickListener() {
@@ -160,18 +163,19 @@ public class StudentProfileFragment extends Fragment {
 
         profilePicture = (ImageView) view.findViewById(R.id.student_profilePicture);
 
-        changeProfilePicture.setOnClickListener(v -> checkPermissionAndOpenGallery());
-
         homeworks.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), HomeWorkScreen.class);
+            Intent intent = new Intent(requireActivity(), HomeWorkScreen.class);
             startActivity(intent);
         });
 
         announcements.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), ClassAnnouncementScreen.class);
+            Intent intent = new Intent(requireActivity(), ClassAnnouncementScreen.class);
             startActivity(intent);
         });
 
+
+
+        changeProfilePicture.setOnClickListener(v -> checkPermissionAndOpenGallery());
         return view;
     }
 
