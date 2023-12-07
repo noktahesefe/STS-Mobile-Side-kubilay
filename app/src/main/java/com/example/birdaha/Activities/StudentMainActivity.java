@@ -74,8 +74,6 @@ public class StudentMainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-
-
         TextView TextView_profile = findViewById(R.id.TextView_profile);
         TextView_profile.setOnClickListener(new View.OnClickListener() {
             @Override
