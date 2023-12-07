@@ -1,5 +1,7 @@
 package com.example.birdaha.Fragments;
 
+import android.content.Intent;
+
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,6 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+
+import com.example.birdaha.Activities.ClassroomScreen;
 
 import com.example.birdaha.Adapters.TeacherClassroomsAdapter;
 import com.example.birdaha.Classrooms.Classroom;
@@ -102,6 +107,11 @@ public class TeacherClassroomsFragment extends Fragment implements TeacherClassr
      */
     @Override
     public void onTeacherClassroomsItemClick(int position, View view) { // This will be done later
+        Classroom current = teacherClassrooms.get(position);
+
+        Intent intent = new Intent(requireActivity(), ClassroomScreen.class);
+        intent.putExtra("name",current.getName());
+        startActivity(intent);
 
     }
 }

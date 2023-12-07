@@ -13,4 +13,55 @@
     <string name="open">Open</string>
     <string name="close">Close</string>
 
+    <string-array name="Homeworks">
+
+        <item>Homework Name 1</item>
+        <item>Homework Name 2</item>
+        <item>Homework Name 3</item>
+        <item>Homework Name 4</item>
+        <item>Homework Name 5</item>
+        <item>Homework Name 6</item>
+        <item>Homework Name 7</item>
+
+    </string-array>
+
+    <string-array name="ClassroomHomeworks">
+
+        <item>Homework Name 1</item>
+        <item>Homework Name 2</item>
+        <item>Homework Name 3</item>
+        <item>Homework Name 4</item>
+        <item>Homework Name 5</item>
+        <item>Homework Name 6</item>
+        <item>Homework Name 7</item>
+
+    </string-array>
+
+
+    <string-array name="Announcements">
+
+        <item>Announcement Name 1</item>
+        <item>Announcement Name 2</item>
+        <item>Announcement Name 3</item>
+        <item>Announcement Name 4</item>
+        <item>Announcement Name 5</item>
+        <item>Announcement Name 6</item>
+        <item>Announcement Name 7</item>
+
+
+    </string-array>
+
+    <string-array name="ClassroomAnnouncements">
+
+        <item>Announcement Name 1</item>
+        <item>Announcement Name 2</item>
+        <item>Announcement Name 3</item>
+        <item>Announcement Name 4</item>
+        <item>Announcement Name 5</item>
+        <item>Announcement Name 6</item>
+        <item>Announcement Name 7</item>
+
+
+    </string-array>
+
 </resources>
