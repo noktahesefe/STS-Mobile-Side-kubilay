@@ -9,6 +9,7 @@ import android.view.WindowManager;
 import android.widget.CheckBox;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +23,7 @@ import java.util.ArrayList;
  * This activity displays a list of homework modules.
  */
 public class HomeWorkScreen extends AppCompatActivity {
+    SearchView search;
 
 
     ArrayList<HwModel> hwModels = new ArrayList<>();
@@ -29,6 +31,8 @@ public class HomeWorkScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_work_screen);
+
+        search = findViewById(R.id.searchView);
 
         RecyclerView recyclerView = findViewById(R.id.hwRecyclerView);
 
@@ -42,6 +46,27 @@ public class HomeWorkScreen extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showOverlay();
+            }
+        });
+
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                homeworkAdapter.search(newText);
+                return true;
+            }
+        });
+
+        search.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                homeworkAdapter.restoreOriginalList();
+                return false;
             }
         });
 
