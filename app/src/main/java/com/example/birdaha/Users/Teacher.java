@@ -9,12 +9,14 @@ import java.util.List;
 public class Teacher extends User{
     private List<Classroom> classrooms;
     private List<Lecture> lectures;
+    private static boolean isAlive = false;
 
     public Teacher(String username, String password){
         this.username = username;
         this.password = password;
         this.classrooms = new ArrayList<Classroom>();
         this.lectures = new ArrayList<Lecture>();
+        this.isAlive = true;
     }
 
     public List<Classroom> getClassrooms() {
@@ -31,5 +33,9 @@ public class Teacher extends User{
 
     public void setLectures(List<Lecture> lectures) {
         this.lectures = lectures;
+    }
+
+    public static boolean isAlive() {
+        return isAlive;
     }
 }

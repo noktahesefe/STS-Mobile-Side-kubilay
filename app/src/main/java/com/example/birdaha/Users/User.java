@@ -51,4 +51,6 @@ public abstract class User implements Serializable {
     public void setProfilePicture(Bitmap profilePicture) {
         this.profilePicture = profilePicture;
     }
+
+
 }

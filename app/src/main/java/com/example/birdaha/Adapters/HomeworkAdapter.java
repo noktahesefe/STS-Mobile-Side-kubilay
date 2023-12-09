@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.birdaha.General.HwModel;
 import com.example.birdaha.R;
+import com.example.birdaha.Users.Parent;
 
 import java.util.ArrayList;
 
@@ -82,6 +83,10 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
 
                     // Inflate the overlay_layout.xml file into a View object
                     View overlayView = inflater.inflate(R.layout.homework_overlay_layout, null);
+                    CardView parentNote = overlayView.findViewById(R.id.CardView_ParentNote);
+
+                    if(Parent.isAlive())
+                        parentNote.setVisibility(View.VISIBLE);
 
                     // Set the inflated view as the custom view for the AlertDialog
                     builder.setView(overlayView);
