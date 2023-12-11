@@ -25,11 +25,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+
 import com.example.birdaha.Activities.ClassAnnouncementScreen;
 import com.example.birdaha.Activities.ClassRoomAnnouncementScreen;
 import com.example.birdaha.Activities.ClassroomHomeworkScreen;
 import com.example.birdaha.Activities.ClassroomScreen;
 import com.example.birdaha.Activities.HomeWorkScreen;
+
 import com.example.birdaha.R;
 
 /**
@@ -172,8 +174,6 @@ public class StudentProfileFragment extends Fragment {
             Intent intent = new Intent(requireActivity(), ClassAnnouncementScreen.class);
             startActivity(intent);
         });
-
-
 
         changeProfilePicture.setOnClickListener(v -> checkPermissionAndOpenGallery());
         return view;

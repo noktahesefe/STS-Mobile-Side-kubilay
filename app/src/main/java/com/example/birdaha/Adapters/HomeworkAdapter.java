@@ -15,15 +15,18 @@ import com.example.birdaha.General.HwModel;
 import com.example.birdaha.R;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.HomeworkViewHolder>{
 
     Context context;
     ArrayList<HwModel> hwModels;
+    ArrayList<HwModel> filteredList;
 
     public HomeworkAdapter(Context context, ArrayList<HwModel> hwModels){
         this.context = context;
         this.hwModels = hwModels;
+        this.filteredList = hwModels;
 
     }
 
@@ -41,9 +44,12 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
 
     @Override
     public void onBindViewHolder(@NonNull HomeworkViewHolder holder, int position) {
-
-        holder.textViewTitle.setText(hwModels.get(position).getTitle());
-
+        if (position >= 0 && position < filteredList.size()) {
+            holder.textViewTitle.setText(filteredList.get(position).getTitle());
+            holder.itemView.setVisibility(View.VISIBLE); // Show the item
+        } else {
+            holder.itemView.setVisibility(View.INVISIBLE); // Hide the item
+        }
     }
 
     @Override
@@ -51,6 +57,30 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
 
         return hwModels.size();
     }
+
+    public void search(String query){
+        ArrayList<HwModel> searchList = new ArrayList<>();
+        if(query.isEmpty()){
+            searchList.addAll(hwModels);
+        }
+        else{
+            String filterPattern = query.toLowerCase(Locale.getDefault()).trim();
+            for(HwModel model : hwModels){
+                if(model.getTitle().toLowerCase(Locale.getDefault()).contains(filterPattern)){
+                    searchList.add(model);
+                }
+            }
+        }
+        filteredList  = searchList;
+        notifyDataSetChanged();
+    }
+
+    public void restoreOriginalList() {
+        filteredList.clear();
+        filteredList.addAll(hwModels);
+        notifyDataSetChanged();
+    }
+
 
     public static class HomeworkViewHolder extends RecyclerView.ViewHolder{
 

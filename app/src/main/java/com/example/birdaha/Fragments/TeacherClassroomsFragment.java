@@ -1,6 +1,7 @@
 package com.example.birdaha.Fragments;
 
 import android.content.Intent;
+
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,7 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+
 import com.example.birdaha.Activities.ClassroomScreen;
+
 import com.example.birdaha.Adapters.TeacherClassroomsAdapter;
 import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.R;
@@ -109,5 +112,6 @@ public class TeacherClassroomsFragment extends Fragment implements TeacherClassr
         Intent intent = new Intent(requireActivity(), ClassroomScreen.class);
         intent.putExtra("name",current.getName());
         startActivity(intent);
+
     }
 }

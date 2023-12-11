@@ -15,16 +15,19 @@ import com.example.birdaha.General.ClassAnnouncementModel;
 import com.example.birdaha.R;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnouncementAdapter.ClassAnnouncementViewHolder> {
 
     Context context;
 
     ArrayList<ClassAnnouncementModel> classAnnouncementModels;
+    ArrayList<ClassAnnouncementModel> filteredList;
 
     public ClassAnnouncementAdapter(Context context, ArrayList<ClassAnnouncementModel> classAnnouncementModels){
         this.context = context;
         this.classAnnouncementModels = classAnnouncementModels;
+        this.filteredList = classAnnouncementModels;
     }
 
 
@@ -50,7 +53,12 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
      */
     @Override
     public void onBindViewHolder(@NonNull ClassAnnouncementViewHolder holder, int position) {
-        holder.textViewTitle.setText(classAnnouncementModels.get(position).getTitle());
+        if (position >= 0 && position < filteredList.size()) {
+            holder.textViewTitle.setText(filteredList.get(position).getTitle());
+            holder.itemView.setVisibility(View.VISIBLE); // Show the item
+        } else {
+            holder.itemView.setVisibility(View.INVISIBLE); // Hide the item
+        }
     }
 
     /**
@@ -59,6 +67,29 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
     @Override
     public int getItemCount() {
         return classAnnouncementModels.size();
+    }
+
+    public void search(String query){
+        ArrayList<ClassAnnouncementModel> searchList = new ArrayList<>();
+        if(query.isEmpty()){
+            searchList.addAll(classAnnouncementModels);
+        }
+        else{
+            String filterPattern = query.toLowerCase(Locale.getDefault()).trim();
+            for(ClassAnnouncementModel model : classAnnouncementModels){
+                if(model.getTitle().toLowerCase(Locale.getDefault()).contains(filterPattern)){
+                    searchList.add(model);
+                }
+            }
+        }
+        filteredList  = searchList;
+        notifyDataSetChanged();
+    }
+
+    public void restoreOriginalList() {
+        filteredList.clear();
+        filteredList.addAll(classAnnouncementModels);
+        notifyDataSetChanged();
     }
 
     public static class ClassAnnouncementViewHolder extends RecyclerView.ViewHolder{
