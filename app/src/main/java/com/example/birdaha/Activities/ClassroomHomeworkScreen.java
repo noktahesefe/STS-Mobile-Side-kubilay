@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +19,7 @@ import com.example.birdaha.R;
 import java.util.ArrayList;
 
 public class ClassroomHomeworkScreen extends AppCompatActivity {
+    SearchView search;
 
     ArrayList<HwModel> hwModels = new ArrayList<>();
     @Override
@@ -25,6 +27,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_classroom_homework_screen);
         RecyclerView recyclerView = findViewById(R.id.hwRecyclerView_classroom);
+        search = findViewById(R.id.searchView);
 
         setHwModules();
         HomeworkAdapter homeworkAdapter = new HomeworkAdapter(this, hwModels);
@@ -36,6 +39,27 @@ public class ClassroomHomeworkScreen extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showOverlay();
+            }
+        });
+
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                homeworkAdapter.search(newText);
+                return true;
+            }
+        });
+
+        search.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                homeworkAdapter.restoreOriginalList();
+                return false;
             }
         });
     }
