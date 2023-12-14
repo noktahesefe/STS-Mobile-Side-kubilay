@@ -34,7 +34,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_work_screen);
 
-        search = findViewById(R.id.searchView);
+        search = findViewById(R.id.searchView_homework);
 
         RecyclerView recyclerView = findViewById(R.id.hwRecyclerView);
 

@@ -18,15 +18,24 @@ import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.HomeworkViewHolder>{
-
+/**
+ * This class represents the adapter for displaying homework items in a RecyclerView.
+ */
+public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.HomeworkViewHolder> {
 
     private final ClassroomHomeworkViewInterface homeworkViewInterface;
     Context context;
     ArrayList<HwModel> hwModels;
     ArrayList<HwModel> filteredList;
 
-    public HomeworkAdapter(Context context, ArrayList<HwModel> hwModels, ClassroomHomeworkViewInterface homeworkViewInterface){
+    /**
+     * Constructor for the HomeworkAdapter class.
+     *
+     * @param context               The context in which the adapter is used.
+     * @param hwModels              The list of homework models to display.
+     * @param homeworkViewInterface The interface to handle homework item clicks.
+     */
+    public HomeworkAdapter(Context context, ArrayList<HwModel> hwModels, ClassroomHomeworkViewInterface homeworkViewInterface) {
         this.context = context;
         this.hwModels = hwModels;
         this.filteredList = hwModels;
@@ -36,12 +45,8 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
     @NonNull
     @Override
     public HomeworkViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.recycler_view_row2,parent,false);
-
-
-
+        View view = inflater.inflate(R.layout.recycler_view_row2, parent, false);
         return new HomeworkViewHolder(view, homeworkViewInterface);
     }
 
@@ -57,41 +62,53 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
 
     @Override
     public int getItemCount() {
-
         return hwModels.size();
     }
 
-    public void search(String query){
+    /**
+     * Filter the list of homework items based on the provided query.
+     *
+     * @param query The search query to filter the list.
+     */
+    public void search(String query) {
         ArrayList<HwModel> searchList = new ArrayList<>();
-        if(query.isEmpty()){
+        if (query.isEmpty()) {
             searchList.addAll(hwModels);
-        }
-        else{
+        } else {
             String filterPattern = query.toLowerCase(Locale.getDefault()).trim();
-            for(HwModel model : hwModels){
-                if(model.getTitle().toLowerCase(Locale.getDefault()).contains(filterPattern)){
+            for (HwModel model : hwModels) {
+                if (model.getTitle().toLowerCase(Locale.getDefault()).contains(filterPattern)) {
                     searchList.add(model);
                 }
             }
         }
-        filteredList  = searchList;
+        filteredList = searchList;
         notifyDataSetChanged();
     }
 
+    /**
+     * Restore the original list of homework items.
+     */
     public void restoreOriginalList() {
         filteredList.clear();
         filteredList.addAll(hwModels);
         notifyDataSetChanged();
     }
 
-
-    public static class HomeworkViewHolder extends RecyclerView.ViewHolder{
-
+    /**
+     * This class represents the ViewHolder for individual homework items.
+     */
+    public static class HomeworkViewHolder extends RecyclerView.ViewHolder {
 
         TextView textViewTitle;
         CardView cardView;
 
-
+        /**
+         * Constructor for HomeworkViewHolder.
+         *
+         * @param itemView              The view item for the homework item.
+         * @param homeworkViewInterface The interface to handle homework item clicks.
+         */
         public HomeworkViewHolder(@NonNull View itemView, ClassroomHomeworkViewInterface homeworkViewInterface) {
             super(itemView);
 
@@ -105,12 +122,11 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(homeworkViewInterface != null){
+                    if (homeworkViewInterface != null) {
                         int pos = getAdapterPosition();
-                        if(pos != RecyclerView.NO_POSITION){
-                            homeworkViewInterface.onClassroomHomeworkItemClick(pos,cardView);
+                        if (pos != RecyclerView.NO_POSITION) {
+                            homeworkViewInterface.onClassroomHomeworkItemClick(pos, cardView);
                         }
-
                     }
                 }
             });
