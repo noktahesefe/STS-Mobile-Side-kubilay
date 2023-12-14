@@ -1,7 +1,11 @@
 package com.example.birdaha.Activities;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,11 +13,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.birdaha.Adapters.ClassAnnouncementAdapter;
 import com.example.birdaha.General.ClassAnnouncementModel;
+import com.example.birdaha.General.GeneralAnnouncement;
 import com.example.birdaha.R;
+import com.example.birdaha.Utilities.ClassAnnouncementViewInterface;
 
 import java.util.ArrayList;
 
-public class ClassAnnouncementScreen extends AppCompatActivity {
+public class ClassAnnouncementScreen extends AppCompatActivity implements ClassAnnouncementViewInterface {
     SearchView search;
     ArrayList<ClassAnnouncementModel> classAnnouncementModels = new ArrayList<>();
     @Override
@@ -25,7 +31,7 @@ public class ClassAnnouncementScreen extends AppCompatActivity {
         search = findViewById(R.id.searchView2);
 
         setClassAnnouncementModels();
-        ClassAnnouncementAdapter classAnnouncementAdapter = new ClassAnnouncementAdapter(this, classAnnouncementModels);
+        ClassAnnouncementAdapter classAnnouncementAdapter = new ClassAnnouncementAdapter(this, classAnnouncementModels, this);
         recyclerView.setAdapter(classAnnouncementAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -59,6 +65,20 @@ public class ClassAnnouncementScreen extends AppCompatActivity {
             classAnnouncementModels.add(new ClassAnnouncementModel(titles[i]));
         }
 
+    }
+
+    public void onClassAnnouncementItemClick(int position, View view) {
+        ClassAnnouncementModel classAnnouncementModel = classAnnouncementModels.get(position);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = LayoutInflater.from(view.getContext());
+        View overlayView = inflater.inflate(R.layout.class_announcement_overlay_layout, null);
+        TextView title = overlayView.findViewById(R.id.announcement_detail_name);
+        TextView details = overlayView.findViewById(R.id.announcement_detail_info);
+        title.setText(classAnnouncementModel.getTitle());
+        details.setText(classAnnouncementModel.getDetails());
+        builder.setView(overlayView);
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 }

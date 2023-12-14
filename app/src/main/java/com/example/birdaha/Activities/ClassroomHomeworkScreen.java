@@ -6,6 +6,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -15,22 +17,26 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.birdaha.Adapters.HomeworkAdapter;
 import com.example.birdaha.General.HwModel;
 import com.example.birdaha.R;
+import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 
 import java.util.ArrayList;
 
-public class ClassroomHomeworkScreen extends AppCompatActivity {
+public class ClassroomHomeworkScreen extends AppCompatActivity implements ClassroomHomeworkViewInterface {
     SearchView search;
 
     ArrayList<HwModel> hwModels = new ArrayList<>();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_classroom_homework_screen);
+
         RecyclerView recyclerView = findViewById(R.id.hwRecyclerView_classroom);
         search = findViewById(R.id.searchView);
 
         setHwModules();
-        HomeworkAdapter homeworkAdapter = new HomeworkAdapter(this, hwModels);
+        HomeworkAdapter homeworkAdapter = new HomeworkAdapter(this, hwModels, this);
         recyclerView.setAdapter(homeworkAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -41,6 +47,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity {
                 showOverlay();
             }
         });
+
 
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -67,12 +74,15 @@ public class ClassroomHomeworkScreen extends AppCompatActivity {
     private void setHwModules(){
 
         String[] titles = getResources().getStringArray(R.array.ClassroomHomeworks);
+        String[] infos =  getResources().getStringArray(R.array.ClassroomHomeworks);
         for (int i = 0; i < titles.length; i++) {
-            hwModels.add(new HwModel(titles[i]));
+            hwModels.add(new HwModel(titles[i],infos[i]));
         }
 
     }
 
+
+    //this is for the filter overlay
     private void showOverlay() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -91,4 +101,25 @@ public class ClassroomHomeworkScreen extends AppCompatActivity {
 
         dialog.show();
     }
+    @Override
+    public void onClassroomHomeworkItemClick(int position, View view) {
+        HwModel currentHw = hwModels.get(position);
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+        LayoutInflater inflater = LayoutInflater.from(view.getContext());
+
+        View overlayView = inflater.inflate(R.layout.homework_overlay_layout, null);
+        TextView detail = overlayView.findViewById(R.id.homework_detail_info);
+        TextView title = overlayView.findViewById(R.id.homework_detail_name);
+        //ImageView imageView = overlayView.findViewById(R.id.homework_detail_image);
+        //imageView.setImageResource(hwModels.getImageResource());
+        detail.setText(currentHw.getInfo());
+        title.setText(currentHw.getTitle());
+
+
+        builder.setView(overlayView);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
 }

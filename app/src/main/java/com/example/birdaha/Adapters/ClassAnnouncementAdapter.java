@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.birdaha.General.ClassAnnouncementModel;
 import com.example.birdaha.R;
+import com.example.birdaha.Utilities.ClassAnnouncementViewInterface;
+import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -20,14 +22,15 @@ import java.util.Locale;
 public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnouncementAdapter.ClassAnnouncementViewHolder> {
 
     Context context;
-
+    private final ClassAnnouncementViewInterface classAnnouncementViewInterface;
     ArrayList<ClassAnnouncementModel> classAnnouncementModels;
     ArrayList<ClassAnnouncementModel> filteredList;
 
-    public ClassAnnouncementAdapter(Context context, ArrayList<ClassAnnouncementModel> classAnnouncementModels){
+    public ClassAnnouncementAdapter(Context context, ArrayList<ClassAnnouncementModel> classAnnouncementModels,ClassAnnouncementViewInterface classAnnouncementViewInterface){
         this.context = context;
         this.classAnnouncementModels = classAnnouncementModels;
         this.filteredList = classAnnouncementModels;
+        this.classAnnouncementViewInterface = classAnnouncementViewInterface;
     }
 
 
@@ -43,7 +46,7 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.recycler_view_row,parent,false);
 
-        return new ClassAnnouncementViewHolder(view);
+        return new ClassAnnouncementViewHolder(view, classAnnouncementViewInterface);
     }
 
     /**
@@ -97,15 +100,12 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
 
         TextView textViewTitle;
         CardView cardView;
-        Context context;
 
-
-
-        public ClassAnnouncementViewHolder(@NonNull View itemView) {
+        public ClassAnnouncementViewHolder(@NonNull View itemView, ClassAnnouncementViewInterface classAnnouncementViewInterface) {
             super(itemView);
 
             // Initialize the textViewTitle variable with the view from the layout with id textView
-            textViewTitle = itemView.findViewById(R.id.textView2);
+            textViewTitle = itemView.findViewById(R.id.homework_detail_name);
 
             // Initialize the cardView variable with the view from the layout with id cardView
             cardView = itemView.findViewById(R.id.cardView2);
@@ -114,23 +114,10 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Create an AlertDialog.Builder object with the context of the itemView
-                    AlertDialog.Builder builder = new AlertDialog.Builder(itemView.getContext());
-
-                    // Create a LayoutInflater object from the itemView's context
-                    LayoutInflater inflater = LayoutInflater.from(itemView.getContext());
-
-                    // Inflate the overlay_layout.xml file into a View object
-                    View overlayView = inflater.inflate(R.layout.class_announcement_overlay_layout, null);
-
-                    // Set the inflated view as the custom view for the AlertDialog
-                    builder.setView(overlayView);
-
-                    // Create an AlertDialog object from the builder
-                    AlertDialog dialog = builder.create();
-
-                    // Show the AlertDialog
-                    dialog.show();
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION){
+                        classAnnouncementViewInterface.onClassAnnouncementItemClick(pos,cardView);
+                    }
                 }
             });
         }
