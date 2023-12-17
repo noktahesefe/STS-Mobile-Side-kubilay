@@ -120,8 +120,10 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         builder.setView(dialogView);
 
         // Find views in the dialog layout
-        EditText assignmentTitleEditText = dialogView.findViewById(R.id.announcementTitleEditText);
-        EditText assignmentDescriptionEditText = dialogView.findViewById(R.id.assignmentDescriptionEditText);
+        EditText lecture_name = dialogView.findViewById(R.id.announcementEditText);
+        EditText assignmentDescriptionEditText = dialogView.findViewById(R.id.homeworkDescriptionEditText);
+        EditText hw_dueDate = dialogView.findViewById(R.id.hw_deadline_content);
+        EditText hw_content = dialogView.findViewById(R.id.hw_content_content);
         Button saveButton = dialogView.findViewById(R.id.saveButton);
 
         // Create the dialog
@@ -132,11 +134,13 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             @Override
             public void onClick(View v) {
                 // Get the text entered in the title and description EditText fields
-                String title = assignmentTitleEditText.getText().toString();
-                String description = assignmentDescriptionEditText.getText().toString();
+                String lecture = lecture_name.getText().toString();
+                String hw_name = assignmentDescriptionEditText.getText().toString();
+                String hw_date = hw_dueDate.getText().toString();
+                String hw_info = hw_content.getText().toString();
 
                 // Create a new HwModel object with the entered title and description
-                HwModel newHomework = new HwModel(title, description);
+                HwModel newHomework = new HwModel(hw_name, hw_info, lecture, hw_date);
 
                 // Add the new homework to the hwModels list
                 hwModels.add(newHomework);
@@ -203,22 +207,30 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
 
         View overlayView = inflater.inflate(R.layout.homework_overlay_layout, null);
-        EditText detail = overlayView.findViewById(R.id.homework_detail_info);
+        EditText detail = overlayView.findViewById(R.id.homework_detail_course_name);
         EditText title = overlayView.findViewById(R.id.homework_detail_name);
+        EditText dueDate = overlayView.findViewById(R.id.homework_detail_duedate);
+        EditText content = overlayView.findViewById(R.id.homework_detail_content);
         Button editButton = overlayView.findViewById(R.id.editButton);
         Button saveButton = overlayView.findViewById(R.id.saveButton);
 
-        detail.setText(currentHw.getInfo());
+        detail.setText(currentHw.getHw_content());
         title.setText(currentHw.getTitle());
+        dueDate.setText(currentHw.getDueDate());
+        content.setText(currentHw.getHw_content());
 
         // Initially set EditTexts to non-editable
         detail.setEnabled(false);
         title.setEnabled(false);
+        dueDate.setEnabled(false);
+        content.setEnabled(false);
 
         editButton.setOnClickListener(v -> {
             // Enable EditTexts to make them editable
             detail.setEnabled(true);
             title.setEnabled(true);
+            dueDate.setEnabled(true);
+            content.setEnabled(true);
             detail.requestFocus();
         });
 
@@ -226,8 +238,13 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             // Save the edited text
             String updatedInfo = detail.getText().toString();
             String updatedTitle = title.getText().toString();
-            currentHw.setInfo(updatedInfo);
+            String updatedDueDate = dueDate.getText().toString();
+            String updatedContent = content.getText().toString();
+
+            currentHw.setLecture(updatedInfo);
             currentHw.setTitle(updatedTitle);
+            currentHw.setDueDate(updatedDueDate);
+            currentHw.setHw_content(updatedContent);
 
             // Notify the adapter that the item has changed
             homeworkAdapter.notifyItemChanged(position);
@@ -235,6 +252,8 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             // Disable EditTexts after saving
             detail.setEnabled(false);
             title.setEnabled(false);
+            dueDate.setEnabled(false);
+            content.setEnabled(false);
         });
 
         builder.setView(overlayView);

@@ -23,7 +23,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Duyuru Adı"
-        app:layout_constraintBottom_toTopOf="@+id/announcementTitleEditText"
+        app:layout_constraintBottom_toTopOf="@+id/announcementEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,7 +32,7 @@
         app:layout_constraintVertical_chainStyle="packed" />
 
     <EditText
-        android:id="@+id/announcementTitleEditText"
+        android:id="@+id/announcementEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/addHW_teacher_name"
@@ -47,13 +47,13 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="1dp"
         android:text="Teacher Name"
-        app:layout_constraintBottom_toTopOf="@+id/assignmentDescriptionEditText"
+        app:layout_constraintBottom_toTopOf="@+id/homeworkDescriptionEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/announcementTitleEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/announcementEditText" />
 
     <EditText
-        android:id="@+id/assignmentDescriptionEditText"
+        android:id="@+id/homeworkDescriptionEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -73,7 +73,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.842"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/assignmentDescriptionEditText"
+        app:layout_constraintTop_toBottomOf="@+id/homeworkDescriptionEditText"
         app:layout_constraintVertical_bias="0.022" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
