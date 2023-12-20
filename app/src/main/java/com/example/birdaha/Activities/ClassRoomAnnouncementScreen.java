@@ -6,6 +6,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -15,10 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.birdaha.Adapters.ClassAnnouncementAdapter;
 import com.example.birdaha.General.ClassAnnouncementModel;
 import com.example.birdaha.R;
+import com.example.birdaha.Utilities.ClassAnnouncementViewInterface;
+import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 
 import java.util.ArrayList;
 
-public class ClassRoomAnnouncementScreen extends AppCompatActivity {
+public class ClassRoomAnnouncementScreen extends AppCompatActivity implements ClassAnnouncementViewInterface {
 
     SearchView search;
 
@@ -32,7 +35,7 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity {
         search = findViewById(R.id.searchView2);
 
         setClassAnnouncementModels();
-        ClassAnnouncementAdapter classAnnouncementAdapter = new ClassAnnouncementAdapter(this, classAnnouncementModels);
+        ClassAnnouncementAdapter classAnnouncementAdapter = new ClassAnnouncementAdapter(this, classAnnouncementModels, this);
         recyclerView.setAdapter(classAnnouncementAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -44,18 +47,18 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                classAnnouncementAdapter.search(newText);
+                classAnnouncementAdapter.getFilter().filter(newText);
                 return true;
             }
         });
 
-        search.setOnCloseListener(new SearchView.OnCloseListener() {
+        /*search.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                classAnnouncementAdapter.restoreOriginalList();
+                //classAnnouncementAdapter.restoreOriginalList();
                 return false;
             }
-        });
+        });*/
     }
     private void setClassAnnouncementModels(){
 
@@ -82,6 +85,20 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity {
         dialog.getWindow().setAttributes(layoutParams);
 
 
+        dialog.show();
+    }
+
+    public void onClassAnnouncementItemClick(ClassAnnouncementModel clickedItem, View view) {
+        //ClassAnnouncementModel classAnnouncementModel = classAnnouncementModels.get(position);
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        LayoutInflater inflater = LayoutInflater.from(view.getContext());
+        View overlayView = inflater.inflate(R.layout.class_announcement_overlay_layout, null);
+        TextView title = overlayView.findViewById(R.id.announcement_detail_name);
+        TextView details = overlayView.findViewById(R.id.announcement_detail_info);
+        title.setText(clickedItem.getTitle());
+        details.setText(clickedItem.getDetails());
+        builder.setView(overlayView);
+        androidx.appcompat.app.AlertDialog dialog = builder.create();
         dialog.show();
     }
 }

@@ -23,6 +23,7 @@ import com.example.birdaha.Fragments.StudentProfileFragment;
 import com.example.birdaha.Helper.FragmentNavigationManager;
 import com.example.birdaha.Interface.NavigationManager;
 import com.example.birdaha.R;
+import com.example.birdaha.Users.Student;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -218,9 +219,10 @@ public class ParentMainActivity extends AppCompatActivity {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 String selectedItem = ((List) (lstChild.get(my_students_title))).get(childPosition).toString();
-
+                //Student selectedStudent = (Student) ((List) (lstChild.get(my_students_title))).get(childPosition);
+                //navigationManager.showFragment(StudentProfileFragment.newInstance(selectedStudent),false);
                 // Display the profile of the selected student
-                navigationManager.showFragment(StudentProfileFragment.newInstance("stuId"), false);
+                //navigationManager.showFragment(StudentProfileFragment.newInstance("stuId"), false);
 
                 // Close the Navigation Drawer after a child is clicked
                 drawerLayout.closeDrawer(GravityCompat.START);

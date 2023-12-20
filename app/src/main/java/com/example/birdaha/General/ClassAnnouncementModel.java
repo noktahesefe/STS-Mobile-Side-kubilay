@@ -1,8 +1,14 @@
 package com.example.birdaha.General;
 
-public class ClassAnnouncementModel {
+import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
+public class ClassAnnouncementModel implements Serializable {
+
+    @SerializedName("announcement_title")
     private String title;
+    @SerializedName("announcement_content")
     private String details;
 
     public ClassAnnouncementModel(String title, String details){
