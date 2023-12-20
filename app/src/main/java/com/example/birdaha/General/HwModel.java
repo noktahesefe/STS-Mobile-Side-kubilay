@@ -1,5 +1,7 @@
 package com.example.birdaha.General;
 
+import android.net.Uri;
+
 /**
  * This class represents a homework model that contains information about a homework assignment.
  */
@@ -14,6 +16,9 @@ public class HwModel {
     private String dueDate;
 
     private int grade;
+
+
+    private Uri imageUri; // URI of the selected image
 
 
     /**
@@ -36,11 +41,12 @@ public class HwModel {
 
     }
 
-    public HwModel(String title, String hw_content, String lecture, String dueDate) {
+    public HwModel(String title, String hw_content, String lecture, String dueDate, Uri imageUri) {
         this.title = title;
         this.hw_content = hw_content;
         this.lecture = lecture;
         this.dueDate = dueDate;
+        this.imageUri = imageUri;
     }
 
     /**
@@ -101,6 +107,15 @@ public class HwModel {
 
     public void setGrade(int grade) {
         this.grade = grade;
+    }
+
+
+    public Uri getImageUri() {
+        return imageUri;
+    }
+
+    public void setImageUri(Uri imageUri) {
+        this.imageUri = imageUri;
     }
 
 }

@@ -1,6 +1,8 @@
 package com.example.birdaha.Activities;
 
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -8,7 +10,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,6 +40,11 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
     Button addingHwButton; // Declare a Button for adding homework
 
     private HomeworkAdapter homeworkAdapter; // Declare a HomeworkAdapter object
+
+    private Uri selectedImageUri; // Declare a class-level variable to store the selected image URI
+
+
+    private static final int PICK_IMAGE_REQUEST = 1; // Declare a constant for picking an image
 
     /**
      * Called when the activity is created. Initializes the user interface, sets up event handlers,
@@ -106,6 +115,18 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
+            // Get the selected image URI
+            Uri selectedImageUri = data.getData();
+
+
+        }
+    }
+
     /**
      * This method displays a dialog for adding a new homework assignment.
      */
@@ -119,9 +140,26 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         View dialogView = inflater.inflate(R.layout.dialog_add_homework, null);
         builder.setView(dialogView);
 
+        // Find the select image button
+        Button selectImageButton = dialogView.findViewById(R.id.selectImageButton);
+
+
+        // Set a click listener for the "Select Image" button
+        selectImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create an intent to pick an image from the gallery
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*"); // Set the type to image
+
+                startActivityForResult(intent, PICK_IMAGE_REQUEST);
+            }
+        });
+
+
         // Find views in the dialog layout
-        EditText lecture_name = dialogView.findViewById(R.id.announcementEditText);
-        EditText assignmentDescriptionEditText = dialogView.findViewById(R.id.homeworkDescriptionEditText);
+        EditText lecture_name = dialogView.findViewById(R.id.lectureNameEditText);
+        EditText assignmentDescriptionEditText = dialogView.findViewById(R.id.add_announcement_teacher_name);
         EditText hw_dueDate = dialogView.findViewById(R.id.hw_deadline_content);
         EditText hw_content = dialogView.findViewById(R.id.hw_content_content);
         Button saveButton = dialogView.findViewById(R.id.saveButton);
@@ -140,7 +178,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                 String hw_info = hw_content.getText().toString();
 
                 // Create a new HwModel object with the entered title and description
-                HwModel newHomework = new HwModel(hw_name, hw_info, lecture, hw_date);
+                HwModel newHomework = new HwModel(lecture, hw_info, hw_name, hw_date,selectedImageUri);
 
                 // Add the new homework to the hwModels list
                 hwModels.add(newHomework);
@@ -156,6 +194,8 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         // Show the dialog
         dialog.show();
     }
+
+
 
     /**
      * This method initializes the homework modules by populating the hwModels list.
@@ -207,36 +247,42 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
 
         View overlayView = inflater.inflate(R.layout.homework_overlay_layout, null);
-        EditText detail = overlayView.findViewById(R.id.homework_detail_course_name);
-        EditText title = overlayView.findViewById(R.id.homework_detail_name);
+        EditText courseName = overlayView.findViewById(R.id.homework_detail_course_name);
+        EditText title = overlayView.findViewById(R.id.homework_detail_title);
         EditText dueDate = overlayView.findViewById(R.id.homework_detail_duedate);
         EditText content = overlayView.findViewById(R.id.homework_detail_content);
         Button editButton = overlayView.findViewById(R.id.editButton);
         Button saveButton = overlayView.findViewById(R.id.saveButton);
+        ImageView imageView = overlayView.findViewById(R.id.homework_detail_image);
 
-        detail.setText(currentHw.getHw_content());
+        courseName.setText(currentHw.getLecture());
         title.setText(currentHw.getTitle());
         dueDate.setText(currentHw.getDueDate());
         content.setText(currentHw.getHw_content());
 
         // Initially set EditTexts to non-editable
-        detail.setEnabled(false);
+        courseName.setEnabled(false);
         title.setEnabled(false);
         dueDate.setEnabled(false);
         content.setEnabled(false);
 
+        // Load and display the image (assuming that currentHw.getImageUri() returns the image URI)
+        if (currentHw.getImageUri() != null) {
+            imageView.setImageURI(currentHw.getImageUri());
+        }
+
         editButton.setOnClickListener(v -> {
             // Enable EditTexts to make them editable
-            detail.setEnabled(true);
+            courseName.setEnabled(true);
             title.setEnabled(true);
             dueDate.setEnabled(true);
             content.setEnabled(true);
-            detail.requestFocus();
+            courseName.requestFocus();
         });
 
         saveButton.setOnClickListener(v -> {
             // Save the edited text
-            String updatedInfo = detail.getText().toString();
+            String updatedInfo = courseName.getText().toString();
             String updatedTitle = title.getText().toString();
             String updatedDueDate = dueDate.getText().toString();
             String updatedContent = content.getText().toString();
@@ -250,7 +296,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             homeworkAdapter.notifyItemChanged(position);
 
             // Disable EditTexts after saving
-            detail.setEnabled(false);
+            courseName.setEnabled(false);
             title.setEnabled(false);
             dueDate.setEnabled(false);
             content.setEnabled(false);

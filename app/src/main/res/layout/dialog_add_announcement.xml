@@ -16,14 +16,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addHW_content" />
+        app:layout_constraintTop_toBottomOf="@+id/add_announcement_content" />
 
     <TextView
-        android:id="@+id/addHW_announcement_name"
+        android:id="@+id/add_announcement_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Duyuru Adı"
-        app:layout_constraintBottom_toTopOf="@+id/announcementEditText"
+        app:layout_constraintBottom_toTopOf="@+id/lectureNameEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,14 +32,14 @@
         app:layout_constraintVertical_chainStyle="packed" />
 
     <EditText
-        android:id="@+id/announcementEditText"
+        android:id="@+id/lectureNameEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/addHW_teacher_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addHW_announcement_name" />
+        app:layout_constraintTop_toBottomOf="@+id/add_announcement_name" />
 
     <TextView
         android:id="@+id/addHW_teacher_name"
@@ -47,13 +47,13 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="1dp"
         android:text="Teacher Name"
-        app:layout_constraintBottom_toTopOf="@+id/homeworkDescriptionEditText"
+        app:layout_constraintBottom_toTopOf="@+id/add_announcement_teacher_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/announcementEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/lectureNameEditText" />
 
     <EditText
-        android:id="@+id/homeworkDescriptionEditText"
+        android:id="@+id/add_announcement_teacher_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -63,17 +63,17 @@
         app:layout_constraintTop_toBottomOf="@+id/addHW_teacher_name" />
 
     <EditText
-        android:id="@+id/addHW_content"
+        android:id="@+id/add_announcement_content"
         android:layout_width="0dp"
         android:layout_height="150dp"
-        android:hint="Fotoğraf eklemek için 'a basınız"
+        android:hint="Etkinlik bilgilerini giriniz."
         android:gravity="center"
         android:inputType="textMultiLine"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.842"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/homeworkDescriptionEditText"
+        app:layout_constraintTop_toBottomOf="@+id/add_announcement_teacher_name"
         app:layout_constraintVertical_bias="0.022" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

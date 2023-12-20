@@ -119,8 +119,8 @@ private void showAddAnnouncementDialog() {
     builder.setView(dialogView);
 
     // Get the form controls from the dialog view
-    EditText assignmentTitleEditText = dialogView.findViewById(R.id.announcementEditText);
-    EditText assignmentDescriptionEditText = dialogView.findViewById(R.id.homeworkDescriptionEditText);
+    EditText assignmentTitleEditText = dialogView.findViewById(R.id.lectureNameEditText);
+    EditText assignmentDescriptionEditText = dialogView.findViewById(R.id.add_announcement_teacher_name);
     Button saveButton = dialogView.findViewById(R.id.saveButton);
 
     // Create the dialog

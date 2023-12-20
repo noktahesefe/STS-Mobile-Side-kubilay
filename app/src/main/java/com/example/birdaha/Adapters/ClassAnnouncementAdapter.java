@@ -1,6 +1,5 @@
 package com.example.birdaha.Adapters;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.birdaha.General.ClassAnnouncementModel;
 import com.example.birdaha.R;
 import com.example.birdaha.Utilities.ClassAnnouncementViewInterface;
-import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -134,7 +132,7 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
             super(itemView);
 
             // Initialize the textViewTitle variable with the view from the layout with id homework_detail_name
-            textViewTitle = itemView.findViewById(R.id.homework_detail_name);
+            textViewTitle = itemView.findViewById(R.id.homework_detail_title);
 
             // Initialize the cardView variable with the view from the layout with id cardView2
             cardView = itemView.findViewById(R.id.cardView2);
