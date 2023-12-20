@@ -13,33 +13,41 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.birdaha.General.HwModel;
 import com.example.birdaha.R;
+import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.HomeworkViewHolder>{
+/**
+ * This class represents the adapter for displaying homework items in a RecyclerView.
+ */
+public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.HomeworkViewHolder> {
 
+    private final ClassroomHomeworkViewInterface homeworkViewInterface;
     Context context;
     ArrayList<HwModel> hwModels;
     ArrayList<HwModel> filteredList;
 
-    public HomeworkAdapter(Context context, ArrayList<HwModel> hwModels){
+    /**
+     * Constructor for the HomeworkAdapter class.
+     *
+     * @param context               The context in which the adapter is used.
+     * @param hwModels              The list of homework models to display.
+     * @param homeworkViewInterface The interface to handle homework item clicks.
+     */
+    public HomeworkAdapter(Context context, ArrayList<HwModel> hwModels, ClassroomHomeworkViewInterface homeworkViewInterface) {
         this.context = context;
         this.hwModels = hwModels;
         this.filteredList = hwModels;
-
+        this.homeworkViewInterface = homeworkViewInterface;
     }
 
     @NonNull
     @Override
     public HomeworkViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.recycler_view_row2,parent,false);
-
-
-
-        return new HomeworkViewHolder(view);
+        View view = inflater.inflate(R.layout.recycler_view_row2, parent, false);
+        return new HomeworkViewHolder(view, homeworkViewInterface);
     }
 
     @Override
@@ -54,44 +62,54 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
 
     @Override
     public int getItemCount() {
-
         return hwModels.size();
     }
 
-    public void search(String query){
+    /**
+     * Filter the list of homework items based on the provided query.
+     *
+     * @param query The search query to filter the list.
+     */
+    public void search(String query) {
         ArrayList<HwModel> searchList = new ArrayList<>();
-        if(query.isEmpty()){
+        if (query.isEmpty()) {
             searchList.addAll(hwModels);
-        }
-        else{
+        } else {
             String filterPattern = query.toLowerCase(Locale.getDefault()).trim();
-            for(HwModel model : hwModels){
-                if(model.getTitle().toLowerCase(Locale.getDefault()).contains(filterPattern)){
+            for (HwModel model : hwModels) {
+                if (model.getTitle().toLowerCase(Locale.getDefault()).contains(filterPattern)) {
                     searchList.add(model);
                 }
             }
         }
-        filteredList  = searchList;
+        filteredList = searchList;
         notifyDataSetChanged();
     }
 
+    /**
+     * Restore the original list of homework items.
+     */
     public void restoreOriginalList() {
         filteredList.clear();
         filteredList.addAll(hwModels);
         notifyDataSetChanged();
     }
 
-
-    public static class HomeworkViewHolder extends RecyclerView.ViewHolder{
-
+    /**
+     * This class represents the ViewHolder for individual homework items.
+     */
+    public static class HomeworkViewHolder extends RecyclerView.ViewHolder {
 
         TextView textViewTitle;
         CardView cardView;
-        Context context;
 
-
-
-        public HomeworkViewHolder(@NonNull View itemView) {
+        /**
+         * Constructor for HomeworkViewHolder.
+         *
+         * @param itemView              The view item for the homework item.
+         * @param homeworkViewInterface The interface to handle homework item clicks.
+         */
+        public HomeworkViewHolder(@NonNull View itemView, ClassroomHomeworkViewInterface homeworkViewInterface) {
             super(itemView);
 
             // Initialize the textViewTitle variable with the view from the layout with id textView
@@ -104,23 +122,12 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Create an AlertDialog.Builder object with the context of the itemView
-                    AlertDialog.Builder builder = new AlertDialog.Builder(itemView.getContext());
-
-                    // Create a LayoutInflater object from the itemView's context
-                    LayoutInflater inflater = LayoutInflater.from(itemView.getContext());
-
-                    // Inflate the overlay_layout.xml file into a View object
-                    View overlayView = inflater.inflate(R.layout.homework_overlay_layout, null);
-
-                    // Set the inflated view as the custom view for the AlertDialog
-                    builder.setView(overlayView);
-
-                    // Create an AlertDialog object from the builder
-                    AlertDialog dialog = builder.create();
-
-                    // Show the AlertDialog
-                    dialog.show();
+                    if (homeworkViewInterface != null) {
+                        int pos = getAdapterPosition();
+                        if (pos != RecyclerView.NO_POSITION) {
+                            homeworkViewInterface.onClassroomHomeworkItemClick(pos, cardView);
+                        }
+                    }
                 }
             });
         }

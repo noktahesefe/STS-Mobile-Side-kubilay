@@ -3,40 +3,59 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="500dp">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="173dp"
+    <EditText
+        android:id="@+id/announcement_detail_name"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
         android:layout_marginTop="36dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="18dp"
         android:text="Announcement 1"
-        android:textAlignment="textStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.067"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="171dp"
+    <EditText
+        android:id="@+id/announcement_detail_info"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="This is your homework"
+        android:paddingLeft="18dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="18dp"
+        android:layout_marginBottom="36dp"
+        android:inputType="text"
+        android:text="Teacher Name"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintHorizontal_bias="0.066"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/announcement_detail_name" />
 
     <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="283dp"
-        android:layout_height="379dp"
+        android:id="@+id/announcement_detail_image"
+        android:layout_width="264dp"
+        android:layout_height="246dp"
         android:layout_marginStart="16dp"
-        android:layout_marginBottom="56dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.428"
+        app:layout_constraintHorizontal_bias="0.424"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
         app:srcCompat="@drawable/img_1" />
+
+    <EditText
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_marginRight="18dp"
+        android:layout_marginLeft="18dp"
+        android:layout_height="182dp"
+        android:text="This is your announcement"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/announcement_detail_info" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -34,7 +34,7 @@
             android:exported="false"
             android:theme="@style/TransparentActionBar"/>
         <activity
-            android:name=".Activities.ClassRoomAnnouncementScreen"
+            android:name=".Activities.MainActivity"
             android:exported="false"
             android:theme="@style/TransparentActionBar"/>
         <activity
@@ -58,7 +58,7 @@
             android:name=".Activities.ParentMainActivity"
             android:exported="false"
             android:theme="@style/TransparentActionBar"/>
-        <activity android:name="com.example.birdaha.Activities.MainActivity"
+        <activity android:name="com.example.birdaha.Activities.ClassRoomAnnouncementScreen"
             android:exported="true"
             >
             <!-- Ana aktivite -->
