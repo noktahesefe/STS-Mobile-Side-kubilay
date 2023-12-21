@@ -7,14 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Teacher extends User{
-    private int teacher_id;
-    private List<Classroom> classrooms;
-    private int course_id;
+    //private int teacher_id;
+    //private List<Classroom> classrooms;
+    //private int course_id;
 
-    public Teacher(String name,int teacher_id, int course_id, List<Classroom> classrooms){
+    public Teacher(String name,int teacher_id, Lecture course, List<Classroom> classrooms){
         this.name = name;
         this.teacher_id = teacher_id;
-        this.course_id = course_id;
+        this.course = course;
         this.classrooms = classrooms;
     }
 

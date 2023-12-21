@@ -22,14 +22,14 @@ public class User implements Serializable {
     protected String phone;
     //protected Bitmap profilePicture;
     private int parent_id;
-    private int teacher_id;
-    private int course_id;
+    protected int teacher_id;
+    protected int course_id;
     private int student_id;
     private int classroom_id;
     private int school_no;
     protected Classroom classroom;
-    private List<Classroom> classrooms;
-    private Lecture course;
+    protected List<Classroom> classrooms;
+    protected Lecture course;
     private List<Student> students;
 
 

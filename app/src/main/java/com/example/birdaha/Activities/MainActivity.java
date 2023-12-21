@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.birdaha.Classrooms.Classroom;
+import com.example.birdaha.Classrooms.Lecture;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.LoginRequest;
 import com.example.birdaha.Users.Parent;
@@ -79,7 +80,11 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("Respond",new Gson().toJson(respond.getUser()).toString());
                             switch (response.code()){
                                 case 201:
-                                    Teacher teacher = new Teacher(user.getName(), user.getTeacher_id(), user.getCourse_id(),null);
+                                    List<Classroom> classrooms = respond.getUser().getClassrooms();
+                                    Lecture course = respond.getUser().getCourse();
+                                    Log.d("Course",course.getName());
+                                    Log.d("Course",String.valueOf(course.getCourse_id()));
+                                    Teacher teacher = new Teacher(user.getName(), user.getTeacher_id(), course,classrooms);
                                     Intent intent = new Intent(MainActivity.this, TeacherMainActivity.class);
                                     intent.putExtra("user",teacher);
                                     Toast.makeText(MainActivity.this, "Teacher logged in", Toast.LENGTH_SHORT).show();
@@ -87,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                                     break;
                                 case 202:
                                     Classroom classroom = respond.getUser().getClassroom();
-                                    Log.d("Classroom",classroom.getName().toString());
+                                    Log.d("Classroom",classroom.getName());
                                     Student student = new Student(user.getName(), user.getStudent_id(),classroom, user.getSchool_no());
                                     Intent intent2 = new Intent(MainActivity.this, StudentMainActivity.class);
                                     intent2.putExtra("user",student);
@@ -152,8 +157,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });*/
-
-
 
     public boolean checkEditText(){ // Checks whether the edit texts are empty or not
         String name = username.getText().toString();

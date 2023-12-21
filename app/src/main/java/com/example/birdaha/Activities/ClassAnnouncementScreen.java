@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -74,10 +76,25 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
         View overlayView = inflater.inflate(R.layout.class_announcement_overlay_layout, null);
-        TextView title = overlayView.findViewById(R.id.announcement_detail_name);
-        TextView details = overlayView.findViewById(R.id.announcement_detail_info);
+
+        EditText title = overlayView.findViewById(R.id.announcement_detail_name);
+        EditText details = overlayView.findViewById(R.id.announcement_detail_content);
+        EditText teacherName = overlayView.findViewById(R.id.announcement_detail_teacher);
+        Button editButton = overlayView.findViewById(R.id.edit_button);
+        Button saveButton = overlayView.findViewById(R.id.save_button);
+
+        title.setEnabled(false);
+        details.setEnabled(false);
+        teacherName.setEnabled(false);
+
+        // Set edit button and save button invisible for students/parents
+        editButton.setVisibility(View.INVISIBLE);
+        saveButton.setVisibility(View.INVISIBLE);
+
         title.setText(clickedItem.getTitle());
         details.setText(clickedItem.getDetails());
+        teacherName.setText(clickedItem.getTeacher().getName());
+
         builder.setView(overlayView);
         AlertDialog dialog = builder.create();
         dialog.show();
