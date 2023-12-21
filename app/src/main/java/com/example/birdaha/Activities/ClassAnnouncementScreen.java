@@ -107,11 +107,11 @@ public void onClassAnnouncementItemClick(int position, View view) {
     LayoutInflater inflater = LayoutInflater.from(view.getContext());
 
     // Inflate the overlay layout for the dialog
-    View overlayView = inflater.inflate(R.layout.class_announcement_overlay_layout, null);
+    View overlayView = inflater.inflate(R.layout.overlay_class_announcement_layout, null);
 
     // Get the title and details TextViews from the overlay view
     TextView title = overlayView.findViewById(R.id.announcement_detail_name);
-    TextView details = overlayView.findViewById(R.id.announcement_detail_info);
+    TextView details = overlayView.findViewById(R.id.announcement_detail_teacher);
 
     // Set the text of the title and details TextViews to the title and details of the clicked announcement
     title.setText(classAnnouncementModel.getTitle());

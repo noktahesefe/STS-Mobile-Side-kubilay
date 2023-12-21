@@ -6,6 +6,11 @@ package com.example.birdaha.General;
 public class ClassAnnouncementModel {
 
     private String title;   // The title of the class announcement
+
+    private String teacherName; // The name of the teacher who posted the announcement
+
+
+
     private String details; // Details or content of the class announcement
 
     /**
@@ -14,9 +19,10 @@ public class ClassAnnouncementModel {
      * @param title   The title of the class announcement.
      * @param details Details or content of the class announcement.
      */
-    public ClassAnnouncementModel(String title, String details) {
+    public ClassAnnouncementModel(String title, String details, String teacherName) {
         this.title = title;
         this.details = details;
+        this.teacherName = teacherName;
     }
 
     /**
@@ -62,5 +68,14 @@ public class ClassAnnouncementModel {
      */
     public void setDetails(String details) {
         this.details = details;
+    }
+
+
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
     }
 }

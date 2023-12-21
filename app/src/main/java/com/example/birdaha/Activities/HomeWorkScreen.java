@@ -121,7 +121,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
 
         // Inflate the overlay_layout.xml file into a View object
-        View overlayView = inflater.inflate(R.layout.homework_overlay_layout, null);
+        View overlayView = inflater.inflate(R.layout.overlay_homework_layout, null);
         TextView title = overlayView.findViewById(R.id.homework_detail_title);
         TextView detail = overlayView.findViewById(R.id.homework_detail_course_name);
         title.setText(current.getTitle());

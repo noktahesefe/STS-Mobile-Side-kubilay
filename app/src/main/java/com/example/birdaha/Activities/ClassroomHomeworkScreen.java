@@ -246,7 +246,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
 
-        View overlayView = inflater.inflate(R.layout.homework_overlay_layout, null);
+        View overlayView = inflater.inflate(R.layout.overlay_homework_layout, null);
         EditText courseName = overlayView.findViewById(R.id.homework_detail_course_name);
         EditText title = overlayView.findViewById(R.id.homework_detail_title);
         EditText dueDate = overlayView.findViewById(R.id.homework_detail_duedate);

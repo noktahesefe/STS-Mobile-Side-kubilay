@@ -35,14 +35,14 @@
         android:id="@+id/lectureNameEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/addHW_teacher_name"
+        app:layout_constraintBottom_toTopOf="@+id/add_announcement_teacher_name1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/add_announcement_name" />
 
     <TextView
-        android:id="@+id/addHW_teacher_name"
+        android:id="@+id/add_announcement_teacher_name1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="1dp"
@@ -60,7 +60,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addHW_teacher_name" />
+        app:layout_constraintTop_toBottomOf="@+id/add_announcement_teacher_name1" />
 
     <EditText
         android:id="@+id/add_announcement_content"

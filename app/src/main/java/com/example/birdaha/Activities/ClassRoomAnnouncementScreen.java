@@ -120,7 +120,8 @@ private void showAddAnnouncementDialog() {
 
     // Get the form controls from the dialog view
     EditText assignmentTitleEditText = dialogView.findViewById(R.id.lectureNameEditText);
-    EditText assignmentDescriptionEditText = dialogView.findViewById(R.id.add_announcement_teacher_name);
+    EditText teacherName2 = dialogView.findViewById(R.id.add_announcement_teacher_name);
+    EditText contentEditText = dialogView.findViewById(R.id.add_announcement_content);
     Button saveButton = dialogView.findViewById(R.id.saveButton);
 
     // Create the dialog
@@ -132,10 +133,11 @@ private void showAddAnnouncementDialog() {
         public void onClick(View v) {
             // Get the title and description from the form
             String title = assignmentTitleEditText.getText().toString();
-            String description = assignmentDescriptionEditText.getText().toString();
+            String teacherName = teacherName2.getText().toString();
+            String content = contentEditText.getText().toString();
 
             // Create a new ClassAnnouncementModel with the title and description
-            ClassAnnouncementModel classAnnouncement = new ClassAnnouncementModel(title, description);
+            ClassAnnouncementModel classAnnouncement = new ClassAnnouncementModel(title, content,teacherName);
 
             // Add the new announcement to the classAnnouncementModels list
             classAnnouncementModels.add(classAnnouncement);
@@ -170,15 +172,52 @@ public void onClassAnnouncementItemClick(int position, View view) {
     LayoutInflater inflater = LayoutInflater.from(view.getContext());
 
     // Inflate the overlay layout for the dialog
-    View overlayView = inflater.inflate(R.layout.class_announcement_overlay_layout, null);
+    View overlayView = inflater.inflate(R.layout.overlay_class_announcement_layout, null);
 
     // Get the title and details TextViews from the overlay view
-    TextView title = overlayView.findViewById(R.id.announcement_detail_name);
-    TextView details = overlayView.findViewById(R.id.announcement_detail_info);
+    EditText title = overlayView.findViewById(R.id.announcement_detail_name);
+    EditText details = overlayView.findViewById(R.id.announcement_detail_content);
+    EditText teacherName = overlayView.findViewById(R.id.announcement_detail_teacher);
+    Button editButton = overlayView.findViewById(R.id.edit_button);
+    Button saveButton = overlayView.findViewById(R.id.save_button);
+
 
     // Set the text of the title and details TextViews to the title and details of the clicked announcement
     title.setText(classAnnouncementModel.getTitle());
     details.setText(classAnnouncementModel.getDetails());
+    teacherName.setText(classAnnouncementModel.getTeacherName());
+
+    title.setEnabled(false);
+    details.setEnabled(false);
+    teacherName.setEnabled(false);
+
+    editButton.setOnClickListener(v -> {
+        // Enable EditTexts to make them editable
+        title.setEnabled(true);
+        details.setEnabled(true);
+        teacherName.setEnabled(true);
+        title.requestFocus();
+    });
+
+    saveButton.setOnClickListener(v -> {
+        // Save the edited text
+        String updatedTitle = title.getText().toString();
+        String updatedDetails = details.getText().toString();
+        String updatedTeacherName = teacherName.getText().toString();
+
+        classAnnouncementModel.setTitle(updatedTitle);
+        classAnnouncementModel.setDetails(updatedDetails);
+        classAnnouncementModel.setTeacherName(updatedTeacherName);
+
+        // Notify the adapter that the item has changed
+        classAnnouncementAdapter.notifyItemChanged(position);
+
+        // Disable EditTexts after saving
+        title.setEnabled(false);
+        details.setEnabled(false);
+        teacherName.setEnabled(false);
+    });
+
 
     // Set the overlay view as the view for the dialog
     builder.setView(overlayView);
