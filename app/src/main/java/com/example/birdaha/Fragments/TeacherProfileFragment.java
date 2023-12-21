@@ -26,6 +26,7 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.birdaha.R;
+import com.example.birdaha.Users.Teacher;
 
 /**
  * The TeacherProfileFragment class represents a fragment displaying a teacher's profile.
@@ -111,13 +112,14 @@ public class TeacherProfileFragment extends Fragment {
     /**
      * Creates a new instance of the TeacherProfileFragment.
      *
-     * @param param1 Title content to be displayed.
+     * @param teacher Title content to be displayed.
      * @return A new instance of TeacherProfileFragment.
      */
-    public static TeacherProfileFragment newInstance(String param1) {
+    public static TeacherProfileFragment newInstance(Teacher teacher) {
         TeacherProfileFragment fragment = new TeacherProfileFragment();
         Bundle args = new Bundle();
-        args.putString(KEY_TITLE, param1);
+        args.putSerializable("teacher",teacher);
+        //args.putString(KEY_TITLE, param1);
         fragment.setArguments(args);
         return fragment;
     }
@@ -148,21 +150,30 @@ public class TeacherProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_teacher_profile, container, false);
+        Bundle bundle = getArguments();
+        if(bundle != null){
+            Teacher teacher = (Teacher) bundle.getSerializable("teacher");
+            nameSurname = view.findViewById(R.id.teacher_name_surname_info);
+            lectures = view.findViewById(R.id.teacher_lectures_info);
+            changeProfilePicture = view.findViewById(R.id.teacher_gallery);
+            classes = view.findViewById(R.id.teacher_classes);
+            profilePicture = view.findViewById(R.id.teacher_profilePicture);
 
-        nameSurname = view.findViewById(R.id.teacher_name_surname);
-        lectures = view.findViewById(R.id.teacher_lectures);
-        changeProfilePicture = view.findViewById(R.id.teacher_gallery);
-        classes = view.findViewById(R.id.teacher_classes);
-        profilePicture = view.findViewById(R.id.teacher_profilePicture);
+            nameSurname.setText(teacher.getName());
+            lectures.setText(teacher.getCourse().getName());
+
+            teacherClassroomsContainer = view.findViewById(R.id.teacher_classes_container);
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.teacher_classes_container,new TeacherClassroomsFragment(teacher,teacher.getClassrooms()))
+                    .addToBackStack(null)
+                    .commit();
+            teacherClassroomsContainer.setVisibility(View.INVISIBLE);
+        }
+
 
         changeProfilePicture.setOnClickListener(v -> checkPermissionAndOpenGallery());
 
-        teacherClassroomsContainer = view.findViewById(R.id.teacher_classes_container);
-        getChildFragmentManager().beginTransaction()
-                .replace(R.id.teacher_classes_container,new TeacherClassroomsFragment())
-                .addToBackStack(null)
-                .commit();
-        teacherClassroomsContainer.setVisibility(View.INVISIBLE);
+
 
         classes.setOnClickListener(new View.OnClickListener() {
             @Override

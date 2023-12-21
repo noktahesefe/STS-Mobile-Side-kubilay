@@ -1,19 +1,32 @@
 package com.example.birdaha.Classrooms;
 
+import com.example.birdaha.General.HwModel;
 import com.example.birdaha.Users.Student;
 import com.example.birdaha.Users.Teacher;
+import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Classroom {
+public class Classroom implements Serializable {
+    private int classroom_id;
+    @SerializedName("classroom_name")
     private String name;
-    private Teacher classroomTeacher;
+    //private Teacher classroomTeacher;
     private List<Student> students;
-    private List<Homework> homeworks;
+    private List<HwModel> homeworks;
     private List<ClassAnnouncement> classAnnouncements;
 
     public Classroom(String name){
         this.name = name;
+    }
+
+    public int getClassroom_id() {
+        return classroom_id;
+    }
+
+    public void setClassroom_id(int classroom_id) {
+        this.classroom_id = classroom_id;
     }
 
     public String getName() {
@@ -24,13 +37,13 @@ public class Classroom {
         this.name = name;
     }
 
-    public Teacher getClassroomTeacher() {
+    /*public Teacher getClassroomTeacher() {
         return classroomTeacher;
     }
 
     public void setClassroomTeacher(Teacher classroomTeacher) {
         this.classroomTeacher = classroomTeacher;
-    }
+    }*/
 
     public List<Student> getStudents() {
         return students;
@@ -40,11 +53,11 @@ public class Classroom {
         this.students = students;
     }
 
-    public List<Homework> getHomeworks() {
+    public List<HwModel> getHomeworks() {
         return homeworks;
     }
 
-    public void setHomeworks(List<Homework> homeworks) {
+    public void setHomeworks(List<HwModel> homeworks) {
         this.homeworks = homeworks;
     }
 

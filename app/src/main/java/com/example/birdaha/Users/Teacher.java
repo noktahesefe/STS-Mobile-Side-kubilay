@@ -7,16 +7,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Teacher extends User{
-    private List<Classroom> classrooms;
-    private List<Lecture> lectures;
-    private static boolean isAlive = false;
+    //private int teacher_id;
+    //private List<Classroom> classrooms;
+    //private int course_id;
 
-    public Teacher(String username, String password){
-        this.username = username;
-        this.password = password;
-        this.classrooms = new ArrayList<Classroom>();
-        this.lectures = new ArrayList<Lecture>();
-        this.isAlive = true;
+    public Teacher(String name,int teacher_id, Lecture course, List<Classroom> classrooms){
+        this.name = name;
+        this.teacher_id = teacher_id;
+        this.course = course;
+        this.classrooms = classrooms;
+    }
+
+    public int getTeacher_id() {
+        return teacher_id;
+    }
+
+    public void setTeacher_id(int teacher_id) {
+        this.teacher_id = teacher_id;
+    }
+
+    public int getCourse_id() {
+        return course_id;
+    }
+
+    public void setCourse_id(int course_id) {
+        this.course_id = course_id;
     }
 
     public List<Classroom> getClassrooms() {
@@ -25,17 +40,5 @@ public class Teacher extends User{
 
     public void setClassrooms(List<Classroom> classrooms) {
         this.classrooms = classrooms;
-    }
-
-    public List<Lecture> getLectures() {
-        return lectures;
-    }
-
-    public void setLectures(List<Lecture> lectures) {
-        this.lectures = lectures;
-    }
-
-    public static boolean isAlive() {
-        return isAlive;
     }
 }

@@ -2,9 +2,12 @@ package com.example.birdaha.Adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,19 +16,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.birdaha.General.HwModel;
 import com.example.birdaha.R;
-import com.example.birdaha.Users.Parent;
+import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
-public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.HomeworkViewHolder>{
+public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.HomeworkViewHolder> implements Filterable{
 
+
+    private final ClassroomHomeworkViewInterface homeworkViewInterface;
     Context context;
     ArrayList<HwModel> hwModels;
+    ArrayList<HwModel> hwModelsFiltered;
 
-    public HomeworkAdapter(Context context, ArrayList<HwModel> hwModels){
+    public HomeworkAdapter(Context context, ArrayList<HwModel> hwModels, ClassroomHomeworkViewInterface homeworkViewInterface){
         this.context = context;
         this.hwModels = hwModels;
-
+        this.hwModelsFiltered = hwModels;
+        this.homeworkViewInterface = homeworkViewInterface;
     }
 
     @NonNull
@@ -35,16 +44,24 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.recycler_view_row2,parent,false);
 
-
-
-        return new HomeworkViewHolder(view);
+        return new HomeworkViewHolder(view, homeworkViewInterface);
     }
 
     @Override
     public void onBindViewHolder(@NonNull HomeworkViewHolder holder, int position) {
-
-        holder.textViewTitle.setText(hwModels.get(position).getTitle());
-
+        HwModel current = hwModels.get(position);
+        holder.textViewTitle.setText(current.getTitle());
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (homeworkViewInterface != null) {
+                    int pos = hwModels.indexOf(current);
+                    if (pos != -1) {
+                        homeworkViewInterface.onClassroomHomeworkItemClick(hwModels.get(pos), v);
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -53,16 +70,69 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
         return hwModels.size();
     }
 
-    public static class HomeworkViewHolder extends RecyclerView.ViewHolder{
+    @Override
+    public Filter getFilter() {
+        Filter filter = new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults filterResults = new FilterResults();
+                if(constraint == null || constraint.length() == 0){
+                    filterResults.values = hwModelsFiltered;
+                    filterResults.count = hwModelsFiltered.size();
+                }
+                else{
+                    String searchStr = constraint.toString().toLowerCase();
+                    List<HwModel> hwmodel = new ArrayList<>();
+                    for(HwModel model : hwModelsFiltered){
+                        if(model.getTitle().toLowerCase().contains(searchStr)){
+                            hwmodel.add(model);
+                        }
+                    }
+                    filterResults.values = hwmodel;
+                    filterResults.count = hwmodel.size();
+                }
+                return filterResults;
+            }
 
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                hwModels = (ArrayList<HwModel>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+        return filter;
+    }
+
+    /*public void search(String query){
+        ArrayList<HwModel> searchList = new ArrayList<>();
+        if(query.isEmpty()){
+            searchList.addAll(hwModels);
+        }
+        else{
+            String filterPattern = query.toLowerCase(Locale.getDefault()).trim();
+            for(HwModel model : hwModels){
+                if(model.getTitle().toLowerCase(Locale.getDefault()).contains(filterPattern)){
+                    searchList.add(model);
+                }
+            }
+        }
+        filteredList  = searchList;
+        notifyDataSetChanged();
+    }
+
+    public void restoreOriginalList() {
+        filteredList.clear();
+        filteredList.addAll(hwModels);
+        notifyDataSetChanged();
+    }*/
+
+    public static class HomeworkViewHolder extends RecyclerView.ViewHolder{
 
         TextView textViewTitle;
         CardView cardView;
-        Context context;
 
 
-
-        public HomeworkViewHolder(@NonNull View itemView) {
+        public HomeworkViewHolder(@NonNull View itemView, ClassroomHomeworkViewInterface homeworkViewInterface) {
             super(itemView);
 
             // Initialize the textViewTitle variable with the view from the layout with id textView
@@ -72,32 +142,19 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
             cardView = itemView.findViewById(R.id.cardView);
 
             // Set a click listener on the cardView
-            cardView.setOnClickListener(new View.OnClickListener() {
+            /*cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Create an AlertDialog.Builder object with the context of the itemView
-                    AlertDialog.Builder builder = new AlertDialog.Builder(itemView.getContext());
-
-                    // Create a LayoutInflater object from the itemView's context
-                    LayoutInflater inflater = LayoutInflater.from(itemView.getContext());
-
-                    // Inflate the overlay_layout.xml file into a View object
-                    View overlayView = inflater.inflate(R.layout.homework_overlay_layout, null);
-                    CardView parentNote = overlayView.findViewById(R.id.CardView_ParentNote);
-
-                    if(Parent.isAlive())
-                        parentNote.setVisibility(View.VISIBLE);
-
-                    // Set the inflated view as the custom view for the AlertDialog
-                    builder.setView(overlayView);
-
-                    // Create an AlertDialog object from the builder
-                    AlertDialog dialog = builder.create();
-
-                    // Show the AlertDialog
-                    dialog.show();
+                    if(homeworkViewInterface != null){
+                        int pos = getAdapterPosition();
+                        if (pos != RecyclerView.NO_POSITION) {
+                            HwModel clickedItem = filteredList.get(pos);
+                            Log.d("Adapter", "Clicked Item: " + clickedItem.getTitle() + " at Position: " + pos);
+                            homeworkViewInterface.onClassroomHomeworkItemClick(clickedItem, cardView);
+                        }
+                    }
                 }
-            });
+            });*/
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.birdaha.Activities;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,12 +18,15 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.birdaha.Adapters.CustomExpandableListAdapter;
+import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.Fragments.HomePageFragment;
 import com.example.birdaha.Fragments.NotificationFragment;
 import com.example.birdaha.Fragments.StudentProfileFragment;
 import com.example.birdaha.Helper.FragmentNavigationManager;
 import com.example.birdaha.Interface.NavigationManager;
 import com.example.birdaha.R;
+import com.example.birdaha.Users.Parent;
+import com.example.birdaha.Users.Student;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,13 +71,14 @@ public class ParentMainActivity extends AppCompatActivity {
     /**
      * Map for ExpandableList items
      */
-    private Map<String, List<String>> lstChild;
+    private Map<String, List<Student>> lstChild;
 
     /**
      * NavigationManager for switch between fragments
      */
     private NavigationManager navigationManager;
 
+    private Parent currentParent;
 
     /***
      *
@@ -88,6 +93,7 @@ public class ParentMainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        currentParent = (Parent) getIntent().getSerializableExtra("user");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parent_main);
 
@@ -217,10 +223,23 @@ public class ParentMainActivity extends AppCompatActivity {
 
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                String selectedItem = ((List) (lstChild.get(my_students_title))).get(childPosition).toString();
 
+
+                Intent intent = getIntent();
+                if(intent != null){
+                    Student student = lstChild.get(my_students_title).get(childPosition);
+                    System.out.println(student.getClassroom().getName());
+                    StudentProfileFragment studentProfileFragment = StudentProfileFragment.newInstance(student);
+                    navigationManager.showFragment(studentProfileFragment, false);
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                }
+
+
+                //String selectedItem = ((List) (lstChild.get(my_students_title))).get(childPosition).toString();
+                //Student selectedStudent = (Student) ((List) (lstChild.get(my_students_title))).get(childPosition);
+                //navigationManager.showFragment(StudentProfileFragment.newInstance(selectedStudent),false);
                 // Display the profile of the selected student
-                navigationManager.showFragment(StudentProfileFragment.newInstance("stuId"), false);
+                //navigationManager.showFragment(StudentProfileFragment.newInstance("stuId"), false);
 
                 // Close the Navigation Drawer after a child is clicked
                 drawerLayout.closeDrawer(GravityCompat.START);
@@ -239,7 +258,13 @@ public class ParentMainActivity extends AppCompatActivity {
     private void getData() {
 
         String title = "Öğrencilerim";
-        List<String> childItem = Arrays.asList("Og1", "Og2");
+        List<Student> childItem = currentParent.getStudents();
+
+        for(Student stu : childItem)
+        {
+            Classroom classroom = new Classroom(""+stu.getClassroom_id());
+            stu.setClassroom(classroom);
+        }
 
         // Prepare data for ExpandableListView
         lstChild = new LinkedHashMap<>();

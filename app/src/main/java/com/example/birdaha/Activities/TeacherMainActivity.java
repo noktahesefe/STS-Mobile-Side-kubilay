@@ -1,5 +1,6 @@
 package com.example.birdaha.Activities;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
@@ -20,6 +21,7 @@ import com.example.birdaha.Fragments.TeacherProfileFragment;
 import com.example.birdaha.Helper.FragmentNavigationManager;
 import com.example.birdaha.Interface.NavigationManager;
 import com.example.birdaha.R;
+import com.example.birdaha.Users.Teacher;
 
 
 /**
@@ -78,8 +80,15 @@ public class TeacherMainActivity extends AppCompatActivity {
         TextView_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigationManager.showFragment(TeacherProfileFragment.newInstance("teachId"), false);
-                drawerLayout.closeDrawer(GravityCompat.START);
+                Intent intent = getIntent();
+                if(intent != null){
+                    Teacher teacher = (Teacher) intent.getSerializableExtra("user");
+                    TeacherProfileFragment teacherProfileFragment = TeacherProfileFragment.newInstance(teacher);
+                    navigationManager.showFragment(teacherProfileFragment,false);
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                }
+                //navigationManager.showFragment(TeacherProfileFragment.newInstance("teachId"), false);
+                //drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
 
