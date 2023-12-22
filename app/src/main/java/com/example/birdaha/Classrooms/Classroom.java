@@ -17,7 +17,9 @@ public class Classroom implements Serializable {
     private List<HwModel> homeworks;
     private List<ClassAnnouncement> classAnnouncements;
 
-    public Classroom(String name){
+    public Classroom(String name, int classroom_id){
+
+        this.classroom_id = classroom_id;
         this.name = name;
     }
 

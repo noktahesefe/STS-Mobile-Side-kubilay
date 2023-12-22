@@ -262,7 +262,7 @@ public class ParentMainActivity extends AppCompatActivity {
 
         for(Student stu : childItem)
         {
-            Classroom classroom = new Classroom(""+stu.getClassroom_id());
+            Classroom classroom = new Classroom(""+stu.getClassroom_id(), stu.getClassroom_id());
             stu.setClassroom(classroom);
         }
 
