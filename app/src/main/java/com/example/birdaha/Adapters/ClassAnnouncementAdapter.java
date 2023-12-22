@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,33 +13,25 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.birdaha.General.ClassAnnouncementModel;
+import com.example.birdaha.General.HwModel;
 import com.example.birdaha.R;
 import com.example.birdaha.Utilities.ClassAnnouncementViewInterface;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
-/**
- * This class represents the adapter for displaying class announcements in a RecyclerView.
- */
-public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnouncementAdapter.ClassAnnouncementViewHolder> {
+public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnouncementAdapter.ClassAnnouncementViewHolder> implements Filterable {
 
     Context context;
     private final ClassAnnouncementViewInterface classAnnouncementViewInterface;
     ArrayList<ClassAnnouncementModel> classAnnouncementModels;
-    ArrayList<ClassAnnouncementModel> filteredList;
+    ArrayList<ClassAnnouncementModel> classAnnouncementModelsFiltered;
 
-    /**
-     * Constructor for the ClassAnnouncementAdapter class.
-     *
-     * @param context                    The context in which the adapter is used.
-     * @param classAnnouncementModels    The list of class announcement models to display.
-     * @param classAnnouncementViewInterface The interface to handle class announcement item clicks.
-     */
-    public ClassAnnouncementAdapter(Context context, ArrayList<ClassAnnouncementModel> classAnnouncementModels, ClassAnnouncementViewInterface classAnnouncementViewInterface) {
+    public ClassAnnouncementAdapter(Context context, ArrayList<ClassAnnouncementModel> classAnnouncementModels,ClassAnnouncementViewInterface classAnnouncementViewInterface){
         this.context = context;
         this.classAnnouncementModels = classAnnouncementModels;
-        this.filteredList = classAnnouncementModels;
+        this.classAnnouncementModelsFiltered = classAnnouncementModels;
         this.classAnnouncementViewInterface = classAnnouncementViewInterface;
     }
 
@@ -66,12 +60,17 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
      */
     @Override
     public void onBindViewHolder(@NonNull ClassAnnouncementViewHolder holder, int position) {
-        if (position >= 0 && position < filteredList.size()) {
-            holder.textViewTitle.setText(filteredList.get(position).getTitle());
-            holder.itemView.setVisibility(View.VISIBLE); // Show the item
-        } else {
-            holder.itemView.setVisibility(View.INVISIBLE); // Hide the item
-        }
+        ClassAnnouncementModel current = classAnnouncementModels.get(position);
+        holder.textViewTitle.setText(current.getTitle());
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(classAnnouncementViewInterface != null){
+                    int pos = classAnnouncementModels.indexOf(current);
+                    classAnnouncementViewInterface.onClassAnnouncementItemClick(classAnnouncementModels.get(pos),v);
+                }
+            }
+        });
     }
 
     /**
@@ -83,36 +82,39 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
     public int getItemCount() {
         return classAnnouncementModels.size();
     }
-
-    /**
-     * Filter the list of class announcement items based on the provided query.
-     *
-     * @param query The search query to filter the list.
-     */
-    public void search(String query) {
-        ArrayList<ClassAnnouncementModel> searchList = new ArrayList<>();
-        if (query.isEmpty()) {
-            searchList.addAll(classAnnouncementModels);
-        } else {
-            String filterPattern = query.toLowerCase(Locale.getDefault()).trim();
-            for (ClassAnnouncementModel model : classAnnouncementModels) {
-                if (model.getTitle().toLowerCase(Locale.getDefault()).contains(filterPattern)) {
-                    searchList.add(model);
+  
+    @Override
+    public Filter getFilter() {
+        Filter filter = new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults filterResults = new FilterResults();
+                if(constraint == null || constraint.length() == 0){
+                    filterResults.values = classAnnouncementModelsFiltered;
+                    filterResults.count = classAnnouncementModelsFiltered.size();
                 }
+                else{
+                    String searchStr = constraint.toString().toLowerCase();
+                    List<ClassAnnouncementModel> classAnnouncementModels1 = new ArrayList<>();
+                    for(ClassAnnouncementModel model : classAnnouncementModelsFiltered){
+                        if(model.getTitle().toLowerCase().contains(searchStr)){
+                            classAnnouncementModels1.add(model);
+                        }
+                    }
+                    filterResults.values = classAnnouncementModels1;
+                    filterResults.count = classAnnouncementModels1.size();
+                }
+                return filterResults;
             }
-        }
-        filteredList = searchList;
-        notifyDataSetChanged();
-    }
 
-    /**
-     * Restore the original list of class announcement items.
-     */
-    public void restoreOriginalList() {
-        filteredList.clear();
-        filteredList.addAll(classAnnouncementModels);
-        notifyDataSetChanged();
-    }
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                classAnnouncementModels = (ArrayList<ClassAnnouncementModel>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+        return filter;
+    }  
 
     /**
      * This class represents the ViewHolder for individual class announcement items.
@@ -122,31 +124,15 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
         TextView textViewTitle;
         CardView cardView;
 
-        /**
-         * Constructor for ClassAnnouncementViewHolder.
-         *
-         * @param itemView                      The view item for the class announcement item.
-         * @param classAnnouncementViewInterface The interface to handle class announcement item clicks.
-         */
         public ClassAnnouncementViewHolder(@NonNull View itemView, ClassAnnouncementViewInterface classAnnouncementViewInterface) {
             super(itemView);
 
-            // Initialize the textViewTitle variable with the view from the layout with id homework_detail_name
-            textViewTitle = itemView.findViewById(R.id.homework_detail_title);
+            // Initialize the textViewTitle variable with the view from the layout with id textView
+            textViewTitle = itemView.findViewById(R.id.homework_detail_name);
+
 
             // Initialize the cardView variable with the view from the layout with id cardView2
             cardView = itemView.findViewById(R.id.cardView2);
-
-            // Set a click listener on the cardView
-            cardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int pos = getAdapterPosition();
-                    if (pos != RecyclerView.NO_POSITION) {
-                        classAnnouncementViewInterface.onClassAnnouncementItemClick(pos, cardView);
-                    }
-                }
-            });
         }
     }
 }

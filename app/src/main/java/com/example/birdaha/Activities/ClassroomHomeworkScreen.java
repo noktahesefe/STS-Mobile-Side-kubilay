@@ -2,8 +2,13 @@ package com.example.birdaha.Activities;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,63 +17,102 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import android.widget.TextView;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+
+
 import androidx.annotation.Nullable;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.birdaha.Adapters.HomeworkAdapter;
+import com.example.birdaha.Classrooms.Classroom;
+import com.example.birdaha.General.ClassAnnouncementModel;
 import com.example.birdaha.General.HwModel;
+import com.example.birdaha.General.UpdateRespond;
 import com.example.birdaha.R;
+
+import com.example.birdaha.Users.Teacher;
+import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
+import com.google.gson.Gson;
+
 import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
+import retrofit2.http.POST;
 
-/**
- * This class represents the ClassroomHomeworkScreen activity, which displays a list of homework items
- * and provides options for filtering and adding new homework assignments.
- * It extends AppCompatActivity and implements ClassroomHomeworkViewInterface.
- */
 public class ClassroomHomeworkScreen extends AppCompatActivity implements ClassroomHomeworkViewInterface {
 
-    SearchView search; // Declare a SearchView object
+    interface AddHomework{
+        @POST("/api/v1/homework/add")
+        Call<UpdateRespond> addHomework(@Body HwModel hwmodel);
 
-    ArrayList<HwModel> hwModels = new ArrayList<>(); // Create an ArrayList to store homework models
+        @POST("/api/v1/homework/update")
+        Call<UpdateRespond> updateHomework(@Body HwModel hwModel);
+    }
+    SearchView search;
 
-    Button addingHwButton; // Declare a Button for adding homework
+    ArrayList<HwModel> hwModels = new ArrayList<>();
 
-    private HomeworkAdapter homeworkAdapter; // Declare a HomeworkAdapter object
+    Button addingHomeworkButton;
+    private ImageView homeworkImage;
 
-    private Uri selectedImageUri; // Declare a class-level variable to store the selected image URI
+    private String image;
 
 
-    private static final int PICK_IMAGE_REQUEST = 1; // Declare a constant for picking an image
+    private ActivityResultLauncher<String> galleryLauncher = registerForActivityResult(
+            new ActivityResultContracts.GetContent(),
+            result -> {
+                if(result != null){
+                    Uri imageUri = result;
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                        homeworkImage.setImageBitmap(bitmap);
+                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                        byte[] byteArray = byteArrayOutputStream.toByteArray();
+                        image = Base64.encodeToString(byteArray,Base64.DEFAULT);
+                    } catch(IOException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+    );
 
-    /**
-     * Called when the activity is created. Initializes the user interface, sets up event handlers,
-     * and populates the list of homework assignments.
-     *
-     * @param savedInstanceState A Bundle containing the activity's previously saved state.
-     */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_classroom_homework_screen); // Set the content view to a specific layout
+        setContentView(R.layout.activity_classroom_homework_screen);
 
-        RecyclerView recyclerView = findViewById(R.id.hwRecyclerView_classroom); // Find a RecyclerView in the layout
+        RecyclerView recyclerView = findViewById(R.id.hwRecyclerView_classroom);
+        search = findViewById(R.id.searchView_homework);
+        addingHomeworkButton = findViewById(R.id.adding_hw_btn);
 
-        addingHwButton = findViewById(R.id.adding_hw_btn); // Find the "Add Homework" button
-        search = findViewById(R.id.searchView_homework); // Find the SearchView
+        Intent intent = getIntent();
+        if(intent != null){
+            hwModels = (ArrayList<HwModel>) intent.getSerializableExtra("homeworks");
+        }
 
-        // Initialize the homework models by calling the setHwModules() method
-        setHwModules();
 
-        // Create a new HomeworkAdapter with this activity, the homework models, and this class as parameters
-        homeworkAdapter = new HomeworkAdapter(this, hwModels, this);
-
-        // Set the adapter for the RecyclerView
+        //setHwModules();
+        HomeworkAdapter homeworkAdapter = new HomeworkAdapter(this, hwModels, this);
         recyclerView.setAdapter(homeworkAdapter);
 
         // Set the layout manager for the RecyclerView
@@ -83,13 +127,15 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             }
         });
 
-        // Set a click listener for the "Add Homework" button
-        addingHwButton.setOnClickListener(new View.OnClickListener() {
+
+
+        addingHomeworkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAddAssignmentDialog(); // Call the showAddAssignmentDialog() method when clicked
+                showAddAssignmentDialog();
             }
         });
+
 
         // Set a listener for the SearchView to handle query text changes
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -100,7 +146,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                homeworkAdapter.search(newText); // Call a method in the adapter to perform search
+                homeworkAdapter.getFilter().filter(newText);
                 return true;
             }
         });
@@ -109,24 +155,11 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         search.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                homeworkAdapter.restoreOriginalList(); // Restore the original list in the adapter
                 return false;
             }
         });
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
-            // Get the selected image URI
-            Uri selectedImageUri = data.getData();
-
-
-        }
-    }
-
+   
     /**
      * This method displays a dialog for adding a new homework assignment.
      */
@@ -197,18 +230,97 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
 
 
 
-    /**
-     * This method initializes the homework modules by populating the hwModels list.
-     */
-    private void setHwModules() {
-        // Retrieve arrays of titles and infos from resources
-        String[] titles = getResources().getStringArray(R.array.ClassroomHomeworks);
-        String[] infos =  getResources().getStringArray(R.array.ClassroomHomeworks);
+    private void showAddAssignmentDialog() {
+        // Create an AlertDialog builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Ödev Ekleme"); // Set the dialog title
 
-        // Iterate through the arrays and create HwModel objects, then add them to the hwModels list
-        for (int i = 0; i < titles.length; i++) {
-            hwModels.add(new HwModel(titles[i], infos[i]));
-        }
+        // Inflate the layout for the add homework form
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_add_homework, null);
+        builder.setView(dialogView);
+        homeworkImage = dialogView.findViewById(R.id.homework_image);
+
+        // Find the select image button
+        Button selectImageButton = dialogView.findViewById(R.id.selectImageButton);
+
+
+
+        // Set a click listener for the "Select Image" button
+        selectImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                galleryLauncher.launch("image/*");
+            }
+        });
+
+
+        // Find views in the dialog layout
+        EditText hw_Name = dialogView.findViewById(R.id.lectureNameEditText);
+        //EditText assignmentDescriptionEditText = dialogView.findViewById(R.id.add_announcement_teacher_name);
+        EditText hw_dueDate = dialogView.findViewById(R.id.hw_deadline_content);
+        EditText hw_content = dialogView.findViewById(R.id.hw_content_content);
+        Button saveButton = dialogView.findViewById(R.id.saveButton);
+
+        // Create the dialog
+        final AlertDialog dialog = builder.create();
+
+        // Set a click listener for the "Save" button in the dialog
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get the text entered in the title and description EditText fields
+                String hw_name = hw_Name.getText().toString();
+                String hw_date = hw_dueDate.getText().toString();
+                String hw_info = hw_content.getText().toString();
+
+
+                Intent intent = getIntent();
+                if(intent != null){
+                    Teacher teacher = (Teacher) intent.getSerializableExtra("teacher");
+                    Classroom classroom = (Classroom) intent.getSerializableExtra("classroom");
+                    HwModel hwModel = new HwModel(classroom.getClassroom_id(),teacher.getTeacher_id(),teacher.getCourse().getName(),hw_date,hw_name,hw_info,image);
+
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl("http://sinifdoktoruadmin.online/")
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+                    AddHomework addHomework = retrofit.create(AddHomework.class);
+                    addHomework.addHomework(hwModel).enqueue(new Callback<UpdateRespond>() {
+                        @Override
+                        public void onResponse(Call<UpdateRespond> call, Response<UpdateRespond> response) {
+                            if(response.isSuccessful() && response.body() != null){
+                                Log.d("Response",new Gson().toJson(response.body()));
+                            }
+                            else{
+                                Log.d("ResponseError",new Gson().toJson(response.body()));
+                                Log.d("Response",String.valueOf(response.code()));
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<UpdateRespond> call, Throwable t) {
+                            Log.d("Error",t.getMessage());
+                        }
+                    });
+                }
+
+                // Create a new HwModel object with the entered title and description
+                //HwModel newHomework = new HwModel();
+
+                // Add the new homework to the hwModels list
+                //hwModels.add(newHomework);
+
+                // Notify the adapter that the data set has changed
+                //homeworkAdapter.notifyDataSetChanged();
+
+                // Dismiss the dialog
+                dialog.dismiss();
+            }
+        });
+
+        // Show the dialog
+        dialog.show();
     }
 
 
@@ -234,15 +346,9 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         dialog.show();
     }
 
-    /**
-     * Handles the click event of a classroom homework item.
-     *
-     * @param position The position of the clicked item in the list.
-     * @param view     The clicked View.
-     */
+  
     @Override
-    public void onClassroomHomeworkItemClick(int position, View view) {
-        HwModel currentHw = hwModels.get(position);
+    public void onClassroomHomeworkItemClick(HwModel clickedItem, View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
 
@@ -255,48 +361,78 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         Button saveButton = overlayView.findViewById(R.id.saveButton);
         ImageView imageView = overlayView.findViewById(R.id.homework_detail_image);
 
-        courseName.setText(currentHw.getLecture());
-        title.setText(currentHw.getTitle());
-        dueDate.setText(currentHw.getDueDate());
-        content.setText(currentHw.getHw_content());
-
-        // Initially set EditTexts to non-editable
         courseName.setEnabled(false);
         title.setEnabled(false);
         dueDate.setEnabled(false);
         content.setEnabled(false);
 
-        // Load and display the image (assuming that currentHw.getImageUri() returns the image URI)
-        if (currentHw.getImageUri() != null) {
-            imageView.setImageURI(currentHw.getImageUri());
+        courseName.setText(clickedItem.getCourse_name());
+        title.setText(clickedItem.getTitle());
+        dueDate.setText(clickedItem.getDue_date());
+        content.setText(clickedItem.getInfo());
+
+        byte[] imageBytes = Base64.decode(clickedItem.getImage(), Base64.DEFAULT);
+        Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes,0, imageBytes.length);
+        Glide.with(ClassroomHomeworkScreen.this)
+                .load(decodedImage)
+                .into(imageView);
+
+        Intent intent = getIntent();
+        if(intent != null){
+            Teacher currentTeacher = (Teacher) intent.getSerializableExtra("teacher");
+            if(currentTeacher.getTeacher_id() != clickedItem.getTeacher_id()){
+                editButton.setEnabled(false);
+                saveButton.setEnabled(false);
+            }
         }
+
 
         editButton.setOnClickListener(v -> {
             // Enable EditTexts to make them editable
-            courseName.setEnabled(true);
             title.setEnabled(true);
             dueDate.setEnabled(true);
             content.setEnabled(true);
-            courseName.requestFocus();
+            content.requestFocus();
         });
 
         saveButton.setOnClickListener(v -> {
             // Save the edited text
-            String updatedInfo = courseName.getText().toString();
             String updatedTitle = title.getText().toString();
             String updatedDueDate = dueDate.getText().toString();
             String updatedContent = content.getText().toString();
 
-            currentHw.setLecture(updatedInfo);
-            currentHw.setTitle(updatedTitle);
-            currentHw.setDueDate(updatedDueDate);
-            currentHw.setHw_content(updatedContent);
+            clickedItem.setTitle(updatedTitle);
+            clickedItem.setDue_date(updatedDueDate);
+            clickedItem.setInfo(updatedContent);
+            clickedItem.setImage(image);
 
-            // Notify the adapter that the item has changed
-            homeworkAdapter.notifyItemChanged(position);
+            System.out.println("hw id:" + clickedItem.getHomework_id());
+            System.out.println("teacher id:" + clickedItem.getTeacher_id());
+            System.out.println("classroom id: " + clickedItem.getClassroom_id());
 
-            // Disable EditTexts after saving
-            courseName.setEnabled(false);
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://sinifdoktoruadmin.online/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            AddHomework updateHomework = retrofit.create(AddHomework.class);
+            updateHomework.updateHomework(clickedItem).enqueue(new Callback<UpdateRespond>() {
+                @Override
+                public void onResponse(Call<UpdateRespond> call, Response<UpdateRespond> response) {
+                    if(response.isSuccessful() && response.body() != null){
+                        Log.d("ResponseUpdate",new Gson().toJson(response.body()));
+                    }
+                    else{
+                        Log.d("ResponseUpdate",new Gson().toJson(response.body()));
+                        Log.d("ResponseUpdateCode",String.valueOf(response.code()));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UpdateRespond> call, Throwable t) {
+                    Log.d("Error",t.getMessage());
+                }
+            });
             title.setEnabled(false);
             dueDate.setEnabled(false);
             content.setEnabled(false);
@@ -306,8 +442,4 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-
-
-
-
 }
