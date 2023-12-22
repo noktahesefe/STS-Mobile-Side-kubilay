@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.SearchView
-        android:id="@+id/searchView"
+        android:id="@+id/searchView_homework"
         android:layout_width="331dp"
         android:layout_height="57dp"
         android:layout_marginBottom="8dp"
@@ -34,7 +34,7 @@
         android:layout_width="46dp"
         android:layout_height="43dp"
         android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/searchView"
+        app:layout_constraintBottom_toTopOf="@+id/searchView_homework"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.89"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,7 +42,7 @@
         android:clickable="true"/>
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/adding_hw_btn"
         android:layout_width="37dp"
         android:layout_height="35dp"
         android:layout_marginTop="68dp"

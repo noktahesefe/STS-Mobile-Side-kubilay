@@ -5,38 +5,94 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/homework_detail_name"
-        android:layout_width="173dp"
+    <EditText
+        android:id="@+id/homework_detail_title"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
-        android:gravity="center"
+        android:paddingLeft="18dp"
         android:text="Odev 1"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="18dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.067"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/homework_detail_info"
-        android:layout_width="171dp"
+    <EditText
+        android:id="@+id/homework_detail_course_name"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:paddingLeft="18dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="18dp"
+        android:layout_marginBottom="36dp"
+        android:inputType="text"
         android:text="This is your homework"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.066"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/homework_detail_name" />
+        app:layout_constraintTop_toBottomOf="@+id/homework_detail_title"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <EditText
+        android:id="@+id/homework_detail_duedate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="18dp"
+        android:inputType="text"
+        android:paddingLeft="18dp"
+        android:text="Due Date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/homework_detail_course_name" />
+
+    <EditText
+        android:id="@+id/homework_detail_content"
+        android:layout_width="match_parent"
+        android:layout_height="196dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="18dp"
+        android:inputType="text"
+        android:paddingLeft="18dp"
+        android:text="Homework content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.457"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/homework_detail_duedate" />
 
     <ImageView
         android:id="@+id/homework_detail_image"
+        android:layout_width="245dp"
+        android:layout_height="192dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/homework_detail_content"
+        app:srcCompat="@drawable/img" />
+
+    <Button
+        android:id="@+id/editButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="252dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="76dp"
+        android:text="Edit"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintTop_toBottomOf="@+id/homework_detail_image" />
+
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="84dp"
+        android:layout_marginTop="28dp"
+        android:text="Save"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/img" />
+        app:layout_constraintTop_toBottomOf="@+id/homework_detail_image" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -190,6 +190,7 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
             Teacher currentTeacher = (Teacher) intent.getSerializableExtra("teacher");
             if(currentTeacher.getTeacher_id() != clickedItem.getTeacher_id()){
                 editButton.setEnabled(false);
+                saveButton.setEnabled(false);
             }
         }
 

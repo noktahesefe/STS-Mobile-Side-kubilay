@@ -1,30 +1,90 @@
 package com.example.birdaha.Activities;
 
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.birdaha.Adapters.HomeworkAdapter;
+import com.example.birdaha.Classrooms.Classroom;
+import com.example.birdaha.General.ClassAnnouncementModel;
 import com.example.birdaha.General.HwModel;
+import com.example.birdaha.General.UpdateRespond;
 import com.example.birdaha.R;
+import com.example.birdaha.Users.Teacher;
 import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
+import com.google.gson.Gson;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
+import retrofit2.http.POST;
+
 public class ClassroomHomeworkScreen extends AppCompatActivity implements ClassroomHomeworkViewInterface {
+
+    interface AddHomework{
+        @POST("/api/v1/homework/add")
+        Call<UpdateRespond> addHomework(@Body HwModel hwmodel);
+
+        @POST("/api/v1/homework/update")
+        Call<UpdateRespond> updateHomework(@Body HwModel hwModel);
+    }
     SearchView search;
 
     ArrayList<HwModel> hwModels = new ArrayList<>();
+
+    Button addingHomeworkButton;
+    private ImageView homeworkImage;
+
+    private String image;
+
+
+    private ActivityResultLauncher<String> galleryLauncher = registerForActivityResult(
+            new ActivityResultContracts.GetContent(),
+            result -> {
+                if(result != null){
+                    Uri imageUri = result;
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                        homeworkImage.setImageBitmap(bitmap);
+                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                        byte[] byteArray = byteArrayOutputStream.toByteArray();
+                        image = Base64.encodeToString(byteArray,Base64.DEFAULT);
+                    } catch(IOException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+    );
 
 
     @Override
@@ -33,9 +93,16 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         setContentView(R.layout.activity_classroom_homework_screen);
 
         RecyclerView recyclerView = findViewById(R.id.hwRecyclerView_classroom);
-        search = findViewById(R.id.searchView);
+        search = findViewById(R.id.searchView_homework);
+        addingHomeworkButton = findViewById(R.id.adding_hw_btn);
 
-        setHwModules();
+        Intent intent = getIntent();
+        if(intent != null){
+            hwModels = (ArrayList<HwModel>) intent.getSerializableExtra("homeworks");
+        }
+
+
+        //setHwModules();
         HomeworkAdapter homeworkAdapter = new HomeworkAdapter(this, hwModels, this);
         recyclerView.setAdapter(homeworkAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -45,6 +112,13 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             @Override
             public void onClick(View v) {
                 showOverlay();
+            }
+        });
+
+        addingHomeworkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddAssignmentDialog();
             }
         });
 
@@ -71,7 +145,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         });
     }
 
-    private void setHwModules(){
+    /*private void setHwModules(){
 
         String[] titles = getResources().getStringArray(R.array.ClassroomHomeworks);
         String[] infos =  getResources().getStringArray(R.array.ClassroomHomeworks);
@@ -79,6 +153,99 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             hwModels.add(new HwModel(titles[i],infos[i]));
         }
 
+    }*/
+
+    private void showAddAssignmentDialog() {
+        // Create an AlertDialog builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Ödev Ekleme"); // Set the dialog title
+
+        // Inflate the layout for the add homework form
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_add_homework, null);
+        builder.setView(dialogView);
+        homeworkImage = dialogView.findViewById(R.id.homework_image);
+
+        // Find the select image button
+        Button selectImageButton = dialogView.findViewById(R.id.selectImageButton);
+
+
+
+        // Set a click listener for the "Select Image" button
+        selectImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                galleryLauncher.launch("image/*");
+            }
+        });
+
+
+        // Find views in the dialog layout
+        EditText hw_Name = dialogView.findViewById(R.id.lectureNameEditText);
+        //EditText assignmentDescriptionEditText = dialogView.findViewById(R.id.add_announcement_teacher_name);
+        EditText hw_dueDate = dialogView.findViewById(R.id.hw_deadline_content);
+        EditText hw_content = dialogView.findViewById(R.id.hw_content_content);
+        Button saveButton = dialogView.findViewById(R.id.saveButton);
+
+        // Create the dialog
+        final AlertDialog dialog = builder.create();
+
+        // Set a click listener for the "Save" button in the dialog
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get the text entered in the title and description EditText fields
+                String hw_name = hw_Name.getText().toString();
+                String hw_date = hw_dueDate.getText().toString();
+                String hw_info = hw_content.getText().toString();
+
+
+                Intent intent = getIntent();
+                if(intent != null){
+                    Teacher teacher = (Teacher) intent.getSerializableExtra("teacher");
+                    Classroom classroom = (Classroom) intent.getSerializableExtra("classroom");
+                    HwModel hwModel = new HwModel(classroom.getClassroom_id(),teacher.getTeacher_id(),teacher.getCourse().getName(),hw_date,hw_name,hw_info,image);
+
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl("http://sinifdoktoruadmin.online/")
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+                    AddHomework addHomework = retrofit.create(AddHomework.class);
+                    addHomework.addHomework(hwModel).enqueue(new Callback<UpdateRespond>() {
+                        @Override
+                        public void onResponse(Call<UpdateRespond> call, Response<UpdateRespond> response) {
+                            if(response.isSuccessful() && response.body() != null){
+                                Log.d("Response",new Gson().toJson(response.body()));
+                            }
+                            else{
+                                Log.d("ResponseError",new Gson().toJson(response.body()));
+                                Log.d("Response",String.valueOf(response.code()));
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<UpdateRespond> call, Throwable t) {
+                            Log.d("Error",t.getMessage());
+                        }
+                    });
+                }
+
+                // Create a new HwModel object with the entered title and description
+                //HwModel newHomework = new HwModel();
+
+                // Add the new homework to the hwModels list
+                //hwModels.add(newHomework);
+
+                // Notify the adapter that the data set has changed
+                //homeworkAdapter.notifyDataSetChanged();
+
+                // Dismiss the dialog
+                dialog.dismiss();
+            }
+        });
+
+        // Show the dialog
+        dialog.show();
     }
 
 
@@ -107,18 +274,96 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
 
         View overlayView = inflater.inflate(R.layout.homework_overlay_layout, null);
-        TextView detail = overlayView.findViewById(R.id.homework_detail_info);
-        TextView title = overlayView.findViewById(R.id.homework_detail_name);
-        //ImageView imageView = overlayView.findViewById(R.id.homework_detail_image);
-        //imageView.setImageResource(hwModels.getImageResource());
-        detail.setText(clickedItem.getInfo());
-        title.setText(clickedItem.getTitle());
+        EditText courseName = overlayView.findViewById(R.id.homework_detail_course_name);
+        EditText title = overlayView.findViewById(R.id.homework_detail_title);
+        EditText dueDate = overlayView.findViewById(R.id.homework_detail_duedate);
+        EditText content = overlayView.findViewById(R.id.homework_detail_content);
+        Button editButton = overlayView.findViewById(R.id.editButton);
+        Button saveButton = overlayView.findViewById(R.id.saveButton);
+        ImageView imageView = overlayView.findViewById(R.id.homework_detail_image);
 
+        courseName.setEnabled(false);
+        title.setEnabled(false);
+        dueDate.setEnabled(false);
+        content.setEnabled(false);
+
+        courseName.setText(clickedItem.getCourse_name());
+        title.setText(clickedItem.getTitle());
+        dueDate.setText(clickedItem.getDue_date());
+        content.setText(clickedItem.getInfo());
+
+        byte[] imageBytes = Base64.decode(clickedItem.getImage(), Base64.DEFAULT);
+        Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes,0, imageBytes.length);
+        Glide.with(ClassroomHomeworkScreen.this)
+                .load(decodedImage)
+                .into(imageView);
+
+        Intent intent = getIntent();
+        if(intent != null){
+            Teacher currentTeacher = (Teacher) intent.getSerializableExtra("teacher");
+            if(currentTeacher.getTeacher_id() != clickedItem.getTeacher_id()){
+                editButton.setEnabled(false);
+                saveButton.setEnabled(false);
+            }
+        }
+
+
+        editButton.setOnClickListener(v -> {
+            // Enable EditTexts to make them editable
+            title.setEnabled(true);
+            dueDate.setEnabled(true);
+            content.setEnabled(true);
+            content.requestFocus();
+        });
+
+        saveButton.setOnClickListener(v -> {
+            // Save the edited text
+            String updatedTitle = title.getText().toString();
+            String updatedDueDate = dueDate.getText().toString();
+            String updatedContent = content.getText().toString();
+
+            clickedItem.setTitle(updatedTitle);
+            clickedItem.setDue_date(updatedDueDate);
+            clickedItem.setInfo(updatedContent);
+            clickedItem.setImage(image);
+
+            System.out.println("hw id:" + clickedItem.getHomework_id());
+            System.out.println("teacher id:" + clickedItem.getTeacher_id());
+            System.out.println("classroom id: " + clickedItem.getClassroom_id());
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://sinifdoktoruadmin.online/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            AddHomework updateHomework = retrofit.create(AddHomework.class);
+            updateHomework.updateHomework(clickedItem).enqueue(new Callback<UpdateRespond>() {
+                @Override
+                public void onResponse(Call<UpdateRespond> call, Response<UpdateRespond> response) {
+                    if(response.isSuccessful() && response.body() != null){
+                        Log.d("ResponseUpdate",new Gson().toJson(response.body()));
+                    }
+                    else{
+                        Log.d("ResponseUpdate",new Gson().toJson(response.body()));
+                        Log.d("ResponseUpdateCode",String.valueOf(response.code()));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UpdateRespond> call, Throwable t) {
+                    Log.d("Error",t.getMessage());
+                }
+            });
+
+
+            // Disable EditTexts after saving
+            title.setEnabled(false);
+            dueDate.setEnabled(false);
+            content.setEnabled(false);
+        });
 
         builder.setView(overlayView);
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-
-
 }

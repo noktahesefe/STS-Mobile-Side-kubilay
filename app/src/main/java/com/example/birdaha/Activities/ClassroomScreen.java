@@ -12,6 +12,7 @@ import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.General.ClassAnnouncementModel;
 import com.example.birdaha.General.HomeworksAndAnnouncements;
 import com.example.birdaha.General.HomeworksAndAnnouncementsTeacher;
+import com.example.birdaha.General.HwModel;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Teacher;
 import com.google.gson.Gson;
@@ -62,6 +63,7 @@ public class ClassroomScreen extends AppCompatActivity {
                     if(response.isSuccessful() && response.body() != null){
                         HomeworksAndAnnouncementsTeacher models = response.body();
                         List<ClassAnnouncementModel> announcementModelList = models.getClassAnnouncementModels();
+                        List<HwModel> homeworkModelList = models.getHomeworks();
                         Log.d("Respond",new Gson().toJson(response.body()));
 
                         classroomAnnouncementsButton = findViewById(R.id.classroom_announcements);
@@ -79,6 +81,20 @@ public class ClassroomScreen extends AppCompatActivity {
 
 
                         });
+
+                        classroomHomeworksButton = findViewById(R.id.classroom_homeworks);
+
+                        classroomHomeworksButton.setOnClickListener(v -> {
+                            Intent getIntent = getIntent();
+                            if(getIntent != null){
+                                Teacher teacher = (Teacher) getIntent.getSerializableExtra("teacher");
+                                Intent intent = new Intent(ClassroomScreen.this, ClassroomHomeworkScreen.class);
+                                intent.putExtra("teacher",teacher);
+                                intent.putExtra("classroom",classroom);
+                                intent.putExtra("homeworks",(Serializable) homeworkModelList);
+                                startActivity(intent);
+                            }
+                        });
                     }
                 }
 
@@ -95,14 +111,7 @@ public class ClassroomScreen extends AppCompatActivity {
 
 
 
-        classroomHomeworksButton = findViewById(R.id.classroom_homeworks);
 
-
-
-        classroomHomeworksButton.setOnClickListener(v -> {
-            Intent intent = new Intent(ClassroomScreen.this, ClassroomHomeworkScreen.class);
-            startActivity(intent);
-        });
 
     }
 }
