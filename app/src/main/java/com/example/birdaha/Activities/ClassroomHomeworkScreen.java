@@ -22,9 +22,6 @@ import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
-
-import androidx.annotation.Nullable;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -37,6 +34,7 @@ import com.example.birdaha.General.ClassAnnouncementModel;
 import com.example.birdaha.General.HwModel;
 import com.example.birdaha.General.UpdateRespond;
 import com.example.birdaha.R;
+import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 
 import com.example.birdaha.Users.Teacher;
 import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
@@ -95,7 +93,6 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             }
     );
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,7 +108,6 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         }
 
 
-        //setHwModules();
         HomeworkAdapter homeworkAdapter = new HomeworkAdapter(this, hwModels, this);
         recyclerView.setAdapter(homeworkAdapter);
 
@@ -158,8 +154,29 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                 return false;
             }
         });
-    }
 
+
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                homeworkAdapter.getFilter().filter(newText);
+                return true;
+            }
+        });
+
+        search.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                //homeworkAdapter.restoreOriginalList();
+                return false;
+            }
+        });
+    }
 
     private void showAddAssignmentDialog() {
         // Create an AlertDialog builder
@@ -277,7 +294,6 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         dialog.show();
     }
 
-  
     @Override
     public void onClassroomHomeworkItemClick(HwModel clickedItem, View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());

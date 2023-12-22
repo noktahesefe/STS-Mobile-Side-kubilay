@@ -37,7 +37,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
     ArrayList<HwModel> hwModels;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,12 +47,11 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         RecyclerView recyclerView = findViewById(R.id.hwRecyclerView);
 
         Intent intent = getIntent();
-        if(intent != null){
+        if (intent != null) {
             hwModels = (ArrayList<HwModel>) intent.getSerializableExtra("homeworks");
         }
 
-
-        HomeworkAdapter homeworkAdapter = new HomeworkAdapter(this, hwModels,this);
+        HomeworkAdapter homeworkAdapter = new HomeworkAdapter(this, hwModels, this);
         recyclerView.setAdapter(homeworkAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -77,15 +75,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
                 return true;
             }
         });
-
-        search.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                //homeworkAdapter.restoreOriginalList();
-                return false;
-            }
-        });
-
     }
 
     // This method is called when the user clicks on the filter icon
@@ -116,7 +105,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
 
     @Override
     public void onClassroomHomeworkItemClick(HwModel clickedItem, View view) {
-
         // Create an AlertDialog.Builder object with the context of the itemView
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
 

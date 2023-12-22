@@ -22,6 +22,18 @@ import com.example.birdaha.Users.UserRespond;
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import org.json.JSONObject;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
 
 import org.json.JSONObject;
 
@@ -42,7 +54,7 @@ import retrofit2.http.POST;
  */
 public class MainActivity extends AppCompatActivity {
 
-    interface RequestUser{
+    interface RequestUser {
         /*@GET("/api/v1/login")
         Call<User> getUser();*/
 
@@ -50,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         Call<UserRespond> postUser(@Body LoginRequest loginRequest);
 
     }
+
     EditText username;
     EditText password;
     CheckBox checkBox;
@@ -76,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl("http://sinifdoktoruadmin.online/")
                         .addConverterFactory(GsonConverterFactory.create())
@@ -84,56 +96,57 @@ public class MainActivity extends AppCompatActivity {
 
                 RequestUser requestUser = retrofit.create(RequestUser.class);
                 LoginRequest loginRequest = new LoginRequest(username.getText().toString(), password.getText().toString());
+                System.out.println(new Gson().toJson(loginRequest).toString());
+
                 requestUser.postUser(loginRequest).enqueue(new Callback<UserRespond>() {
                     @Override
                     public void onResponse(Call<UserRespond> call, Response<UserRespond> response) {
-                        if(response.isSuccessful() && response.body() != null){
+                        if (response.isSuccessful() && response.body() != null) {
                             UserRespond respond = response.body();
                             User user = respond.getUser();
-                            Log.d("Respond",new Gson().toJson(respond.getUser()).toString());
-                            switch (response.code()){
+                            Log.d("Respond", new Gson().toJson(respond.getUser()).toString());
+                            switch (response.code()) {
                                 case 201:
                                     List<Classroom> classrooms = respond.getUser().getClassrooms();
                                     Lecture course = respond.getUser().getCourse();
-                                    Log.d("Course",course.getName());
-                                    Log.d("Course",String.valueOf(course.getCourse_id()));
-                                    Teacher teacher = new Teacher(user.getName(), user.getTeacher_id(), course,classrooms);
+                                    Log.d("Course", course.getName());
+                                    Log.d("Course", String.valueOf(course.getCourse_id()));
+                                    Teacher teacher = new Teacher(user.getName(), user.getTeacher_id(), course, classrooms);
                                     Intent intent = new Intent(MainActivity.this, TeacherMainActivity.class);
-                                    intent.putExtra("user",teacher);
+                                    intent.putExtra("user", teacher);
                                     Toast.makeText(MainActivity.this, "Teacher logged in", Toast.LENGTH_SHORT).show();
                                     startActivity(intent);
                                     break;
                                 case 202:
                                     Classroom classroom = respond.getUser().getClassroom();
-                                    Log.d("Classroom",classroom.getName());
-                                    Student student = new Student(user.getName(), user.getStudent_id(),classroom, user.getSchool_no());
+                                    Log.d("Classroom", classroom.getName());
+                                    Student student = new Student(user.getName(), user.getStudent_id(), classroom, user.getSchool_no());
                                     Intent intent2 = new Intent(MainActivity.this, StudentMainActivity.class);
-                                    intent2.putExtra("user",student);
+                                    intent2.putExtra("user", student);
                                     Toast.makeText(MainActivity.this, "Student logged in", Toast.LENGTH_SHORT).show();
                                     startActivity(intent2);
                                     break;
                                 case 203:
-                                    Parent parent = new Parent(user.getName(), user.getParent_id());
+                                    Parent parent = new Parent(user.getName(), user.getParent_id(), user.getStudents());
                                     Intent intent3 = new Intent(MainActivity.this, ParentMainActivity.class);
-                                    intent3.putExtra("user",parent);
+                                    intent3.putExtra("user", parent);
                                     Toast.makeText(MainActivity.this, "Parent logged in", Toast.LENGTH_SHORT).show();
                                     startActivity(intent3);
                                     break;
                             }
-                        }
-                        else{
+                        } else {
                             Toast.makeText(MainActivity.this, "Kullanıcı adı veya şifre hatalı", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<UserRespond> call, Throwable t) {
-                        Log.d("ERROR",t.getMessage());
+                        Log.d("ERROR", t.getMessage());
                     }
                 });
-        }
-    });
-}
+            }
+        });
+    }
 
     /**
      * Checks whether the edit texts for username and password are empty or not.
@@ -145,4 +158,5 @@ public class MainActivity extends AppCompatActivity {
         String pass = password.getText().toString();
         return !name.isEmpty() && !pass.isEmpty();
     }
+
 }

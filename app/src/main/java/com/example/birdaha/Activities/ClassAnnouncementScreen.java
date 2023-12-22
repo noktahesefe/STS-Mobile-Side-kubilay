@@ -22,24 +22,9 @@ import com.example.birdaha.Utilities.ClassAnnouncementViewInterface;
 
 import java.util.ArrayList;
 
-/**
- * ClassAnnouncementScreen is an activity that displays a list of class announcements.
- * It implements the ClassAnnouncementViewInterface to handle click events on the list items.
- */
 public class ClassAnnouncementScreen extends AppCompatActivity implements ClassAnnouncementViewInterface {
-
-    // SearchView for filtering the list of class announcements
     SearchView search;
-
-    // ArrayList to hold the class announcements
-    ArrayList<ClassAnnouncementModel> classAnnouncementModels = new ArrayList<>();
-
-    /**
-     * This method is called when the activity is starting.
-     * It initializes the activity and sets up the RecyclerView and SearchView.
-     *
-     * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle). Note: Otherwise it is null.
-     */
+    ArrayList<ClassAnnouncementModel> classAnnouncementModels;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +57,6 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
             }
         });
 
-        // Restore the original list when the search is closed
         search.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
@@ -102,6 +86,7 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
         EditText teacherName = overlayView.findViewById(R.id.announcement_detail_teacher);
         Button editButton = overlayView.findViewById(R.id.edit_button);
         Button saveButton = overlayView.findViewById(R.id.save_button);
+
         title.setEnabled(false);
         details.setEnabled(false);
         teacherName.setEnabled(false);
@@ -113,6 +98,7 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
         title.setText(clickedItem.getTitle());
         details.setText(clickedItem.getDetails());
         teacherName.setText(clickedItem.getTeacher().getName());
+
         builder.setView(overlayView);
         AlertDialog dialog = builder.create();
         dialog.show();

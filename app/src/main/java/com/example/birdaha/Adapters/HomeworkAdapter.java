@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-
 public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.HomeworkViewHolder> implements Filterable{
     private final ClassroomHomeworkViewInterface homeworkViewInterface;
     Context context;
@@ -98,10 +97,8 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
         return filter;
     }
 
-    /**
-     * This class represents the ViewHolder for individual homework items.
-     */
-    public static class HomeworkViewHolder extends RecyclerView.ViewHolder {
+
+    public static class HomeworkViewHolder extends RecyclerView.ViewHolder{
 
         TextView textViewTitle;
         CardView cardView;

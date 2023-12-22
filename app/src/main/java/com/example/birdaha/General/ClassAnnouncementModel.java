@@ -95,13 +95,10 @@ public class ClassAnnouncementModel implements Serializable {
     }
 
     public int getTeacher_id() {
-
-
         return teacher_id;
     }
 
     public void setTeacher_id(int teacher_id) {
         this.teacher_id = teacher_id;
     }
-
 }

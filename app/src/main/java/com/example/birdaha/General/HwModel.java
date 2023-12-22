@@ -3,6 +3,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
+
 public class HwModel implements Serializable {
     private int homework_id;
     private int teacher_id;
@@ -91,7 +92,6 @@ public class HwModel implements Serializable {
 
     public void setInfo(String info) {
         this.info = info;
-  
     }
 
 }

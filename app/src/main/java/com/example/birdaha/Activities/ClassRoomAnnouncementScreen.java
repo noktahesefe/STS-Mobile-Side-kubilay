@@ -47,25 +47,17 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
         Call<UpdateRespond> updateAnnouncement(@Body ClassAnnouncementModel classAnnouncementModel);
     }
 
-    // SearchView for filtering the list of class announcements
     SearchView search;
 
     ArrayList<ClassAnnouncementModel> classAnnouncementModels;
 
     Button addingAnnouncementButton;
 
-    /**
-     * This method is called when the activity is starting.
-     * It initializes the activity and sets up the RecyclerView, SearchView, and adding announcement button.
-     *
-     * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle). Note: Otherwise it is null.
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_classroom_announcement_screen);
         RecyclerView recyclerView = findViewById(R.id.caRecyclerView_classroom);
-
 
         search = findViewById(R.id.searchView_Announcement);
         addingAnnouncementButton = findViewById(R.id.adding_announcement_button);
@@ -81,7 +73,6 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
         recyclerView.setAdapter(classAnnouncementAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Set up the search functionality
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -95,8 +86,6 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
             }
         });
 
-
-        // Set up the adding announcement button functionality
         addingAnnouncementButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -183,7 +172,9 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
         //ClassAnnouncementModel classAnnouncementModel = classAnnouncementModels.get(position);
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
+
         View overlayView = inflater.inflate(R.layout.overlay_class_announcement_layout, null);
+
 
         EditText title = overlayView.findViewById(R.id.announcement_detail_name);
         EditText details = overlayView.findViewById(R.id.announcement_detail_content);

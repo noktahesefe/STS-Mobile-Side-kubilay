@@ -28,10 +28,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 
-/**
- * This class represents the ClassroomScreen activity, which serves as the main screen for a classroom.
- * It provides buttons to navigate to announcements and homework screens.
- */
 public class ClassroomScreen extends AppCompatActivity {
 
     interface GetHomeworkAndAnnouncement{

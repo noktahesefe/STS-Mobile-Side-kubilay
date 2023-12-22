@@ -9,10 +9,10 @@ public class Parent extends User{
     private int parent_id;
     private List<Student> students;
 
-    public Parent(String name, int parent_id){
+    public Parent(String name, int parent_id, List<Student> myStudents){
         this.name = name;
         this.parent_id = parent_id;
-        this.students = new ArrayList<>();
+        this.students = myStudents;
     }
 
     public int getParent_id() {

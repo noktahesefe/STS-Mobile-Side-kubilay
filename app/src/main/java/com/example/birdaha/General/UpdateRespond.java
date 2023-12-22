@@ -9,6 +9,7 @@ public class UpdateRespond {
     @SerializedName("error")
     private String error;
 
+
     public String getMessage() {
         return message;
     }
@@ -24,4 +25,5 @@ public class UpdateRespond {
     public void setError(String error) {
         this.error = error;
     }
+
 }

@@ -82,22 +82,21 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
     public int getItemCount() {
         return classAnnouncementModels.size();
     }
-  
+
     @Override
     public Filter getFilter() {
         Filter filter = new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults filterResults = new FilterResults();
-                if(constraint == null || constraint.length() == 0){
+                if (constraint == null || constraint.length() == 0) {
                     filterResults.values = classAnnouncementModelsFiltered;
                     filterResults.count = classAnnouncementModelsFiltered.size();
-                }
-                else{
+                } else {
                     String searchStr = constraint.toString().toLowerCase();
                     List<ClassAnnouncementModel> classAnnouncementModels1 = new ArrayList<>();
-                    for(ClassAnnouncementModel model : classAnnouncementModelsFiltered){
-                        if(model.getTitle().toLowerCase().contains(searchStr)){
+                    for (ClassAnnouncementModel model : classAnnouncementModelsFiltered) {
+                        if (model.getTitle().toLowerCase().contains(searchStr)) {
                             classAnnouncementModels1.add(model);
                         }
                     }
@@ -114,7 +113,7 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
             }
         };
         return filter;
-    }  
+    }
 
     /**
      * This class represents the ViewHolder for individual class announcement items.

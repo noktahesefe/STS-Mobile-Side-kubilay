@@ -2,6 +2,7 @@ package com.example.birdaha.Utilities;
 
 import android.view.View;
 import com.example.birdaha.General.ClassAnnouncementModel;
+
 /**
  * Interface for handling item click events in the General Announcement RecyclerView.
  */

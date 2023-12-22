@@ -1,5 +1,7 @@
 package com.example.birdaha.Users;
 
+import androidx.annotation.NonNull;
+
 import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.Classrooms.Homework;
 
@@ -19,6 +21,12 @@ public class Student extends User{
         //this.school_no = school_no;
         this.classroom = classroom;
         this.homeworks = new ArrayList<>();
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return this.getName();
     }
 
     /*public int getClassroom_id() {
