@@ -16,10 +16,15 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+
+
+import androidx.annotation.Nullable;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,9 +37,13 @@ import com.example.birdaha.General.ClassAnnouncementModel;
 import com.example.birdaha.General.HwModel;
 import com.example.birdaha.General.UpdateRespond;
 import com.example.birdaha.R;
+
 import com.example.birdaha.Users.Teacher;
 import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 import com.google.gson.Gson;
+
+import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
+
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -105,15 +114,20 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         //setHwModules();
         HomeworkAdapter homeworkAdapter = new HomeworkAdapter(this, hwModels, this);
         recyclerView.setAdapter(homeworkAdapter);
+
+        // Set the layout manager for the RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        // Find a view for filtering homework items and set a click listener
         View baselineFilterView = findViewById(R.id.filterView);
         baselineFilterView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showOverlay();
+                showOverlay(); // Call the showOverlay() method when clicked
             }
         });
+
+
 
         addingHomeworkButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,6 +137,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         });
 
 
+        // Set a listener for the SearchView to handle query text changes
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -136,24 +151,84 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             }
         });
 
+        // Set a listener for closing the SearchView
         search.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                //homeworkAdapter.restoreOriginalList();
                 return false;
             }
         });
     }
+   
+    /**
+     * This method displays a dialog for adding a new homework assignment.
+     */
+    private void showAddAssignmentDialog() {
+        // Create an AlertDialog builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Ödev Ekleme"); // Set the dialog title
 
-    /*private void setHwModules(){
+        // Inflate the layout for the add homework form
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_add_homework, null);
+        builder.setView(dialogView);
 
-        String[] titles = getResources().getStringArray(R.array.ClassroomHomeworks);
-        String[] infos =  getResources().getStringArray(R.array.ClassroomHomeworks);
-        for (int i = 0; i < titles.length; i++) {
-            hwModels.add(new HwModel(titles[i],infos[i]));
-        }
+        // Find the select image button
+        Button selectImageButton = dialogView.findViewById(R.id.selectImageButton);
 
-    }*/
+
+        // Set a click listener for the "Select Image" button
+        selectImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create an intent to pick an image from the gallery
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*"); // Set the type to image
+
+                startActivityForResult(intent, PICK_IMAGE_REQUEST);
+            }
+        });
+
+
+        // Find views in the dialog layout
+        EditText lecture_name = dialogView.findViewById(R.id.lectureNameEditText);
+        EditText assignmentDescriptionEditText = dialogView.findViewById(R.id.add_announcement_teacher_name);
+        EditText hw_dueDate = dialogView.findViewById(R.id.hw_deadline_content);
+        EditText hw_content = dialogView.findViewById(R.id.hw_content_content);
+        Button saveButton = dialogView.findViewById(R.id.saveButton);
+
+        // Create the dialog
+        final AlertDialog dialog = builder.create();
+
+        // Set a click listener for the "Save" button in the dialog
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get the text entered in the title and description EditText fields
+                String lecture = lecture_name.getText().toString();
+                String hw_name = assignmentDescriptionEditText.getText().toString();
+                String hw_date = hw_dueDate.getText().toString();
+                String hw_info = hw_content.getText().toString();
+
+                // Create a new HwModel object with the entered title and description
+                HwModel newHomework = new HwModel(lecture, hw_info, hw_name, hw_date,selectedImageUri);
+
+                // Add the new homework to the hwModels list
+                hwModels.add(newHomework);
+
+                // Notify the adapter that the data set has changed
+                homeworkAdapter.notifyDataSetChanged();
+
+                // Dismiss the dialog
+                dialog.dismiss();
+            }
+        });
+
+        // Show the dialog
+        dialog.show();
+    }
+
+
 
     private void showAddAssignmentDialog() {
         // Create an AlertDialog builder
@@ -249,7 +324,9 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
     }
 
 
-    //this is for the filter overlay
+    /**
+     * Displays an overlay dialog for filtering options.
+     */
     private void showOverlay() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -268,6 +345,8 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
 
         dialog.show();
     }
+
+  
     @Override
     public void onClassroomHomeworkItemClick(HwModel clickedItem, View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
@@ -354,9 +433,6 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                     Log.d("Error",t.getMessage());
                 }
             });
-
-
-            // Disable EditTexts after saving
             title.setEnabled(false);
             dueDate.setEnabled(false);
             content.setEnabled(false);

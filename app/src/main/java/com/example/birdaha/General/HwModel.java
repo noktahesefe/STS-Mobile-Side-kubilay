@@ -1,5 +1,4 @@
 package com.example.birdaha.General;
-
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -73,11 +72,15 @@ public class HwModel implements Serializable {
     public void setImage(String image) {
         this.image = image;
     }
-
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Set the title of the homework.
+     *
+     * @param title The title of the homework.
+     */
     public void setTitle(String title) {
         this.title = title;
     }
@@ -88,6 +91,8 @@ public class HwModel implements Serializable {
 
     public void setInfo(String info) {
         this.info = info;
+  
     }
 
 }
+

@@ -36,6 +36,10 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 
+/**
+ * This class represents the main login screen of the application.
+ * It allows users to enter their username and password and login as either a Student, Teacher, or Parent.
+ */
 public class MainActivity extends AppCompatActivity {
 
     interface RequestUser{
@@ -51,19 +55,28 @@ public class MainActivity extends AppCompatActivity {
     CheckBox checkBox;
     MaterialButton loginButton;
 
+    /**
+     * Called when the activity is created. Initializes the user interface and sets up event handlers
+     * for the login button.
+     *
+     * @param savedInstanceState A Bundle containing the activity's previously saved state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main); // Set the content view to the main login layout
 
-        username = (EditText)findViewById(R.id.username);
-        password = (EditText)findViewById(R.id.password);
+        // Find and initialize UI elements
+        username = (EditText) findViewById(R.id.username);
+        password = (EditText) findViewById(R.id.password);
         checkBox = (CheckBox) findViewById(R.id.saveLoginCheckBox);
         loginButton = (MaterialButton) findViewById(R.id.loginButton);
 
+        // Set a click listener for the login button
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+              
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl("http://sinifdoktoruadmin.online/")
                         .addConverterFactory(GsonConverterFactory.create())
@@ -122,63 +135,14 @@ public class MainActivity extends AppCompatActivity {
     });
 }
 
-
-        /*loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(checkEditText()){
-                    User user = identifyUser();
-                    if(user == null){
-                        Toast.makeText(MainActivity.this, "Invalid username.", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        if(user instanceof Student){
-                            Toast.makeText(MainActivity.this, "Student logged in!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(MainActivity.this, StudentMainActivity.class);
-                            intent.putExtra("user",user); // Send the object information to StudentProfile class
-                            startActivity(intent);
-                        }
-                        else if(user instanceof Teacher){
-                            Toast.makeText(MainActivity.this, "Teacher logged in!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(MainActivity.this, TeacherMainActivity.class);
-                            intent.putExtra("user",user);
-                            startActivity(intent);
-                        }
-                        else if(user instanceof Parent){
-                            Toast.makeText(MainActivity.this, "Parent logged in!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(MainActivity.this, ParentMainActivity.class);
-                            intent.putExtra("user",user);
-                            startActivity(intent);
-                        }
-                    }
-                }
-                else{
-                    Toast.makeText(MainActivity.this, "Please enter your username or password!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });*/
-
-    public boolean checkEditText(){ // Checks whether the edit texts are empty or not
+    /**
+     * Checks whether the edit texts for username and password are empty or not.
+     *
+     * @return True if both fields are not empty; otherwise, false.
+     */
+    public boolean checkEditText() {
         String name = username.getText().toString();
         String pass = password.getText().toString();
-
         return !name.isEmpty() && !pass.isEmpty();
     }
-
-    /*public User identifyUser(){ // Identifies the user from the entered nickname
-        String name = username.getText().toString();
-        char firstChar = name.charAt(0);
-        if(firstChar == 'T'){
-            return new Teacher(username.getText().toString(), password.getText().toString());
-        }
-        else if(firstChar == 'S'){
-            return new Student(username.getText().toString(), password.getText().toString());
-        }
-        else if(firstChar == 'P'){
-            return new Parent(username.getText().toString(), password.getText().toString());
-        }
-        else{
-            return null;
-        }
-    }*/
 }

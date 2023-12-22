@@ -24,22 +24,48 @@ public class ClassAnnouncementModel implements Serializable {
         this.classroom_id = classroom_id;
         this.teacher_id = teacher_id;
     }
-    public ClassAnnouncementModel(String title){
+
+    /**
+     * Constructor for the ClassAnnouncementModel class with only a title.
+     *
+     * @param title The title of the class announcement.
+     */
+    public ClassAnnouncementModel(String title) {
         this.title = title;
     }
 
+    /**
+     * Get the title of the class announcement.
+     *
+     * @return The title of the class announcement.
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Set the title of the class announcement.
+     *
+     * @param title The title of the class announcement.
+     */
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+     * Get the details or content of the class announcement.
+     *
+     * @return Details or content of the class announcement.
+     */
     public String getDetails() {
         return details;
     }
 
+    /**
+     * Set the details or content of the class announcement.
+     *
+     * @param details Details or content of the class announcement.
+     */
     public void setDetails(String details) {
         this.details = details;
     }

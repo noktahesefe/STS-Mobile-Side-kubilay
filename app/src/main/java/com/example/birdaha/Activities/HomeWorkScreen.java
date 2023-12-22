@@ -37,12 +37,13 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
     ArrayList<HwModel> hwModels;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_work_screen);
 
-        search = findViewById(R.id.searchView);
+        search = findViewById(R.id.searchView_homework);
 
         RecyclerView recyclerView = findViewById(R.id.hwRecyclerView);
 
@@ -51,7 +52,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
             hwModels = (ArrayList<HwModel>) intent.getSerializableExtra("homeworks");
         }
 
-        //setHwModules();
+
         HomeworkAdapter homeworkAdapter = new HomeworkAdapter(this, hwModels,this);
         recyclerView.setAdapter(homeworkAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -87,17 +88,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
 
     }
 
-    /*private void setHwModules(){
-
-        String[] titles = getResources().getStringArray(R.array.Homeworks);
-        String[] infos = getResources().getStringArray(R.array.Homeworks_info);
-        for (int i = 0; i < titles.length; i++) {
-            hwModels.add(new HwModel(titles[i], infos[i]));
-        }
-
-    }*/
-
-
     // This method is called when the user clicks on the filter icon
     private void showOverlay() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -126,6 +116,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
 
     @Override
     public void onClassroomHomeworkItemClick(HwModel clickedItem, View view) {
+
         // Create an AlertDialog.Builder object with the context of the itemView
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
 
@@ -159,7 +150,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
 
         editButton.setVisibility(View.INVISIBLE);
         saveButton.setVisibility(View.INVISIBLE);
-
         // Set the inflated view as the custom view for the AlertDialog
         builder.setView(overlayView);
 
