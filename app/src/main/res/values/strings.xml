@@ -88,4 +88,32 @@
 
     </string-array>
 
+    <string-array name="Students">
+
+        <item>Ahmet   123123</item>
+        <item>Mehmet   12312</item>
+        <item>Ali   231312 </item>
+        <item>Hasan   32131</item>
+        <item>Osman</item>
+        <item>Ahmet</item>
+        <item>Mehmet</item>
+        <item>Ali</item>
+        <item>Hasan</item>
+        <item>Osman</item>
+        <item>Ahmet</item>
+        <item>Mehmet</item>
+        <item>Ali</item>
+        <item>Hasan</item>
+        <item>Osman</item>
+        <item>Ahmet</item>
+        <item>Mehmet</item>
+        <item>Ali</item>
+        <item>Hasan</item>
+        <item>Osman</item>
+
+
+
+    </string-array>
+
+
 </resources>

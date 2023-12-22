@@ -95,7 +95,7 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
     public void onClassAnnouncementItemClick(ClassAnnouncementModel clickedItem, View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
-        View overlayView = inflater.inflate(R.layout.class_announcement_overlay_layout, null);
+        View overlayView = inflater.inflate(R.layout.overlay_class_announcement_layout, null);
 
         EditText title = overlayView.findViewById(R.id.announcement_detail_name);
         EditText details = overlayView.findViewById(R.id.announcement_detail_content);
@@ -113,7 +113,6 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
         title.setText(clickedItem.getTitle());
         details.setText(clickedItem.getDetails());
         teacherName.setText(clickedItem.getTeacher().getName());
-
         builder.setView(overlayView);
         AlertDialog dialog = builder.create();
         dialog.show();

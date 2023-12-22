@@ -34,7 +34,7 @@
         app:layout_constraintHorizontal_bias="0.066"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/announcement_detail_name" />
-  
+
     <EditText
         android:id="@+id/announcement_detail_content"
         android:layout_width="match_parent"
@@ -66,4 +66,5 @@
         android:text="Save"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/announcement_detail_content" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

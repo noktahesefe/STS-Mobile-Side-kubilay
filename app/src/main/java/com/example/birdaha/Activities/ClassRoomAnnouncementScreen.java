@@ -104,14 +104,6 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
             }
         });
 
-        // Restore the original list when the search is closed
-        search.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public void onClick(View v) {
-                showAddAnnouncementDialog();
-            }
-        });
-
     }
 
     /**
@@ -179,16 +171,6 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
                     });
                 }
 
-                // Create a new ClassAnnouncementModel with the title and description
-                //ClassAnnouncementModel classAnnouncement = new ClassAnnouncementModel(title, content,teacherName);
-
-                // Add the new announcement to the classAnnouncementModels list
-                //classAnnouncementModels.add(classAnnouncement);
-
-                // Notify the adapter that the data set has changed
-                //classAnnouncementAdapter.notifyDataSetChanged();
-
-                // Dismiss the dialog
                 dialog.dismiss();
             }
         });
@@ -201,7 +183,7 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
         //ClassAnnouncementModel classAnnouncementModel = classAnnouncementModels.get(position);
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
-        View overlayView = inflater.inflate(R.layout.class_announcement_overlay_layout, null);
+        View overlayView = inflater.inflate(R.layout.overlay_class_announcement_layout, null);
 
         EditText title = overlayView.findViewById(R.id.announcement_detail_name);
         EditText details = overlayView.findViewById(R.id.announcement_detail_content);

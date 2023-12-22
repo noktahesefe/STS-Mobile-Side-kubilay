@@ -1,6 +1,5 @@
 package com.example.birdaha.Adapters;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -118,7 +117,7 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
             super(itemView);
 
             // Initialize the textViewTitle variable with the view from the layout with id textView
-            textViewTitle = itemView.findViewById(R.id.textView);
+            textViewTitle = itemView.findViewById(R.id.studentName);
 
             // Initialize the cardView variable with the view from the layout with id cardView
             cardView = itemView.findViewById(R.id.cardView);

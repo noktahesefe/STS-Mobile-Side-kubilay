@@ -18,7 +18,7 @@ public class ClassAnnouncementModel implements Serializable {
     private String details;
 
 
-    public ClassAnnouncementModel(String title, String details, int classroom_id, int teacher_id){
+    public ClassAnnouncementModel(String title, String details, int classroom_id, int teacher_id) {
         this.title = title;
         this.details = details;
         this.classroom_id = classroom_id;
@@ -95,10 +95,13 @@ public class ClassAnnouncementModel implements Serializable {
     }
 
     public int getTeacher_id() {
+
+
         return teacher_id;
     }
 
     public void setTeacher_id(int teacher_id) {
         this.teacher_id = teacher_id;
     }
+
 }
