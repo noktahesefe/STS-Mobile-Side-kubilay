@@ -2,6 +2,7 @@ package com.example.birdaha.Activities;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -33,6 +34,7 @@ import com.example.birdaha.Adapters.HomeworkAdapter;
 import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.General.ClassAnnouncementModel;
 import com.example.birdaha.General.HwModel;
+import com.example.birdaha.General.StudentModel;
 import com.example.birdaha.General.UpdateRespond;
 import com.example.birdaha.R;
 import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
@@ -46,7 +48,18 @@ import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
+import retrofit2.http.POST;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -70,6 +83,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
     ArrayList<HwModel> hwModels = new ArrayList<>();
 
     Button addingHomeworkButton;
+    Button gradeButton;
     private ImageView homeworkImage;
 
     private String image;
@@ -102,12 +116,19 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         RecyclerView recyclerView = findViewById(R.id.hwRecyclerView_classroom);
         search = findViewById(R.id.searchView_homework);
         addingHomeworkButton = findViewById(R.id.adding_hw_btn);
+        gradeButton = findViewById(R.id.grade_btn);
 
         Intent intent = getIntent();
         if(intent != null){
             hwModels = (ArrayList<HwModel>) intent.getSerializableExtra("homeworks");
         }
 
+        hwModels.sort(new Comparator<HwModel>() {
+            @Override
+            public int compare(HwModel o1, HwModel o2) {
+                return o1.compareTo(o2);
+            }
+        });
 
         HomeworkAdapter homeworkAdapter = new HomeworkAdapter(this, hwModels, this);
         recyclerView.setAdapter(homeworkAdapter);
@@ -157,6 +178,34 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         });
 
 
+
+        addingHomeworkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddAssignmentDialog();
+            }
+        });
+
+        gradeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int homeworkId = 2280;
+                Classroom classroom = (Classroom) intent.getSerializableExtra("classroom");
+                ArrayList<StudentModel> students = (ArrayList<StudentModel>) intent.getSerializableExtra("students");
+                Intent homeworkGradeIntent = new Intent(ClassroomHomeworkScreen.this, HomeworkStudentsScreen.class);
+
+                homeworkGradeIntent.putExtra("students", (Serializable) students);
+                homeworkGradeIntent.putExtra("classroom", classroom);
+                homeworkGradeIntent.putExtra("homeworkId", homeworkId);
+                startActivity(homeworkGradeIntent);
+
+
+
+            }
+        });
+
+
+        // Set a listener for the SearchView to handle query text changes
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -170,13 +219,14 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             }
         });
 
+        // Set a listener for closing the SearchView
         search.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                //homeworkAdapter.restoreOriginalList();
                 return false;
             }
         });
+
     }
 
     private void showAddAssignmentDialog() {
@@ -358,6 +408,58 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             });
         }
 
+
+
+        editButton.setOnClickListener(v -> {
+            // Enable EditTexts to make them editable
+            title.setEnabled(true);
+            dueDate.setEnabled(true);
+            content.setEnabled(true);
+            content.requestFocus();
+        });
+
+        saveButton.setOnClickListener(v -> {
+            // Save the edited text
+            String updatedTitle = title.getText().toString();
+            String updatedDueDate = dueDate.getText().toString();
+            String updatedContent = content.getText().toString();
+
+            clickedItem.setTitle(updatedTitle);
+            clickedItem.setDue_date(updatedDueDate);
+            clickedItem.setInfo(updatedContent);
+            clickedItem.setImage(image);
+
+            System.out.println("hw id:" + clickedItem.getHomework_id());
+            System.out.println("teacher id:" + clickedItem.getTeacher_id());
+            System.out.println("classroom id: " + clickedItem.getClassroom_id());
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://sinifdoktoruadmin.online/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            AddHomework updateHomework = retrofit.create(AddHomework.class);
+            updateHomework.updateHomework(clickedItem).enqueue(new Callback<UpdateRespond>() {
+                @Override
+                public void onResponse(Call<UpdateRespond> call, Response<UpdateRespond> response) {
+                    if(response.isSuccessful() && response.body() != null){
+                        Log.d("ResponseUpdate",new Gson().toJson(response.body()));
+                    }
+                    else{
+                        Log.d("ResponseUpdate",new Gson().toJson(response.body()));
+                        Log.d("ResponseUpdateCode",String.valueOf(response.code()));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UpdateRespond> call, Throwable t) {
+                    Log.d("Error",t.getMessage());
+                }
+            });
+            title.setEnabled(false);
+            dueDate.setEnabled(false);
+            content.setEnabled(false);
+        });
 
         editButton.setOnClickListener(v -> {
             // Enable EditTexts to make them editable

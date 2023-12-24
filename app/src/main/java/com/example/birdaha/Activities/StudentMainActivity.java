@@ -24,6 +24,7 @@ import com.example.birdaha.Fragments.HomePageFragment;
 import com.example.birdaha.Fragments.NotificationFragment;
 import com.example.birdaha.Fragments.StudentProfileFragment;
 import com.example.birdaha.Helper.FragmentNavigationManager;
+import com.example.birdaha.Helper.LocalDataManager;
 import com.example.birdaha.Interface.NavigationManager;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Student;
@@ -127,6 +128,17 @@ public class StudentMainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 navigationManager.showFragment(NotificationFragment.newInstance("userId"), false);
                 drawerLayout.closeDrawer(GravityCompat.START);
+            }
+        });
+
+        TextView TextView_logout = findViewById(R.id.TextView_logout);
+        TextView_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LocalDataManager.clearSharedPreference(getApplicationContext());
+                Intent intent = new Intent(StudentMainActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
 

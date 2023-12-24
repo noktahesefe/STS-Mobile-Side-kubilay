@@ -24,6 +24,7 @@ import com.example.birdaha.Fragments.HomePageFragment;
 import com.example.birdaha.Fragments.NotificationFragment;
 import com.example.birdaha.Fragments.TeacherProfileFragment;
 import com.example.birdaha.Helper.FragmentNavigationManager;
+import com.example.birdaha.Helper.LocalDataManager;
 import com.example.birdaha.Interface.NavigationManager;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Teacher;
@@ -106,6 +107,7 @@ public class TeacherMainActivity extends AppCompatActivity {
                     navigationManager.showFragment(teacherProfileFragment,false);
                     drawerLayout.closeDrawer(GravityCompat.START);
                 }
+
                 //navigationManager.showFragment(TeacherProfileFragment.newInstance("teachId"), false);
                 //drawerLayout.closeDrawer(GravityCompat.START);
             }
@@ -129,8 +131,19 @@ public class TeacherMainActivity extends AppCompatActivity {
             }
         });
 
+        TextView TextView_logout = findViewById(R.id.TextView_logout);
+        TextView_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LocalDataManager.clearSharedPreference(getApplicationContext());
+                Intent intent = new Intent(TeacherMainActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
     }
+
 
     /**
      * Called after the activity's `onCreate()` method has returned, indicating that

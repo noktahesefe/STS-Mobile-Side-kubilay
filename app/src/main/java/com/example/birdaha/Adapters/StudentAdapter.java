@@ -4,30 +4,40 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.birdaha.General.HwModel;
+import com.example.birdaha.General.StudentModel;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Student;
 import com.example.birdaha.Utilities.HomeworkStudentsViewInterface;
 
 import java.util.ArrayList;
+import java.util.List;
+
 
 public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentViewHolder> {
 
     Context context;
 
-    ArrayList<Student> students;
+
+    ArrayList<StudentModel> students;
+    ArrayList<StudentModel> studentsFiltered;
+
 
     private final HomeworkStudentsViewInterface studentViewInterface;
 
 
-    public StudentAdapter(Context context, ArrayList<Student> students, HomeworkStudentsViewInterface studentViewInterface) {
+    public StudentAdapter(Context context, ArrayList<StudentModel> students, HomeworkStudentsViewInterface studentViewInterface) {
         this.context = context;
         this.students = students;
+        this.studentsFiltered = students;
         this.studentViewInterface = studentViewInterface;
     }
 
@@ -41,8 +51,25 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
 
     @Override
     public void onBindViewHolder(@NonNull StudentViewHolder holder, int position) {
-        Student currentStudent = students.get(position);
+        StudentModel currentStudent = students.get(position);
         holder.studentNameTextView.setText(currentStudent.getName());
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(studentViewInterface != null)
+                {
+                    int pos = students.indexOf(currentStudent);
+                    if(pos != -1) {
+                        try {
+                            studentViewInterface.onHomeworkStudentItemClick(students.get(pos), v);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
+                }
+            }
+        });
     }
 
     @Override
@@ -50,6 +77,37 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
         return students.size();
     }
 
+    public Filter getFilter() {
+        Filter filter = new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults filterResults = new FilterResults();
+                if(constraint == null || constraint.length() == 0){
+                    filterResults.values = studentsFiltered;
+                    filterResults.count = studentsFiltered.size();
+                }
+                else{
+                    String searchStr = constraint.toString().toLowerCase();
+                    List<StudentModel> studentModel = new ArrayList<>();
+                    for(StudentModel model : studentsFiltered){
+                        if(model.getName().toLowerCase().contains(searchStr)){
+                            studentModel.add(model);
+                        }
+                    }
+                    filterResults.values = studentModel;
+                    filterResults.count = studentModel.size();
+                }
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                students = (ArrayList<StudentModel>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+        return filter;
+    }
 
 
 
@@ -73,15 +131,6 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
             cardView = itemView.findViewById(R.id.cardView3);
 
             // Set a click listener on the cardView
-            cardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int pos = getAdapterPosition();
-                    if (pos != RecyclerView.NO_POSITION) {
-                        studentViewInterface.onHomeworkStudentItemClick(pos, cardView);
-                    }
-                }
-            });
         }
     }
 

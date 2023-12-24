@@ -13,6 +13,7 @@ import com.example.birdaha.General.ClassAnnouncementModel;
 import com.example.birdaha.General.HomeworksAndAnnouncements;
 import com.example.birdaha.General.HomeworksAndAnnouncementsTeacher;
 import com.example.birdaha.General.HwModel;
+import com.example.birdaha.General.StudentModel;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Teacher;
 import com.google.gson.Gson;
@@ -64,6 +65,8 @@ public class ClassroomScreen extends AppCompatActivity {
                         HomeworksAndAnnouncementsTeacher models = response.body();
                         List<ClassAnnouncementModel> announcementModelList = models.getClassAnnouncementModels();
                         List<HwModel> homeworkModelList = models.getHomeworks();
+                        List<StudentModel> students = models.getStudents();
+
                         Log.d("Respond",new Gson().toJson(response.body()));
 
                         classroomAnnouncementsButton = findViewById(R.id.classroom_announcements);
@@ -92,6 +95,7 @@ public class ClassroomScreen extends AppCompatActivity {
                                 intent.putExtra("teacher",teacher);
                                 intent.putExtra("classroom",classroom);
                                 intent.putExtra("homeworks",(Serializable) homeworkModelList);
+                                intent.putExtra("students", (Serializable) students);
                                 startActivity(intent);
                             }
                         });
