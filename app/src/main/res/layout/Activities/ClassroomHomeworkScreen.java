@@ -27,7 +27,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.hwRecyclerView_classroom);
 
         setHwModules();
-        HomeworkAdapter homeworkAdapter = new HomeworkAdapter(this, hwModels);
+        HomeworkAdapter homeworkAdapter = new HomeworkAdapter(this, hwModels,this);
         recyclerView.setAdapter(homeworkAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 

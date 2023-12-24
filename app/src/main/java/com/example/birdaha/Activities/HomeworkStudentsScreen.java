@@ -52,10 +52,10 @@ public class HomeworkStudentsScreen extends AppCompatActivity implements Homewor
      * It is a dummy method for testing and can be removed later.
      */
     private void setStudents(){
-        String[] titles = getResources().getStringArray(R.array.Students);
-        for (int i = 0; i < titles.length; i++) {
-            students.add(new Student(titles[i]));
-        }
+//        String[] titles = getResources().getStringArray(R.array.Students);
+//        for (int i = 0; i < titles.length; i++) {
+//            students.add(new Student(titles[i]));
+//        }
     }
 
     /**

@@ -1,59 +1,78 @@
 package com.example.birdaha.General;
+import com.google.gson.annotations.SerializedName;
 
-import android.net.Uri;
-
-/**
- * This class represents a homework model that contains information about a homework assignment.
- */
-public class HwModel {
-
-    private String title; // The title of the homework
-    private String hw_content;  // Additional information about the homework
+import java.io.Serializable;
 
 
-    private String lecture;
+public class HwModel implements Serializable {
+    private int homework_id;
+    private int teacher_id;
+    private int classroom_id;
+    private String course_name;
+    private String due_date;
+    private String image;
+    private String title;
 
-    private String dueDate;
+    @SerializedName("content")
+    private String info;
 
-    private int grade;
-
-
-    private Uri imageUri; // URI of the selected image
-
-
-    /**
-     * Constructor for the HwModel class.
-     *
-     * @param title The title of the homework.
-     * @param hw_content  Additional information about the homework.
-     */
-    public HwModel(String title, String hw_content, String lecture, String dueDate, int grade) {
+    public HwModel(int classroom_id, int teacher_id, String course_name, String dueDate, String title, String info, String image){
+        this.classroom_id = classroom_id;
+        this.teacher_id = teacher_id;
+        this.course_name = course_name;
+        this.due_date = dueDate;
         this.title = title;
-        this.hw_content = hw_content;
-        this.lecture = lecture;
-        this.dueDate = dueDate;
-        this.grade = grade;
+        this.info = info;
+        this.image = image;
     }
 
-    public HwModel(String title,String lecture) {
-        this.title = title;
-        this.hw_content = lecture;
-
+    public int getHomework_id() {
+        return homework_id;
     }
 
-    public HwModel(String title, String hw_content, String lecture, String dueDate, Uri imageUri) {
-        this.title = title;
-        this.hw_content = hw_content;
-        this.lecture = lecture;
-        this.dueDate = dueDate;
-        this.imageUri = imageUri;
+    public void setHomework_id(int homework_id) {
+        this.homework_id = homework_id;
     }
 
-    /**
-     * Get the title of the homework.
-     *
-     * @return The title of the homework.
-     */
+    public int getTeacher_id() {
+        return teacher_id;
+    }
+
+    public void setTeacher_id(int teacher_id) {
+        this.teacher_id = teacher_id;
+    }
+
+    public int getClassroom_id() {
+        return classroom_id;
+    }
+
+    public void setClassroom_id(int classroom_id) {
+        this.classroom_id = classroom_id;
+    }
+
+    public String getCourse_name() {
+        return course_name;
+    }
+
+    public void setCourse_name(String course_name) {
+        this.course_name = course_name;
+    }
+
+    public String getDue_date() {
+        return due_date;
+    }
+
+    public void setDue_date(String due_date) {
+        this.due_date = due_date;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
     public String getTitle() {
         return title;
     }
@@ -67,55 +86,12 @@ public class HwModel {
         this.title = title;
     }
 
-    /**
-     * Get additional information about the homework.
-     *
-     * @return Additional information about the homework.
-     */
-    public String getHw_content() {
-        return hw_content;
+    public String getInfo() {
+        return info;
     }
 
-    /**
-     * Set additional information about the homework.
-     *
-     * @param hw_content Additional information about the homework.
-     */
-    public void setHw_content(String hw_content) {
-        this.hw_content = hw_content;
-    }
-
-    public String getLecture() {
-        return lecture;
-    }
-
-    public void setLecture(String lecture) {
-        this.lecture = lecture;
-    }
-
-    public String getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(String dueDate) {
-        this.dueDate = dueDate;
-    }
-
-    public int getGrade() {
-        return grade;
-    }
-
-    public void setGrade(int grade) {
-        this.grade = grade;
-    }
-
-
-    public Uri getImageUri() {
-        return imageUri;
-    }
-
-    public void setImageUri(Uri imageUri) {
-        this.imageUri = imageUri;
+    public void setInfo(String info) {
+        this.info = info;
     }
 
 }

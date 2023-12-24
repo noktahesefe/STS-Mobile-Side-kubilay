@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.R;
+import com.example.birdaha.Users.Teacher;
 import com.example.birdaha.Utilities.TeacherClassroomsRecyclerViewInterface;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class TeacherClassroomsAdapter extends RecyclerView.Adapter<TeacherClassr
     private final TeacherClassroomsRecyclerViewInterface teacherClassroomsRecyclerViewInterface;
     private Context context;
     private List<Classroom> teacherClassrooms;
+    private Teacher teacher;
 
     /**
      * Constructs a new `TeacherClassroomsAdapter`.
@@ -35,10 +37,11 @@ public class TeacherClassroomsAdapter extends RecyclerView.Adapter<TeacherClassr
      * @param teacherClassrooms                 The list of teacher classrooms to be displayed.
      * @param teacherClassroomsRecyclerViewInterface The interface for handling item clicks.
      */
-    public TeacherClassroomsAdapter(Context context, List<Classroom> teacherClassrooms, TeacherClassroomsRecyclerViewInterface teacherClassroomsRecyclerViewInterface){
+    public TeacherClassroomsAdapter(Context context, List<Classroom> teacherClassrooms, TeacherClassroomsRecyclerViewInterface teacherClassroomsRecyclerViewInterface, Teacher teacher){
         this.context = context;
         this.teacherClassrooms = teacherClassrooms;
         this.teacherClassroomsRecyclerViewInterface = teacherClassroomsRecyclerViewInterface;
+        this.teacher = teacher;
     }
 
     /**
@@ -51,7 +54,7 @@ public class TeacherClassroomsAdapter extends RecyclerView.Adapter<TeacherClassr
     @NonNull
     @Override
     public TeacherClassroomsAdapter.TeacherClassroomsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new TeacherClassroomsAdapter.TeacherClassroomsViewHolder(LayoutInflater.from(context).inflate(R.layout.teacherclassrooms_view,parent,false),teacherClassroomsRecyclerViewInterface);
+        return new TeacherClassroomsAdapter.TeacherClassroomsViewHolder(LayoutInflater.from(context).inflate(R.layout.teacherclassrooms_view,parent,false),teacherClassroomsRecyclerViewInterface,teacher);
 
     }
 
@@ -92,7 +95,7 @@ public class TeacherClassroomsAdapter extends RecyclerView.Adapter<TeacherClassr
          * @param itemView                           The View representing the teacher classroom item.
          * @param teacherClassroomsRecyclerViewInterface The interface for handling item clicks.
          */
-        public TeacherClassroomsViewHolder(@NonNull View itemView, TeacherClassroomsRecyclerViewInterface teacherClassroomsRecyclerViewInterface) {
+        public TeacherClassroomsViewHolder(@NonNull View itemView, TeacherClassroomsRecyclerViewInterface teacherClassroomsRecyclerViewInterface, Teacher teacher) {
             super(itemView);
 
             name = itemView.findViewById(R.id.teacherClassrooms_name);
@@ -103,7 +106,7 @@ public class TeacherClassroomsAdapter extends RecyclerView.Adapter<TeacherClassr
                     if(teacherClassroomsRecyclerViewInterface != null){
                         int pos = getAdapterPosition();
                         if(pos != RecyclerView.NO_POSITION){
-                            teacherClassroomsRecyclerViewInterface.onTeacherClassroomsItemClick(pos,itemView);
+                            teacherClassroomsRecyclerViewInterface.onTeacherClassroomsItemClick(pos,itemView,teacher);
                         }
                     }
                 }

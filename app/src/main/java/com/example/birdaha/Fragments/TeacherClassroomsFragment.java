@@ -18,6 +18,7 @@ import com.example.birdaha.Activities.ClassroomScreen;
 import com.example.birdaha.Adapters.TeacherClassroomsAdapter;
 import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.R;
+import com.example.birdaha.Users.Teacher;
 import com.example.birdaha.Utilities.TeacherClassroomsRecyclerViewInterface;
 
 import java.util.ArrayList;
@@ -31,7 +32,8 @@ import java.util.List;
 public class TeacherClassroomsFragment extends Fragment implements TeacherClassroomsRecyclerViewInterface {
 
     private RecyclerView teacherClassroomsRecyclerView;
-    private List<Classroom> teacherClassrooms = new ArrayList<>();
+    private List<Classroom> teacherClassrooms;
+    private Teacher teacher;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -44,6 +46,11 @@ public class TeacherClassroomsFragment extends Fragment implements TeacherClassr
 
     public TeacherClassroomsFragment() {
         // Required empty public constructor
+    }
+
+    public TeacherClassroomsFragment(Teacher teacher,List<Classroom> classrooms){
+        this.teacher = teacher;
+        this.teacherClassrooms = classrooms;
     }
 
     /**
@@ -89,11 +96,7 @@ public class TeacherClassroomsFragment extends Fragment implements TeacherClassr
         teacherClassroomsRecyclerView = view.findViewById(R.id.teacher_classrooms_recyclerview);
         teacherClassroomsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false));
 
-        teacherClassrooms.add(new Classroom("1A"));
-        teacherClassrooms.add(new Classroom("2B"));
-        teacherClassrooms.add(new Classroom("8A"));
-
-        TeacherClassroomsAdapter adapter = new TeacherClassroomsAdapter(getActivity(), teacherClassrooms,this);
+        TeacherClassroomsAdapter adapter = new TeacherClassroomsAdapter(getActivity(), teacherClassrooms,this,teacher);
         teacherClassroomsRecyclerView.setAdapter(adapter);
 
         return view;
@@ -106,11 +109,12 @@ public class TeacherClassroomsFragment extends Fragment implements TeacherClassr
      * @param view     The View that was clicked.
      */
     @Override
-    public void onTeacherClassroomsItemClick(int position, View view) { // This will be done later
+    public void onTeacherClassroomsItemClick(int position, View view, Teacher teacher) {
         Classroom current = teacherClassrooms.get(position);
 
         Intent intent = new Intent(requireActivity(), ClassroomScreen.class);
-        intent.putExtra("name",current.getName());
+        intent.putExtra("classroom",current);
+        intent.putExtra("teacher",teacher);
         startActivity(intent);
 
     }

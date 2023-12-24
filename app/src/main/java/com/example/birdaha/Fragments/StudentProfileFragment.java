@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,27 @@ import com.example.birdaha.Activities.ClassroomHomeworkScreen;
 import com.example.birdaha.Activities.ClassroomScreen;
 import com.example.birdaha.Activities.HomeWorkScreen;
 
+import com.example.birdaha.Activities.MainActivity;
+import com.example.birdaha.Classrooms.ClassAnnouncement;
+import com.example.birdaha.Classrooms.Classroom;
+import com.example.birdaha.General.ClassAnnouncementModel;
+import com.example.birdaha.General.HomeworksAndAnnouncements;
+import com.example.birdaha.General.HwModel;
 import com.example.birdaha.R;
+import com.example.birdaha.Users.Student;
+import com.google.gson.Gson;
+
+import java.io.Serializable;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /**
  * The StudentProfileFragment class represents a fragment displaying a student's profile.
@@ -41,11 +62,19 @@ import com.example.birdaha.R;
  */
 public class StudentProfileFragment extends Fragment {
 
+    interface GetHomeworkAndAnnouncement{
+        @GET("/api/v1/homeworks/announcements/{classroomId}/{studentId}")
+        Call<HomeworksAndAnnouncements> getHomeworksAndAnnouncements(
+                @Path("classroomId") int classroomId,
+                @Path("studentId") int studentId
+        );
+    }
+
     // UI elements
     TextView nameSurname, classroom, schoolNumber;
     Button changeProfilePicture;
-    Button homeworks;
-    Button announcements;
+    Button homeworksButton;
+    Button announcementsButton;
     ImageView profilePicture;
     boolean isGranted = false;
 
@@ -117,13 +146,14 @@ public class StudentProfileFragment extends Fragment {
     /**
      * Creates a new instance of the StudentProfileFragment.
      *
-     * @param param1 Title content to be displayed.
+     * @param student Title content to be displayed.
      * @return A new instance of StudentProfileFragment.
      */
-    public static StudentProfileFragment newInstance(String param1) {
+    public static StudentProfileFragment newInstance(Student student) {
         StudentProfileFragment fragment = new StudentProfileFragment();
         Bundle args = new Bundle();
-        args.putString(KEY_TITLE, param1);
+        args.putSerializable("student",student);
+        //args.putString(KEY_TITLE, param1);
         fragment.setArguments(args);
         return fragment;
     }
@@ -155,25 +185,76 @@ public class StudentProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_student_profile, container, false);
-        nameSurname = (TextView) view.findViewById(R.id.student_name_surname);
-        classroom = (TextView) view.findViewById(R.id.student_classroom);
-        schoolNumber = (TextView) view.findViewById(R.id.student_school_number);
+        Bundle bundle = getArguments();
+        if(bundle != null){
+            Student student = (Student) bundle.getSerializable("student");
+            nameSurname = view.findViewById(R.id.student_name_surname_info);
+            classroom = view.findViewById(R.id.student_classroom_info);
+            schoolNumber = view.findViewById(R.id.student_school_number_info);
+            nameSurname.setText(student.getName());
+            Classroom classroom1 = student.getClassroom();
+            classroom.setText(String.valueOf(classroom1.getName()));
+            schoolNumber.setText(String.valueOf(student.getSchool_no()));
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://sinifdoktoruadmin.online/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            GetHomeworkAndAnnouncement requestUser = retrofit.create(GetHomeworkAndAnnouncement.class);
+            requestUser.getHomeworksAndAnnouncements(classroom1.getClassroom_id(), student.getStudent_id()).enqueue(new Callback<HomeworksAndAnnouncements>() {
+                @Override
+                public void onResponse(Call<HomeworksAndAnnouncements> call, Response<HomeworksAndAnnouncements> response) {
+                    if(response.isSuccessful() && response.body() != null){
+                        HomeworksAndAnnouncements models = response.body();
+                        Log.d("Respond",new Gson().toJson(response.body()));
+                        List<HwModel> homeworkModels = models.getHomeworks();
+                        List<ClassAnnouncementModel> announcementModels = models.getClassAnnouncements();
+
+                        homeworksButton = view.findViewById(R.id.student_homeworks);
+
+                        homeworksButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(requireActivity(), HomeWorkScreen.class);
+                                intent.putExtra("homeworks", (Serializable) homeworkModels);
+                                startActivity(intent);
+                            }
+                        });
+
+                        announcementsButton = (Button) view.findViewById(R.id.student_announcements);
+                        announcementsButton.setOnClickListener(v -> {
+                            Intent intent = new Intent(requireActivity(), ClassAnnouncementScreen.class);
+                            intent.putExtra("classAnnouncements",(Serializable) announcementModels);
+                            startActivity(intent);
+                        });
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<HomeworksAndAnnouncements> call, Throwable t) {
+                    Log.d("Error",t.getMessage());
+                }
+            });
+
+            /*homeworks = (Button) view.findViewById(R.id.student_homeworks);
+
+            homeworks.setOnClickListener(v -> {
+                Intent intent = new Intent(requireActivity(), HomeWorkScreen.class);
+                startActivity(intent);
+            });*/
+        }
+        //nameSurname = (TextView) view.findViewById(R.id.student_name_surname);
+        //classroom = (TextView) view.findViewById(R.id.student_classroom);
+        //schoolNumber = (TextView) view.findViewById(R.id.student_school_number);
 
         changeProfilePicture = (Button) view.findViewById(R.id.student_gallery);
-        homeworks = (Button) view.findViewById(R.id.student_homeworks);
-        announcements = (Button) view.findViewById(R.id.student_announcements);
+
+
 
         profilePicture = (ImageView) view.findViewById(R.id.student_profilePicture);
 
-        homeworks.setOnClickListener(v -> {
-            Intent intent = new Intent(requireActivity(), HomeWorkScreen.class);
-            startActivity(intent);
-        });
 
-        announcements.setOnClickListener(v -> {
-            Intent intent = new Intent(requireActivity(), ClassAnnouncementScreen.class);
-            startActivity(intent);
-        });
 
         changeProfilePicture.setOnClickListener(v -> checkPermissionAndOpenGallery());
         return view;

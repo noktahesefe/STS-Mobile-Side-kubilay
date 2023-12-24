@@ -9,6 +9,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import com.example.birdaha.R;
+import com.example.birdaha.Users.Student;
 
 import org.w3c.dom.Text;
 
@@ -20,9 +21,9 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context context;
     private String title;
-    private Map<String, List<String>> listItem;
+    private Map<String, List<Student>> listItem;
 
-    public CustomExpandableListAdapter(Context context, String title, Map<String, List<String>> listItem) {
+    public CustomExpandableListAdapter(Context context, String title, Map<String, List<Student>> listItem) {
         this.context = context;
         this.title = title;
         this.listItem = listItem;
@@ -77,7 +78,7 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        String title = (String) getChild(groupPosition, childPosition);
+        String title = (String) getChild(groupPosition, childPosition).toString();
         if(convertView == null)
             convertView = LayoutInflater.from(context).inflate(R.layout.list_item, null);
 
