@@ -32,6 +32,7 @@ import com.example.birdaha.Adapters.HomeworkAdapter;
 import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.General.ClassAnnouncementModel;
 import com.example.birdaha.General.HwModel;
+import com.example.birdaha.General.StudentModel;
 import com.example.birdaha.General.UpdateRespond;
 import com.example.birdaha.R;
 import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
@@ -45,7 +46,9 @@ import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -69,6 +72,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
     ArrayList<HwModel> hwModels = new ArrayList<>();
 
     Button addingHomeworkButton;
+    Button gradeButton;
     private ImageView homeworkImage;
 
     private String image;
@@ -101,6 +105,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         RecyclerView recyclerView = findViewById(R.id.hwRecyclerView_classroom);
         search = findViewById(R.id.searchView_homework);
         addingHomeworkButton = findViewById(R.id.adding_hw_btn);
+        gradeButton = findViewById(R.id.grade_btn);
 
         Intent intent = getIntent();
         if(intent != null){
@@ -129,6 +134,24 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             @Override
             public void onClick(View v) {
                 showAddAssignmentDialog();
+            }
+        });
+
+        gradeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int homeworkId = 2280;
+                Classroom classroom = (Classroom) intent.getSerializableExtra("classroom");
+                ArrayList<StudentModel> students = (ArrayList<StudentModel>) intent.getSerializableExtra("students");
+                Intent homeworkGradeIntent = new Intent(ClassroomHomeworkScreen.this, HomeworkStudentsScreen.class);
+
+                homeworkGradeIntent.putExtra("students", (Serializable) students);
+                homeworkGradeIntent.putExtra("classroom", classroom);
+                homeworkGradeIntent.putExtra("homeworkId", homeworkId);
+                startActivity(homeworkGradeIntent);
+
+
+
             }
         });
 

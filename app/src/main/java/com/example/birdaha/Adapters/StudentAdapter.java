@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.birdaha.General.StudentModel;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Student;
 import com.example.birdaha.Utilities.HomeworkStudentsViewInterface;
@@ -20,12 +21,12 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
 
     Context context;
 
-    ArrayList<Student> students;
+    ArrayList<StudentModel> students;
 
     private final HomeworkStudentsViewInterface studentViewInterface;
 
 
-    public StudentAdapter(Context context, ArrayList<Student> students, HomeworkStudentsViewInterface studentViewInterface) {
+    public StudentAdapter(Context context, ArrayList<StudentModel> students, HomeworkStudentsViewInterface studentViewInterface) {
         this.context = context;
         this.students = students;
         this.studentViewInterface = studentViewInterface;
@@ -41,8 +42,25 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
 
     @Override
     public void onBindViewHolder(@NonNull StudentViewHolder holder, int position) {
-        Student currentStudent = students.get(position);
+        StudentModel currentStudent = students.get(position);
         holder.studentNameTextView.setText(currentStudent.getName());
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(studentViewInterface != null)
+                {
+                    int pos = students.indexOf(currentStudent);
+                    if(pos != -1) {
+                        try {
+                            studentViewInterface.onHomeworkStudentItemClick(students.get(pos), v);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
+                }
+            }
+        });
     }
 
     @Override
@@ -73,7 +91,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
             cardView = itemView.findViewById(R.id.cardView3);
 
             // Set a click listener on the cardView
-            cardView.setOnClickListener(new View.OnClickListener() {
+           /* cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
@@ -81,7 +99,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
                         studentViewInterface.onHomeworkStudentItemClick(pos, cardView);
                     }
                 }
-            });
+            });*/
         }
     }
 
