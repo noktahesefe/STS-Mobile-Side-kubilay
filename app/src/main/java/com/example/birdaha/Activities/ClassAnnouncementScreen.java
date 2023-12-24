@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.birdaha.Adapters.ClassAnnouncementAdapter;
 import com.example.birdaha.General.ClassAnnouncementModel;
-import com.example.birdaha.General.GeneralAnnouncement;
 import com.example.birdaha.R;
 import com.example.birdaha.Utilities.ClassAnnouncementViewInterface;
 
@@ -31,7 +29,7 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
         setContentView(R.layout.activity_student_announcement_screen);
         RecyclerView recyclerView = findViewById(R.id.caRecyclerView);
 
-        search = findViewById(R.id.searchView_Announcement);
+        search = findViewById(R.id.searchView_students);
 
         Intent intent = getIntent();
         if(intent != null){

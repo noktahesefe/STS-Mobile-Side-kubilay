@@ -43,6 +43,10 @@
             android:exported="false"
             android:theme="@style/TransparentActionBar"/>
         <activity
+            android:name=".Activities.HomeworkStudentsScreen"
+            android:exported="false"
+            android:theme="@style/TransparentActionBar"/>
+        <activity
             android:name=".Activities.HomeWorkScreen"
             android:exported="false"
             android:theme="@style/TransparentActionBar"/>
