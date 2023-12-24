@@ -407,20 +407,6 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             });
         }
 
-        byte[] imageBytes = Base64.decode(clickedItem.getImage(), Base64.DEFAULT);
-        Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes,0, imageBytes.length);
-        Glide.with(ClassroomHomeworkScreen.this)
-                .load(decodedImage)
-                .into(imageView);
-
-        Intent intent = getIntent();
-        if(intent != null){
-            Teacher currentTeacher = (Teacher) intent.getSerializableExtra("teacher");
-            if(currentTeacher.getTeacher_id() != clickedItem.getTeacher_id()){
-                editButton.setEnabled(false);
-                saveButton.setEnabled(false);
-            }
-        }
 
 
         editButton.setOnClickListener(v -> {
