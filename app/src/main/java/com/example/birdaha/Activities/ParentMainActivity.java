@@ -97,16 +97,13 @@ public class ParentMainActivity extends AppCompatActivity {
      *
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         currentParent = (Parent) getIntent().getSerializableExtra("user");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parent_main);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.DrawerLayout_window_field);
         Animation fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in);
-
-
 
 
         expandableListView = (ExpandableListView) findViewById(R.id.ExpandableList_my_students);    //expandable list for students
@@ -118,7 +115,7 @@ public class ParentMainActivity extends AppCompatActivity {
 
         setupDrawer();
 
-        if(savedInstanceState == null)
+        if (savedInstanceState == null)
             setDefaultFragment();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -153,7 +150,7 @@ public class ParentMainActivity extends AppCompatActivity {
                 finish();
             }
         });
-
+    }
 
     private void setupExpandableListViewAnimation(final Animation animation) {
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {

@@ -76,13 +76,13 @@ public class TeacherMainActivity extends AppCompatActivity {
         if(intent != null){
             Teacher teacher = (Teacher) intent.getSerializableExtra("user");
             nameSurname.setText(teacher.getName());
-            if(teacher.getTeacher_image() != null){
+            /*if(teacher.getTeacher_image() != null){
                 byte[] imageBytes = Base64.decode(teacher.getTeacher_image(), Base64.DEFAULT);
                 Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes,0, imageBytes.length);
                 Glide.with(this)
                         .load(decodedImage)
                         .into(teacherPhoto);
-            }
+            }*/
         }
 
         navigationManager = FragmentNavigationManager.getmInstance(this);

@@ -79,13 +79,13 @@ public class StudentMainActivity extends AppCompatActivity {
         if(intent != null){
             Student student = (Student) intent.getSerializableExtra("user");
             nameSurname.setText(student.getName());
-            if(student.getStudent_image() != null){
+            /*if(student.getStudent_image() != null){
                 byte[] imageBytes = Base64.decode(student.getStudent_image(), Base64.DEFAULT);
                 Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes,0, imageBytes.length);
                 Glide.with(this)
                         .load(decodedImage)
                         .into(studentPhoto);
-            }
+            }*/
         }
 
         navigationManager = FragmentNavigationManager.getmInstance(this);
