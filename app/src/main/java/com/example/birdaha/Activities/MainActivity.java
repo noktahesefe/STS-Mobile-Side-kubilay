@@ -168,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
                             intent.putExtra("user", teacher);
                             Toast.makeText(MainActivity.this, "Teacher logged in", Toast.LENGTH_SHORT).show();
                             startActivity(intent);
+                            finish();
                             break;
                         case 202:
                             Classroom classroom = respond.getUser().getClassroom();
@@ -177,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
                             intent2.putExtra("user", student);
                             Toast.makeText(MainActivity.this, "Student logged in", Toast.LENGTH_SHORT).show();
                             startActivity(intent2);
+                            finish();
                             break;
                         case 203:
                             Parent parent = new Parent(user.getName(), user.getParent_id(), user.getStudents());
@@ -184,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
                             intent3.putExtra("user", parent);
                             Toast.makeText(MainActivity.this, "Parent logged in", Toast.LENGTH_SHORT).show();
                             startActivity(intent3);
+                            finish();
                             break;
                     }
                 } else {
