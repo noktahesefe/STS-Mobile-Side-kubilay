@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 
-public class HwModel implements Serializable {
+public class HwModel implements Serializable, Comparable<HwModel> {
     private int homework_id;
     private int teacher_id;
     private int classroom_id;
@@ -92,6 +92,13 @@ public class HwModel implements Serializable {
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    @Override
+    public int compareTo(HwModel o) {
+        System.out.println(title);
+        System.out.println(o.title);
+        return this.title.toLowerCase().compareTo(o.getTitle().toLowerCase());
     }
 
 }

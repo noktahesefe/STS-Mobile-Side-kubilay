@@ -4,13 +4,10 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -24,7 +21,6 @@ import com.example.birdaha.General.UpdateRespond;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Teacher;
 import com.example.birdaha.Utilities.ClassAnnouncementViewInterface;
-import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -59,7 +55,7 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
         setContentView(R.layout.activity_classroom_announcement_screen);
         RecyclerView recyclerView = findViewById(R.id.caRecyclerView_classroom);
 
-        search = findViewById(R.id.searchView_Announcement);
+        search = findViewById(R.id.searchView_students);
         addingAnnouncementButton = findViewById(R.id.adding_announcement_button);
 
         Intent intent = getIntent();

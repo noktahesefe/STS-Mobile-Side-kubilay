@@ -1,6 +1,7 @@
 package com.example.birdaha.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +26,7 @@ import com.example.birdaha.Utilities.HomeworkStudentsViewInterface;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import retrofit2.Callback;
 import retrofit2.Call;
@@ -63,6 +65,8 @@ public class HomeworkStudentsScreen extends AppCompatActivity implements Homewor
     private int homeworkId;
     private Retrofit retrofit;
 
+    SearchView search;
+
     /**
      * This method is called when the activity is starting.
      * It sets the content view, initializes the RecyclerView and sets the students.
@@ -73,16 +77,46 @@ public class HomeworkStudentsScreen extends AppCompatActivity implements Homewor
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homework_students_screen);
         RecyclerView recyclerView = findViewById(R.id.RecyclerView_students);
-
+        search = findViewById(R.id.searchView_students);
 
         Classroom classroom = (Classroom) getIntent().getSerializableExtra("classroom");
         students = (ArrayList<StudentModel>) getIntent().getSerializableExtra("students");
+        students.sort(new Comparator<StudentModel>() {
+            @Override
+            public int compare(StudentModel o1, StudentModel o2) {
+                return o1.compareTo(o2);
+            }
+        });
+
         homeworkId = getIntent().getIntExtra("homeworkId", -1);
 
         //setStudents();
         studentAdapter = new StudentAdapter(this, students,this);
         recyclerView.setAdapter(studentAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
+        // Set a listener for the SearchView to handle query text changes
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                studentAdapter.getFilter().filter(newText);
+                return true;
+            }
+        });
+
+        // Set a listener for closing the SearchView
+        search.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                return false;
+            }
+        });
 
     }
 

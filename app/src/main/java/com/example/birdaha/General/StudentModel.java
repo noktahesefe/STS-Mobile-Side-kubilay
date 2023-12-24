@@ -2,7 +2,7 @@ package com.example.birdaha.General;
 
 import java.io.Serializable;
 
-public class StudentModel implements Serializable {
+public class StudentModel implements Serializable, Comparable<StudentModel> {
 
     private int student_id;
     private String name;
@@ -48,4 +48,11 @@ public class StudentModel implements Serializable {
     public void setClassroom_id(String classroom_id) {
         this.classroom_id = classroom_id;
     }
+
+
+    @Override
+    public int compareTo(StudentModel o) {
+        return this.name.toLowerCase().compareTo(o.getName().toLowerCase());
+    }
+
 }

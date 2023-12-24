@@ -24,10 +24,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.birdaha.Adapters.HomeworkAdapter;
 import com.example.birdaha.General.HwModel;
+import com.example.birdaha.General.StudentModel;
 import com.example.birdaha.R;
 import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * This activity displays a list of homework modules.
@@ -50,6 +52,8 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         if (intent != null) {
             hwModels = (ArrayList<HwModel>) intent.getSerializableExtra("homeworks");
         }
+
+
 
         HomeworkAdapter homeworkAdapter = new HomeworkAdapter(this, hwModels, this);
         recyclerView.setAdapter(homeworkAdapter);

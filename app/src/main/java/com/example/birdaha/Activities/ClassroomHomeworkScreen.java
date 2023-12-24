@@ -48,6 +48,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -112,6 +113,12 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             hwModels = (ArrayList<HwModel>) intent.getSerializableExtra("homeworks");
         }
 
+        hwModels.sort(new Comparator<HwModel>() {
+            @Override
+            public int compare(HwModel o1, HwModel o2) {
+                return o1.compareTo(o2);
+            }
+        });
 
         HomeworkAdapter homeworkAdapter = new HomeworkAdapter(this, hwModels, this);
         recyclerView.setAdapter(homeworkAdapter);
@@ -178,27 +185,6 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             }
         });
 
-
-        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                homeworkAdapter.getFilter().filter(newText);
-                return true;
-            }
-        });
-
-        search.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                //homeworkAdapter.restoreOriginalList();
-                return false;
-            }
-        });
     }
 
     private void showAddAssignmentDialog() {
