@@ -29,7 +29,8 @@
         android:layout_marginEnd="50dp"
         app:layout_constraintBottom_toTopOf="@+id/caRecyclerView_classroom"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        android:theme="@style/SearchViewTheme"/>
 
     <Button
         android:id="@+id/adding_announcement_button"
