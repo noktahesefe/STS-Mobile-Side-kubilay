@@ -69,6 +69,7 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
 
         //setClassAnnouncementModels();
         ClassAnnouncementAdapter classAnnouncementAdapter = new ClassAnnouncementAdapter(this, classAnnouncementModels, this);
+
         recyclerView.setAdapter(classAnnouncementAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -93,14 +94,18 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
         });
 
     }
-    private void setClassAnnouncementModels(){
 
+    /**
+     * This method initializes the list of class announcements.
+     * It retrieves the announcement titles from the resources and creates a ClassAnnouncementModel for each title.
+     */
+    private void setClassAnnouncementModels(){
         String[] titles = getResources().getStringArray(R.array.ClassroomAnnouncements);
         for (int i = 0; i < titles.length; i++) {
             classAnnouncementModels.add(new ClassAnnouncementModel(titles[i]));
         }
-
     }
+
     private void showAddAnnouncementDialog() {
         // Create a new AlertDialog builder
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -155,16 +160,6 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
                     });
                 }
 
-                // Create a new ClassAnnouncementModel with the title and description
-                //ClassAnnouncementModel classAnnouncement = new ClassAnnouncementModel(title, content,teacherName);
-
-                // Add the new announcement to the classAnnouncementModels list
-                //classAnnouncementModels.add(classAnnouncement);
-
-                // Notify the adapter that the data set has changed
-                //classAnnouncementAdapter.notifyDataSetChanged();
-
-                // Dismiss the dialog
                 dialog.dismiss();
             }
         });
@@ -177,7 +172,9 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
         //ClassAnnouncementModel classAnnouncementModel = classAnnouncementModels.get(position);
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
-        View overlayView = inflater.inflate(R.layout.class_announcement_overlay_layout, null);
+
+        View overlayView = inflater.inflate(R.layout.overlay_class_announcement_layout, null);
+
 
         EditText title = overlayView.findViewById(R.id.announcement_detail_name);
         EditText details = overlayView.findViewById(R.id.announcement_detail_content);
@@ -190,6 +187,7 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
             Teacher currentTeacher = (Teacher) intent.getSerializableExtra("teacher");
             if(currentTeacher.getTeacher_id() != clickedItem.getTeacher_id()){
                 editButton.setEnabled(false);
+                saveButton.setEnabled(false);
             }
         }
 

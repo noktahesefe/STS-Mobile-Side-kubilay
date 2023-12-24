@@ -14,7 +14,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="7dp"
         android:clickable="true"
-        app:cardBackgroundColor="@color/gray"
+        app:cardBackgroundColor="@color/night_blue"
         app:cardCornerRadius="20dp"
         app:cardElevation="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/personIcon"
                 android:layout_width="48dp"
                 android:layout_height="45dp"
                 android:layout_marginEnd="24dp"
@@ -38,7 +38,7 @@
                 app:layout_constraintVertical_bias="0.0" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/studentName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"

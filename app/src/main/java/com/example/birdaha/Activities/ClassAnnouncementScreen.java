@@ -31,7 +31,7 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
         setContentView(R.layout.activity_student_announcement_screen);
         RecyclerView recyclerView = findViewById(R.id.caRecyclerView);
 
-        search = findViewById(R.id.searchView2);
+        search = findViewById(R.id.searchView_Announcement);
 
         Intent intent = getIntent();
         if(intent != null){
@@ -43,6 +43,7 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
         recyclerView.setAdapter(classAnnouncementAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        // Set up the search functionality
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -64,18 +65,21 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
             }
         });
     }
-    private void setClassAnnouncementModels(){
 
+    /**
+     * This method initializes the list of class announcements.
+     * It retrieves the announcement titles from the resources and creates a ClassAnnouncementModel for each title.
+     */
+    private void setClassAnnouncementModels(){
         String[] titles = getResources().getStringArray(R.array.Announcements);
         for (int i = 0; i < titles.length; i++) {
             classAnnouncementModels.add(new ClassAnnouncementModel(titles[i]));
         }
-
     }
     public void onClassAnnouncementItemClick(ClassAnnouncementModel clickedItem, View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
-        View overlayView = inflater.inflate(R.layout.class_announcement_overlay_layout, null);
+        View overlayView = inflater.inflate(R.layout.overlay_class_announcement_layout, null);
 
         EditText title = overlayView.findViewById(R.id.announcement_detail_name);
         EditText details = overlayView.findViewById(R.id.announcement_detail_content);

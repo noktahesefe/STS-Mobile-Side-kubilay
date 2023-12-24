@@ -224,7 +224,6 @@ public class ParentMainActivity extends AppCompatActivity {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
 
-
                 Intent intent = getIntent();
                 if(intent != null){
                     Student student = lstChild.get(my_students_title).get(childPosition);

@@ -4,36 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.HomeWorkScreen"
     android:background="@drawable/background">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/hwRecyclerView"
-        android:layout_width="331dp"
-        android:layout_height="300dp"
+        android:id="@+id/RecyclerView_students"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="200dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="200dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.SearchView
-        android:id="@+id/searchView_homework"
+        android:id="@+id/searchView_Announcement"
         android:layout_width="331dp"
         android:layout_height="57dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/hwRecyclerView"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        app:layout_constraintBottom_toTopOf="@+id/RecyclerView_students"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <ImageView
-        android:id="@+id/filterView"
-        android:layout_width="46dp"
-        android:layout_height="43dp"
-        android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/searchView_homework"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.89"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/baseline_filter_list_24"
-        android:clickable="true"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

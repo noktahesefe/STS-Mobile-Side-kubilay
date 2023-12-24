@@ -15,7 +15,6 @@ public class Parent extends User{
         this.students = myStudents;
     }
 
-
     public int getParent_id() {
         return parent_id;
     }

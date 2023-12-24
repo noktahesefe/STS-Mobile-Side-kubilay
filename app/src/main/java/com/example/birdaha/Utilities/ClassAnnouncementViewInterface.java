@@ -1,7 +1,6 @@
 package com.example.birdaha.Utilities;
 
 import android.view.View;
-
 import com.example.birdaha.General.ClassAnnouncementModel;
 
 /**
