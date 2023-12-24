@@ -30,7 +30,7 @@ import com.example.birdaha.R;
 import com.example.birdaha.Users.Student;
 import com.example.birdaha.Users.Teacher;
 
-import org.w3c.dom.Text;
+
 
 /**
  * The StudentMainActivity class represents the main activity for student users within the application.

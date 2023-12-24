@@ -2,11 +2,18 @@ package com.example.birdaha.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+
+import android.text.InputType;
 import android.util.Log;
+import android.view.MotionEvent;
+
+import android.util.Log;
+
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -78,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param savedInstanceState A Bundle containing the activity's previously saved state.
      */
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

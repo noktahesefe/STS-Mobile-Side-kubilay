@@ -31,8 +31,7 @@ public class User implements Serializable {
     protected List<Classroom> classrooms;
     protected Lecture course;
     private List<Student> students;
-    protected String student_image;
-    protected String teacher_image;
+
 
 
     public Classroom getClassroom() {
@@ -163,21 +162,8 @@ public class User implements Serializable {
 
     public void setPhone(String phone) {
         this.phone = phone;
+
     }
 
-    public String getStudent_image() {
-        return student_image;
-    }
 
-    public void setStudent_image(String student_image) {
-        this.student_image = student_image;
-    }
-
-    public String getTeacher_image() {
-        return teacher_image;
-    }
-
-    public void setTeacher_image(String teacher_image) {
-        this.teacher_image = teacher_image;
-    }
 }

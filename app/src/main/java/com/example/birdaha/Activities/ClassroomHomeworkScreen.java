@@ -384,6 +384,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                 editButton.setEnabled(false);
                 saveButton.setEnabled(false);
             }
+
         }
 
         // If the clickedItem has no image, do not open the full screen view

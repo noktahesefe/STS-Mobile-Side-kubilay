@@ -10,6 +10,11 @@ import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
+
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -99,18 +104,15 @@ public class ParentMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_parent_main);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.DrawerLayout_window_field);
-        TextView nameSurname = findViewById(R.id.TextView_name_surname);
-        Intent intent = getIntent();
-        if(intent != null){
-            Parent parent = (Parent) intent.getSerializableExtra("user");
-            nameSurname.setText(parent.getName());
-        }
+        Animation fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in);
+
+
 
 
         expandableListView = (ExpandableListView) findViewById(R.id.ExpandableList_my_students);    //expandable list for students
         navigationManager = FragmentNavigationManager.getmInstance(this); //get singleton instance
 
-
+        setupExpandableListViewAnimation(fadeInAnimation);
         getData(); //get data which use in expandable-list
         fillMyStudents(); //it fill expandable-list
 
@@ -152,6 +154,18 @@ public class ParentMainActivity extends AppCompatActivity {
             }
         });
 
+
+    private void setupExpandableListViewAnimation(final Animation animation) {
+        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                if (!parent.isGroupExpanded(groupPosition)) {
+                    // Apply animation for expanding
+                    v.startAnimation(animation);
+                }
+                return false;
+            }
+        });
 
     }
 
