@@ -45,4 +45,9 @@
     <style name="AlertDialogButton" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
         <!-- Customize your button style attributes here -->
     </style>
+
+    <style name="SearchViewTheme"
+            parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="colorControlActivated">@android:color/black</item>
+    </style>
 </resources>

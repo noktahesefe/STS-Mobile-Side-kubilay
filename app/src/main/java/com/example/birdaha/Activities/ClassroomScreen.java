@@ -66,6 +66,7 @@ public class ClassroomScreen extends AppCompatActivity {
                         List<ClassAnnouncementModel> announcementModelList = models.getClassAnnouncementModels();
                         List<HwModel> homeworkModelList = models.getHomeworks();
                         List<StudentModel> students = models.getStudents();
+
                         Log.d("Respond",new Gson().toJson(response.body()));
 
                         classroomAnnouncementsButton = findViewById(R.id.classroom_announcements);

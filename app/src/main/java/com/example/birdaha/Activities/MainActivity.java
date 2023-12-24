@@ -199,6 +199,20 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("ERROR", t.getMessage());
             }
         });
+
+            }
+        });
+    }
+
+    /**
+     * Checks whether the edit texts for username and password are empty or not.
+     *
+     * @return True if both fields are not empty; otherwise, false.
+     */
+    public boolean checkEditText() {
+        String name = username.getText().toString();
+        String pass = password.getText().toString();
+        return !name.isEmpty() && !pass.isEmpty();
     }
 
 }

@@ -99,6 +99,12 @@ public class ParentMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_parent_main);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.DrawerLayout_window_field);
+        TextView nameSurname = findViewById(R.id.TextView_name_surname);
+        Intent intent = getIntent();
+        if(intent != null){
+            Parent parent = (Parent) intent.getSerializableExtra("user");
+            nameSurname.setText(parent.getName());
+        }
 
 
         expandableListView = (ExpandableListView) findViewById(R.id.ExpandableList_my_students);    //expandable list for students

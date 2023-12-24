@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
+
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,12 +21,15 @@ import com.example.birdaha.Utilities.HomeworkStudentsViewInterface;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentViewHolder> {
 
     Context context;
 
+
     ArrayList<StudentModel> students;
     ArrayList<StudentModel> studentsFiltered;
+
 
     private final HomeworkStudentsViewInterface studentViewInterface;
 
@@ -108,7 +112,6 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
 
 
 
-
     /**
      * This class represents the ViewHolder for individual class announcement items.
      */
@@ -128,15 +131,6 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
             cardView = itemView.findViewById(R.id.cardView3);
 
             // Set a click listener on the cardView
-           /* cardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int pos = getAdapterPosition();
-                    if (pos != RecyclerView.NO_POSITION) {
-                        studentViewInterface.onHomeworkStudentItemClick(pos, cardView);
-                    }
-                }
-            });*/
         }
     }
 

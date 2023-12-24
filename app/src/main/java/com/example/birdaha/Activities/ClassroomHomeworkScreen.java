@@ -1,6 +1,8 @@
 package com.example.birdaha.Activities;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -50,6 +52,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
+import retrofit2.http.POST;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -132,6 +142,38 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             @Override
             public void onClick(View v) {
                 showOverlay(); // Call the showOverlay() method when clicked
+            }
+        });
+
+
+
+        addingHomeworkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddAssignmentDialog();
+            }
+        });
+
+
+        // Set a listener for the SearchView to handle query text changes
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                homeworkAdapter.getFilter().filter(newText);
+                return true;
+            }
+        });
+
+        // Set a listener for closing the SearchView
+        search.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                return false;
             }
         });
 
@@ -327,6 +369,8 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         dueDate.setText(clickedItem.getDue_date());
         content.setText(clickedItem.getInfo());
 
+
+        // Even the image is null, decode it so that it displays nothing
         byte[] imageBytes = Base64.decode(clickedItem.getImage(), Base64.DEFAULT);
         Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes,0, imageBytes.length);
         Glide.with(ClassroomHomeworkScreen.this)
@@ -342,6 +386,93 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             }
         }
 
+        // If the clickedItem has no image, do not open the full screen view
+        if(!clickedItem.getImage().equals("")){
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Dialog dialog = new Dialog(ClassroomHomeworkScreen.this, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+                    dialog.setContentView(R.layout.dialog_full_screen_image);
+
+                    ImageView fullScreenImage = dialog.findViewById(R.id.fullScreenImageView);
+                    fullScreenImage.setImageBitmap(decodedImage);
+                    fullScreenImage.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog.show();
+                }
+            });
+        }
+
+        byte[] imageBytes = Base64.decode(clickedItem.getImage(), Base64.DEFAULT);
+        Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes,0, imageBytes.length);
+        Glide.with(ClassroomHomeworkScreen.this)
+                .load(decodedImage)
+                .into(imageView);
+
+        Intent intent = getIntent();
+        if(intent != null){
+            Teacher currentTeacher = (Teacher) intent.getSerializableExtra("teacher");
+            if(currentTeacher.getTeacher_id() != clickedItem.getTeacher_id()){
+                editButton.setEnabled(false);
+                saveButton.setEnabled(false);
+            }
+        }
+
+
+        editButton.setOnClickListener(v -> {
+            // Enable EditTexts to make them editable
+            title.setEnabled(true);
+            dueDate.setEnabled(true);
+            content.setEnabled(true);
+            content.requestFocus();
+        });
+
+        saveButton.setOnClickListener(v -> {
+            // Save the edited text
+            String updatedTitle = title.getText().toString();
+            String updatedDueDate = dueDate.getText().toString();
+            String updatedContent = content.getText().toString();
+
+            clickedItem.setTitle(updatedTitle);
+            clickedItem.setDue_date(updatedDueDate);
+            clickedItem.setInfo(updatedContent);
+            clickedItem.setImage(image);
+
+            System.out.println("hw id:" + clickedItem.getHomework_id());
+            System.out.println("teacher id:" + clickedItem.getTeacher_id());
+            System.out.println("classroom id: " + clickedItem.getClassroom_id());
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://sinifdoktoruadmin.online/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            AddHomework updateHomework = retrofit.create(AddHomework.class);
+            updateHomework.updateHomework(clickedItem).enqueue(new Callback<UpdateRespond>() {
+                @Override
+                public void onResponse(Call<UpdateRespond> call, Response<UpdateRespond> response) {
+                    if(response.isSuccessful() && response.body() != null){
+                        Log.d("ResponseUpdate",new Gson().toJson(response.body()));
+                    }
+                    else{
+                        Log.d("ResponseUpdate",new Gson().toJson(response.body()));
+                        Log.d("ResponseUpdateCode",String.valueOf(response.code()));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UpdateRespond> call, Throwable t) {
+                    Log.d("Error",t.getMessage());
+                }
+            });
+            title.setEnabled(false);
+            dueDate.setEnabled(false);
+            content.setEnabled(false);
+        });
 
         editButton.setOnClickListener(v -> {
             // Enable EditTexts to make them editable

@@ -2,10 +2,14 @@ package com.example.birdaha.Activities;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.bumptech.glide.Glide;
 import com.example.birdaha.Fragments.HomePageFragment;
 import com.example.birdaha.Fragments.NotificationFragment;
 import com.example.birdaha.Fragments.StudentProfileFragment;
@@ -24,6 +29,8 @@ import com.example.birdaha.Interface.NavigationManager;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Student;
 import com.example.birdaha.Users.Teacher;
+
+import org.w3c.dom.Text;
 
 /**
  * The StudentMainActivity class represents the main activity for student users within the application.
@@ -66,6 +73,20 @@ public class StudentMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_student_main);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.DrawerLayout_window_field);
+        TextView nameSurname = drawerLayout.findViewById(R.id.TextView_student_name_surname);
+        ImageView studentPhoto = drawerLayout.findViewById(R.id.ImageView_person_photo);
+        Intent intent = getIntent();
+        if(intent != null){
+            Student student = (Student) intent.getSerializableExtra("user");
+            nameSurname.setText(student.getName());
+            if(student.getStudent_image() != null){
+                byte[] imageBytes = Base64.decode(student.getStudent_image(), Base64.DEFAULT);
+                Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes,0, imageBytes.length);
+                Glide.with(this)
+                        .load(decodedImage)
+                        .into(studentPhoto);
+            }
+        }
 
         navigationManager = FragmentNavigationManager.getmInstance(this);
 

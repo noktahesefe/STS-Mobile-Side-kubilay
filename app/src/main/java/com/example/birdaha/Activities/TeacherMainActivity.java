@@ -2,10 +2,14 @@ package com.example.birdaha.Activities;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.bumptech.glide.Glide;
 import com.example.birdaha.Fragments.HomePageFragment;
 import com.example.birdaha.Fragments.NotificationFragment;
 import com.example.birdaha.Fragments.TeacherProfileFragment;
@@ -65,6 +70,20 @@ public class TeacherMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_teacher_main);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.DrawerLayout_window_field);
+        TextView nameSurname = drawerLayout.findViewById(R.id.TextView_teacher_name_surname);
+        ImageView teacherPhoto = drawerLayout.findViewById(R.id.ImageView_person_photo);
+        Intent intent = getIntent();
+        if(intent != null){
+            Teacher teacher = (Teacher) intent.getSerializableExtra("user");
+            nameSurname.setText(teacher.getName());
+            if(teacher.getTeacher_image() != null){
+                byte[] imageBytes = Base64.decode(teacher.getTeacher_image(), Base64.DEFAULT);
+                Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes,0, imageBytes.length);
+                Glide.with(this)
+                        .load(decodedImage)
+                        .into(teacherPhoto);
+            }
+        }
 
         navigationManager = FragmentNavigationManager.getmInstance(this);
 

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -37,6 +38,16 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import android.view.View;
+import android.widget.EditText;
+
+import com.example.birdaha.Adapters.StudentAdapter;
+import com.example.birdaha.General.ClassAnnouncementModel;
+import com.example.birdaha.R;
+import com.example.birdaha.Users.Student;
+import com.example.birdaha.Utilities.HomeworkStudentsViewInterface;
+
+import java.util.ArrayList;
 
 /**
  * This class represents the HomeworkStudentsScreen activity.
@@ -117,19 +128,7 @@ public class HomeworkStudentsScreen extends AppCompatActivity implements Homewor
                 return false;
             }
         });
-
     }
-
-    /**
-     * This method sets the students for the RecyclerView.
-     * It is a dummy method for testing and can be removed later.
-     */
-    /*private void setStudents(){
-        String[] titles = getResources().getStringArray(R.array.Students);
-        for (int i = 0; i < titles.length; i++) {
-            students.add(new Student("mete",1, new Classroom("2c",1), 5));
-        }
-    }*/
 
     /**
      * This method is called when a student item in the RecyclerView is clicked.
@@ -262,7 +261,6 @@ public class HomeworkStudentsScreen extends AppCompatActivity implements Homewor
                         }
 
 
-
                         // TODO: Process the entered grade and note here
                         // For example, save them or send them to a database
                     }
@@ -270,7 +268,6 @@ public class HomeworkStudentsScreen extends AppCompatActivity implements Homewor
                 .setNegativeButton("Cancel", null)
                 .show();
     }
-
 
 
     private boolean isGradeValid(String grade)
