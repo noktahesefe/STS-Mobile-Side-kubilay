@@ -5,9 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+
 import android.text.InputType;
 import android.util.Log;
 import android.view.MotionEvent;
+
+import android.util.Log;
+
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -114,7 +118,9 @@ public class MainActivity extends AppCompatActivity {
                                     List<Classroom> classrooms = respond.getUser().getClassrooms();
                                     Lecture course = respond.getUser().getCourse();
                                     Log.d("Course", course.getName());
+
                                     Log.d("Course", String.valueOf(course.getCourse_id()));
+
                                     Teacher teacher = new Teacher(user.getName(), user.getTeacher_id(), course, classrooms);
                                     Intent intent = new Intent(MainActivity.this, TeacherMainActivity.class);
                                     intent.putExtra("user", teacher);
