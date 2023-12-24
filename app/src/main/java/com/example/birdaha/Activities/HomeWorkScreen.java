@@ -1,6 +1,7 @@
 package com.example.birdaha.Activities;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -131,11 +132,33 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         title.setText(clickedItem.getTitle());
         dueDate.setText(clickedItem.getDue_date());
         content.setText(clickedItem.getInfo());
+
         byte[] imageBytes = Base64.decode(clickedItem.getImage(), Base64.DEFAULT);
         Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes,0, imageBytes.length);
         Glide.with(HomeWorkScreen.this)
                 .load(decodedImage)
                 .into(imageView);
+
+        // If the clickedItem has no image, do not open the full screen view
+        if(!clickedItem.getImage().equals("")){
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Dialog dialog = new Dialog(HomeWorkScreen.this, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+                    dialog.setContentView(R.layout.dialog_full_screen_image);
+
+                    ImageView fullScreenImage = dialog.findViewById(R.id.fullScreenImageView);
+                    fullScreenImage.setImageBitmap(decodedImage);
+                    fullScreenImage.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog.show();
+                }
+            });
+        }
 
         editButton.setVisibility(View.INVISIBLE);
         saveButton.setVisibility(View.INVISIBLE);
