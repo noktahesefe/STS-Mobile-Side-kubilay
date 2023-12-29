@@ -151,7 +151,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
             checkBox1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    System.out.println("cb1 = " + isChecked);
                     hwModels.clear();
 
                     if(checkBox2.isChecked())
@@ -178,7 +177,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
             checkBox2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    System.out.println("cb2 = " + isChecked);
                     hwModels.clear();
 
                     if(checkBox1.isChecked())
@@ -280,7 +278,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDateTime today = LocalDateTime.now();
 
-        // Comparator oluşturulması
         Comparator<HwModel> dateComparator = (date1, date2) -> {
             LocalDateTime localDate1 = LocalDate.parse(date1.getDue_date(), formatter).atStartOfDay();
             LocalDateTime localDate2 = LocalDate.parse(date2.getDue_date(), formatter).atStartOfDay();
@@ -296,7 +293,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
             }
         };
 
-        // Listeyi tarihe göre sıralama
         Collections.sort(list, dateComparator);
     }
 }

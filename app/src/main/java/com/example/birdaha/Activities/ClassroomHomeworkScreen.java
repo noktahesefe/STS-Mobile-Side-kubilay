@@ -372,18 +372,11 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             // Find the checkboxes in the overlay layout
 
             CheckBox checkBox1 = overlayView.findViewById(R.id.checkBox);
-            /*else
-                overlayView.findViewById(R.id.checkBox).setEnabled(checkBox1.isEnabled());*/
-
-
             CheckBox checkBox2 = overlayView.findViewById(R.id.checkBox2);
-            /*else
-                overlayView.findViewById(R.id.checkBox2).setEnabled(checkBox2.isEnabled());*/
 
             checkBox1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    System.out.println("cb1 = " + isChecked);
                     hwModels.clear();
 
                     if(checkBox2.isChecked())
@@ -410,7 +403,6 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             checkBox2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    System.out.println("cb2 = " + isChecked);
                     hwModels.clear();
 
                     if(checkBox1.isChecked())
