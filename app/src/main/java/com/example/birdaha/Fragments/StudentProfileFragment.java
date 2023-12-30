@@ -28,13 +28,8 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 
 import com.example.birdaha.Activities.ClassAnnouncementScreen;
-import com.example.birdaha.Activities.ClassRoomAnnouncementScreen;
-import com.example.birdaha.Activities.ClassroomHomeworkScreen;
-import com.example.birdaha.Activities.ClassroomScreen;
-import com.example.birdaha.Activities.HomeWorkScreen;
+import com.example.birdaha.Activities.StudentHomeworkScreen;
 
-import com.example.birdaha.Activities.MainActivity;
-import com.example.birdaha.Classrooms.ClassAnnouncement;
 import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.General.ClassAnnouncementModel;
 import com.example.birdaha.General.HomeworksAndAnnouncements;
@@ -53,7 +48,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
 
 /**
  * The StudentProfileFragment class represents a fragment displaying a student's profile.
@@ -216,7 +210,7 @@ public class StudentProfileFragment extends Fragment {
                         homeworksButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Intent intent = new Intent(requireActivity(), HomeWorkScreen.class);
+                                Intent intent = new Intent(requireActivity(), StudentHomeworkScreen.class);
                                 intent.putExtra("homeworks", (Serializable) homeworkModels);
                                 startActivity(intent);
                             }

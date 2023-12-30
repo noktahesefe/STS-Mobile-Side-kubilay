@@ -19,8 +19,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import android.widget.TextView;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
@@ -32,7 +30,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.birdaha.Adapters.HomeworkAdapter;
 import com.example.birdaha.Classrooms.Classroom;
-import com.example.birdaha.General.ClassAnnouncementModel;
 import com.example.birdaha.General.HwModel;
 import com.example.birdaha.General.StudentModel;
 import com.example.birdaha.General.UpdateRespond;
@@ -40,10 +37,7 @@ import com.example.birdaha.R;
 import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 
 import com.example.birdaha.Users.Teacher;
-import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 import com.google.gson.Gson;
-
-import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 
 
 import java.io.ByteArrayOutputStream;
@@ -51,15 +45,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Body;
-import retrofit2.http.POST;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -130,8 +115,8 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             }
         });
 
-        HomeworkAdapter homeworkAdapter = new HomeworkAdapter(this, hwModels, this);
-        recyclerView.setAdapter(homeworkAdapter);
+        HomeworkAdapter teacherHomeworkAdapter = new HomeworkAdapter(this, hwModels, this);
+        recyclerView.setAdapter(teacherHomeworkAdapter);
 
         // Set the layout manager for the RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -164,7 +149,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                homeworkAdapter.getFilter().filter(newText);
+                teacherHomeworkAdapter.getFilter().filter(newText);
                 return true;
             }
         });
@@ -192,7 +177,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                 int homeworkId = 2280;
                 Classroom classroom = (Classroom) intent.getSerializableExtra("classroom");
                 ArrayList<StudentModel> students = (ArrayList<StudentModel>) intent.getSerializableExtra("students");
-                Intent homeworkGradeIntent = new Intent(ClassroomHomeworkScreen.this, HomeworkStudentsScreen.class);
+                Intent homeworkGradeIntent = new Intent(ClassroomHomeworkScreen.this, StudentsScreen.class);
 
                 homeworkGradeIntent.putExtra("students", (Serializable) students);
                 homeworkGradeIntent.putExtra("classroom", classroom);
@@ -214,7 +199,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                homeworkAdapter.getFilter().filter(newText);
+                teacherHomeworkAdapter.getFilter().filter(newText);
                 return true;
             }
         });

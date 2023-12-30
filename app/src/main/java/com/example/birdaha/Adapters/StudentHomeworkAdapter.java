@@ -18,13 +18,13 @@ import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.HomeworkViewHolder> implements Filterable{
+public class StudentHomeworkAdapter extends RecyclerView.Adapter<StudentHomeworkAdapter.HomeworkViewHolder> implements Filterable{
     private final ClassroomHomeworkViewInterface homeworkViewInterface;
     Context context;
     ArrayList<HwModel> hwModels;
     ArrayList<HwModel> hwModelsFiltered;
 
-    public HomeworkAdapter(Context context, ArrayList<HwModel> hwModels, ClassroomHomeworkViewInterface homeworkViewInterface){
+    public StudentHomeworkAdapter(Context context, ArrayList<HwModel> hwModels, ClassroomHomeworkViewInterface homeworkViewInterface){
         this.context = context;
         this.hwModels = hwModels;
         this.hwModelsFiltered = hwModels;
@@ -35,7 +35,7 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
     @Override
     public HomeworkViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.row_teacher_homework, parent, false);
+        View view = inflater.inflate(R.layout.row_student_homework, parent, false);
         return new HomeworkViewHolder(view, homeworkViewInterface);
     }
 
@@ -114,7 +114,7 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
             //textViewTitle = itemView.findViewById(R.id.studentName);
 
             // Initialize the cardView variable with the view from the layout with id cardView
-            textViewname = itemView.findViewById(R.id.homework_title);
+            textViewname = itemView.findViewById(R.id.student_homework_title);
         }
     }
 }

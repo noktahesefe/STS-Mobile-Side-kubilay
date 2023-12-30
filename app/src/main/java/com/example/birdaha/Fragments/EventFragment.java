@@ -89,19 +89,7 @@ public class EventFragment extends Fragment implements EventRecyclerViewInterfac
      */
     @Override
     public void onEventItemClick(int position, View view) {
-        Event currentEvent = events.get(position);
-        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-        LayoutInflater inflater = LayoutInflater.from(view.getContext());
-        View overlayView = inflater.inflate(R.layout.event_detail_overlay, null);
-        ImageView imageView = overlayView.findViewById(R.id.event_detail_image);
-        TextView detail = overlayView.findViewById(R.id.event_detail);
-        imageView.setImageResource(currentEvent.getImageResource());
-        detail.setText(currentEvent.getDetails());
 
-        builder.setView(overlayView);
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
     }
 
     /**

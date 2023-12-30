@@ -11,18 +11,15 @@ import android.os.Bundle;
 
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.EditText;
 
 import com.example.birdaha.Adapters.StudentAdapter;
 import com.example.birdaha.Classrooms.Classroom;
-import com.example.birdaha.General.ClassAnnouncementModel;
 import com.example.birdaha.General.HomeworkResult;
 import com.example.birdaha.General.HomeworkResultModel;
 import com.example.birdaha.General.StudentModel;
 import com.example.birdaha.General.UpdateRespond;
 import com.example.birdaha.R;
-import com.example.birdaha.Users.Student;
 import com.example.birdaha.Utilities.HomeworkStudentsViewInterface;
 import com.google.gson.Gson;
 
@@ -38,22 +35,12 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
-import android.view.View;
-import android.widget.EditText;
-
-import com.example.birdaha.Adapters.StudentAdapter;
-import com.example.birdaha.General.ClassAnnouncementModel;
-import com.example.birdaha.R;
-import com.example.birdaha.Users.Student;
-import com.example.birdaha.Utilities.HomeworkStudentsViewInterface;
-
-import java.util.ArrayList;
 
 /**
  * This class represents the HomeworkStudentsScreen activity.
  * It implements the HomeworkStudentsViewInterface.
  */
-public class HomeworkStudentsScreen extends AppCompatActivity implements HomeworkStudentsViewInterface {
+public class StudentsScreen extends AppCompatActivity implements HomeworkStudentsViewInterface {
 
     interface Result{
         @GET("/api/v1/homework/result/{homeworkId}/{studentId}")
@@ -101,7 +88,6 @@ public class HomeworkStudentsScreen extends AppCompatActivity implements Homewor
 
         homeworkId = getIntent().getIntExtra("homeworkId", -1);
 
-        //setStudents();
         studentAdapter = new StudentAdapter(this, students,this);
         recyclerView.setAdapter(studentAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

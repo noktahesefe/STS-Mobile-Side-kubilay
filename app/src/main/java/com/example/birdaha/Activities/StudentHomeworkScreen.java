@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -24,19 +23,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.birdaha.Adapters.HomeworkAdapter;
+import com.example.birdaha.Adapters.StudentHomeworkAdapter;
 import com.example.birdaha.General.HwModel;
-import com.example.birdaha.General.StudentModel;
 import com.example.birdaha.R;
 import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
 /**
  * This activity displays a list of homework modules.
  */
-public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomeworkViewInterface {
+public class StudentHomeworkScreen extends AppCompatActivity implements ClassroomHomeworkViewInterface {
     SearchView search;
     ArrayList<HwModel> hwModels;
 
@@ -56,8 +53,8 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         }
 
 
-        HomeworkAdapter homeworkAdapter = new HomeworkAdapter(this, hwModels, this);
-        recyclerView.setAdapter(homeworkAdapter);
+        StudentHomeworkAdapter studentHomeworkAdapter = new StudentHomeworkAdapter(this, hwModels, this);
+        recyclerView.setAdapter(studentHomeworkAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         View baselineFilterView = findViewById(R.id.filterView);
@@ -76,7 +73,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                homeworkAdapter.getFilter().filter(newText);
+                studentHomeworkAdapter.getFilter().filter(newText);
                 return true;
             }
         });
@@ -139,7 +136,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
 
         byte[] imageBytes = Base64.decode(clickedItem.getImage(), Base64.DEFAULT);
         Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes,0, imageBytes.length);
-        Glide.with(HomeWorkScreen.this)
+        Glide.with(StudentHomeworkScreen.this)
                 .load(decodedImage)
                 .into(imageView);
 
@@ -148,7 +145,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final Dialog dialog = new Dialog(HomeWorkScreen.this, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+                    final Dialog dialog = new Dialog(StudentHomeworkScreen.this, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
                     dialog.setContentView(R.layout.dialog_full_screen_image);
 
                     ImageView fullScreenImage = dialog.findViewById(R.id.fullScreenImageView);
