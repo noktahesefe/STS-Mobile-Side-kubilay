@@ -58,4 +58,12 @@
             parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="colorControlActivated">@android:color/black</item>
     </style>
+
+    <style name="FullscreenDialogTheme" parent="Theme.AppCompat.Light.DialogWhenLarge">
+        <item name = "android:statusBarColor">#280680</item>
+        <item name = "windowNoTitle">true</item>
+        <item name = "android:windowAnimationStyle">@style/Animation.AppCompat.Dialog</item>
+    </style>
+
+
 </resources>

@@ -38,15 +38,15 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
     @Override
     public HomeworkViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.recycler_view_row2, parent, false);
+        View view = inflater.inflate(R.layout.row_teacher_homework, parent, false);
         return new HomeworkViewHolder(view, homeworkViewInterface);
     }
 
     @Override
     public void onBindViewHolder(@NonNull HomeworkViewHolder holder, int position) {
         HwModel current = hwModels.get(position);
-        holder.textViewTitle.setText(current.getTitle());
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
+        holder.textViewname.setText(current.getTitle());
+        holder.textViewname.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (homeworkViewInterface != null) {
@@ -101,7 +101,7 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
     public static class HomeworkViewHolder extends RecyclerView.ViewHolder{
 
         TextView textViewTitle;
-        CardView cardView;
+        TextView textViewname;
 
         /**
          * Constructor for HomeworkViewHolder.
@@ -113,11 +113,9 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
         public HomeworkViewHolder(@NonNull View itemView, ClassroomHomeworkViewInterface homeworkViewInterface) {
             super(itemView);
 
-            // Initialize the textViewTitle variable with the view from the layout with id textView
-            textViewTitle = itemView.findViewById(R.id.studentName);
 
             // Initialize the cardView variable with the view from the layout with id cardView
-            cardView = itemView.findViewById(R.id.cardView);
+            textViewname = itemView.findViewById(R.id.homework_title);
         }
     }
 }

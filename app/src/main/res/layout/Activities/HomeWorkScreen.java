@@ -24,7 +24,7 @@ import java.util.ArrayList;
 public class HomeWorkScreen extends AppCompatActivity {
 
 
-    ArrayList<HwModel> hwModels = new ArrayList<>();
+    List<HwModel> hwModels = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

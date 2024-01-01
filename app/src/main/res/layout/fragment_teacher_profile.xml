@@ -37,11 +37,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="15dp"
         android:layout_marginTop="28dp"
         android:text="Resim Ekle"
         android:textAllCaps="false"
         android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/teacher_profilePicture"
         app:layout_constraintStart_toStartOf="@+id/teacher_profilePicture"
         app:layout_constraintTop_toBottomOf="@+id/teacher_profilePicture" />
 
@@ -101,13 +101,11 @@
     <FrameLayout
         android:id="@+id/teacher_classes_container"
         android:layout_width="190dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="204dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_height="100dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="@+id/teacher_classes"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/teacher_classes"
+        app:layout_constraintTop_toBottomOf="@+id/teacher_classes" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

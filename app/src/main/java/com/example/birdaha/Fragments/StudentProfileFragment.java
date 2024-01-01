@@ -2,12 +2,17 @@ package com.example.birdaha.Fragments;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,22 +33,22 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 
 import com.example.birdaha.Activities.ClassAnnouncementScreen;
-import com.example.birdaha.Activities.ClassRoomAnnouncementScreen;
-import com.example.birdaha.Activities.ClassroomHomeworkScreen;
-import com.example.birdaha.Activities.ClassroomScreen;
 import com.example.birdaha.Activities.HomeWorkScreen;
 
-import com.example.birdaha.Activities.MainActivity;
-import com.example.birdaha.Classrooms.ClassAnnouncement;
 import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.General.ClassAnnouncementModel;
-import com.example.birdaha.General.HomeworksAndAnnouncements;
+import com.example.birdaha.General.HomeworksStudent;
 import com.example.birdaha.General.HwModel;
+import com.example.birdaha.General.ProfilePictureRespond;
+import com.example.birdaha.General.SendProfilePictureStudent;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Student;
 import com.google.gson.Gson;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -51,9 +56,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
 
 /**
  * The StudentProfileFragment class represents a fragment displaying a student's profile.
@@ -62,12 +68,9 @@ import retrofit2.http.Query;
  */
 public class StudentProfileFragment extends Fragment {
 
-    interface GetHomeworkAndAnnouncement{
-        @GET("/api/v1/homeworks/announcements/{classroomId}/{studentId}")
-        Call<HomeworksAndAnnouncements> getHomeworksAndAnnouncements(
-                @Path("classroomId") int classroomId,
-                @Path("studentId") int studentId
-        );
+    interface AddProfilePicture{
+        @POST("api/v1/student/add/image")
+        Call<ProfilePictureRespond> addProfilePicture(@Body SendProfilePictureStudent student);
     }
 
     // UI elements
@@ -77,6 +80,8 @@ public class StudentProfileFragment extends Fragment {
     Button announcementsButton;
     ImageView profilePicture;
     boolean isGranted = false;
+
+    private String image;
 
 
     // Activity result launcher for requesting gallery access permission
@@ -91,11 +96,54 @@ public class StudentProfileFragment extends Fragment {
                     Intent data = result.getData();
                     if (data != null) {
                         Uri selectedImage = data.getData();
+                        try {
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(),selectedImage);
+                            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                            byte[] byteArray = byteArrayOutputStream.toByteArray();
+                            image = Base64.encodeToString(byteArray,Base64.DEFAULT);
+                            Bundle bundle = getArguments();
+                            if(bundle != null){
+                                Student student = (Student) bundle.getSerializable("student");
+                                Log.d("studentid",String.valueOf(student.getStudent_id()));
+                                Log.d("image",image);
+                                SendProfilePictureStudent sendPP = new SendProfilePictureStudent(image, student.getStudent_id());
+                                Retrofit retrofit = new Retrofit.Builder()
+                                        .baseUrl("http://sinifdoktoruadmin.online/")
+                                        .addConverterFactory(GsonConverterFactory.create())
+                                        .build();
+                                AddProfilePicture sendProfilePicture = retrofit.create(AddProfilePicture.class);
+                                sendProfilePicture.addProfilePicture(sendPP).enqueue(new Callback<ProfilePictureRespond>() {
+                                    @Override
+                                    public void onResponse(Call<ProfilePictureRespond> call, Response<ProfilePictureRespond> response) {
+                                        if(response.isSuccessful() && response.body() != null){
+                                            ProfilePictureRespond respond = response.body();
+                                            Toast.makeText(requireActivity(), respond.getSuccess() + response.code(), Toast.LENGTH_SHORT).show();
+                                            Log.d("Respond",respond.getSuccess());
+                                            String combinedData = student.getStudent_id() + "|" + image;
+                                            SharedPreferences preferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = preferences.edit();
+                                            String key = "profile_data_" + student.getStudent_id();
+                                            editor.putString(key,combinedData);
+                                            editor.apply();
+                                        }
+                                        else{
+                                            Toast.makeText(requireActivity(), "Response Unsuccessful" + " " + response.code(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                    @Override
+                                    public void onFailure(Call<ProfilePictureRespond> call, Throwable t) {
+                                        Toast.makeText(requireActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        } catch (IOException e){
+                            e.printStackTrace();
+                        }
                         Glide.with(this)
                                 .load(selectedImage)
                                 .circleCrop()
                                 .into(profilePicture);
-                        //profilePicture.setImageURI(selectedImage);
                     }
                 }
             });
@@ -106,7 +154,7 @@ public class StudentProfileFragment extends Fragment {
      * @param isGranted True if the permission is granted, false otherwise.
      */
     private void handlePermissionResult(boolean isGranted) {
-        if (this.isGranted) {
+        if (isGranted) {
             openGallery();
         } else {
             // Permission denied, inform the user and ask again
@@ -196,65 +244,46 @@ public class StudentProfileFragment extends Fragment {
             classroom.setText(String.valueOf(classroom1.getName()));
             schoolNumber.setText(String.valueOf(student.getSchool_no()));
 
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://sinifdoktoruadmin.online/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-
-            GetHomeworkAndAnnouncement requestUser = retrofit.create(GetHomeworkAndAnnouncement.class);
-            requestUser.getHomeworksAndAnnouncements(classroom1.getClassroom_id(), student.getStudent_id()).enqueue(new Callback<HomeworksAndAnnouncements>() {
+            homeworksButton = view.findViewById(R.id.student_homeworks);
+            homeworksButton.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onResponse(Call<HomeworksAndAnnouncements> call, Response<HomeworksAndAnnouncements> response) {
-                    if(response.isSuccessful() && response.body() != null){
-                        HomeworksAndAnnouncements models = response.body();
-                        Log.d("Respond",new Gson().toJson(response.body()));
-                        List<HwModel> homeworkModels = models.getHomeworks();
-                        List<ClassAnnouncementModel> announcementModels = models.getClassAnnouncements();
-
-                        homeworksButton = view.findViewById(R.id.student_homeworks);
-
-                        homeworksButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent = new Intent(requireActivity(), HomeWorkScreen.class);
-                                intent.putExtra("homeworks", (Serializable) homeworkModels);
-                                startActivity(intent);
-                            }
-                        });
-
-                        announcementsButton = (Button) view.findViewById(R.id.student_announcements);
-                        announcementsButton.setOnClickListener(v -> {
-                            Intent intent = new Intent(requireActivity(), ClassAnnouncementScreen.class);
-                            intent.putExtra("classAnnouncements",(Serializable) announcementModels);
-                            startActivity(intent);
-                        });
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<HomeworksAndAnnouncements> call, Throwable t) {
-                    Log.d("Error",t.getMessage());
+                public void onClick(View v) {
+                    Intent intent = new Intent(requireActivity(), HomeWorkScreen.class);
+                    intent.putExtra("student",student);
+                    intent.putExtra("classroom",classroom1);
+                    startActivity(intent);
                 }
             });
 
-            /*homeworks = (Button) view.findViewById(R.id.student_homeworks);
-
-            homeworks.setOnClickListener(v -> {
-                Intent intent = new Intent(requireActivity(), HomeWorkScreen.class);
+            announcementsButton = (Button) view.findViewById(R.id.student_announcements);
+            announcementsButton.setOnClickListener(v -> {
+                Intent intent = new Intent(requireActivity(), ClassAnnouncementScreen.class);
+                intent.putExtra("student",student);
+                intent.putExtra("classroom",classroom1);
                 startActivity(intent);
-            });*/
+            });
+
+            profilePicture = (ImageView) view.findViewById(R.id.student_profilePicture);
+            SharedPreferences preferences = getActivity().getSharedPreferences("MyPrefs",Context.MODE_PRIVATE);
+            String key = "profile_data_" + student.getStudent_id();
+            String combinedData = preferences.getString(key,"");
+            String[] dataParts = combinedData.split("\\|");
+            System.out.println(Arrays.toString(dataParts));
+            if(dataParts.length == 2){
+                int studentId = Integer.parseInt(dataParts[0]);
+                String encodedImage = dataParts[1];
+                if(student.getStudent_id() == studentId){
+                    byte[] byteArray = Base64.decode(encodedImage,Base64.DEFAULT);
+                    Bitmap decodedImage = BitmapFactory.decodeByteArray(byteArray,0, byteArray.length);
+                    Glide.with(requireActivity())
+                            .load(decodedImage)
+                            .circleCrop()
+                            .into(profilePicture);
+                }
+            }
         }
-        //nameSurname = (TextView) view.findViewById(R.id.student_name_surname);
-        //classroom = (TextView) view.findViewById(R.id.student_classroom);
-        //schoolNumber = (TextView) view.findViewById(R.id.student_school_number);
 
         changeProfilePicture = (Button) view.findViewById(R.id.student_gallery);
-
-
-
-        profilePicture = (ImageView) view.findViewById(R.id.student_profilePicture);
-
-
 
         changeProfilePicture.setOnClickListener(v -> checkPermissionAndOpenGallery());
         return view;

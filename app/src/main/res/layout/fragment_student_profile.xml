@@ -27,12 +27,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="10dp"
         android:layout_marginBottom="29dp"
         android:text="Resim Yükle"
         android:textAllCaps="false"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/student_name_surname_info"
+        app:layout_constraintEnd_toEndOf="@+id/student_profilePicture"
         app:layout_constraintStart_toStartOf="@+id/student_profilePicture" />
 
     <TextView
@@ -110,14 +110,14 @@
 
     <Button
         android:id="@+id/student_announcements"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="200dp"
+        android:layout_height="52dp"
         android:layout_marginTop="3dp"
         android:drawableLeft="@drawable/baseline_event"
         android:text="Duyurular"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/student_homeworks"
         app:layout_constraintEnd_toEndOf="@+id/student_homeworks"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/student_homeworks"
         app:layout_constraintTop_toBottomOf="@+id/student_school_number_info" />
 
@@ -125,15 +125,16 @@
         android:id="@+id/student_homeworks"
         android:layout_width="200dp"
         android:layout_height="52dp"
-        android:layout_marginTop="131dp"
-        android:layout_marginBottom="131dp"
+        android:layout_marginBottom="108dp"
         android:drawableLeft="@drawable/baseline_homework"
         android:text="Ödevler"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/student_logo"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/student_classroom_info" />
+        app:layout_constraintTop_toBottomOf="@+id/student_announcements"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/student_logo"
