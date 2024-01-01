@@ -4,18 +4,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class HomeworksAndAnnouncements {
-    private List<HwModel> homeworks;
+public class AnnouncementsStudent {
     @SerializedName("classroom_announcements")
     private List<ClassAnnouncementModel> classAnnouncements;
-
-    public List<HwModel> getHomeworks() {
-        return homeworks;
-    }
-
-    public void setHomeworks(List<HwModel> homeworks) {
-        this.homeworks = homeworks;
-    }
 
     public List<ClassAnnouncementModel> getClassAnnouncements() {
         return classAnnouncements;

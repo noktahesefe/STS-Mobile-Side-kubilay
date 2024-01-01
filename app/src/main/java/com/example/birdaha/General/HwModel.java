@@ -10,8 +10,12 @@ public class HwModel implements Serializable, Comparable<HwModel> {
     private int classroom_id;
     private String course_name;
     private String due_date;
+    @SerializedName("hw_image")
     private String image;
     private String title;
+
+    @SerializedName("image")
+    private String getImage;
 
     @SerializedName("content")
     private String info;
@@ -99,6 +103,14 @@ public class HwModel implements Serializable, Comparable<HwModel> {
         System.out.println(title);
         System.out.println(o.title);
         return this.title.toLowerCase().compareTo(o.getTitle().toLowerCase());
+    }
+
+    public String getGetImage() {
+        return getImage;
+    }
+
+    public void setGetImage(String getImage) {
+        this.getImage = getImage;
     }
 
 }

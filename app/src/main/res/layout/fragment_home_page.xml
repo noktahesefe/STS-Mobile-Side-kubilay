@@ -6,27 +6,38 @@
     android:layout_height="match_parent"
     tools:context=".Fragments.HomePageFragment">
 
-    <FrameLayout
-        android:id="@+id/event_container"
-        android:layout_width="411dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="119dp"
-        android:layout_marginBottom="53dp"
-        app:layout_constraintBottom_toTopOf="@+id/announcement_container"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView_imageSlider"
+        android:layout_width="350dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="150dp"
+        app:cardBackgroundColor="#7278AD"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.denzcoskun.imageslider.ImageSlider
+            android:id="@+id/image_slider"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:iss_corner_radius="20"
+            app:iss_delay="1000"
+            app:iss_period="1000"
+            app:iss_text_align="CENTER"
+            app:iss_title_background="@drawable/default_gradient" />
+    </androidx.cardview.widget.CardView>
+
 
     <FrameLayout
         android:id="@+id/announcement_container"
-        android:layout_width="411dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="53dp"
-        android:layout_marginBottom="59dp"
-        android:background="@color/purple"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/event_container" />
+        android:layout_width="300dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="96dp"
+        app:layout_constraintEnd_toEndOf="@+id/cardView_imageSlider"
+        app:layout_constraintHorizontal_bias="0.476"
+        app:layout_constraintStart_toStartOf="@+id/cardView_imageSlider"
+        app:layout_constraintTop_toBottomOf="@+id/cardView_imageSlider" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

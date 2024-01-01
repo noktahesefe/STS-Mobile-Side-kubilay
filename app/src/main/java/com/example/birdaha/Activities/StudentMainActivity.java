@@ -1,6 +1,8 @@
 package com.example.birdaha.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -30,6 +32,7 @@ import com.example.birdaha.R;
 import com.example.birdaha.Users.Student;
 import com.example.birdaha.Users.Teacher;
 
+import java.util.Arrays;
 
 
 /**
@@ -79,15 +82,24 @@ public class StudentMainActivity extends AppCompatActivity {
         if(intent != null){
             Student student = (Student) intent.getSerializableExtra("user");
             nameSurname.setText(student.getName());
-            /*if(student.getStudent_image() != null){
-                byte[] imageBytes = Base64.decode(student.getStudent_image(), Base64.DEFAULT);
-                Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes,0, imageBytes.length);
-                Glide.with(this)
-                        .load(decodedImage)
-                        .into(studentPhoto);
-            }*/
+            SharedPreferences preferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+            String key = "profile_data_" + student.getStudent_id();
+            String combinedData = preferences.getString(key,"");
+            String[] dataParts = combinedData.split("\\|");
+            System.out.println(Arrays.toString(dataParts));
+            if(dataParts.length == 2){
+                int studentId = Integer.parseInt(dataParts[0]);
+                String encodedImage = dataParts[1];
+                if(student.getStudent_id() == studentId){
+                    byte[] byteArray = Base64.decode(encodedImage,Base64.DEFAULT);
+                    Bitmap decodedImage = BitmapFactory.decodeByteArray(byteArray,0, byteArray.length);
+                    Glide.with(this)
+                            .load(decodedImage)
+                            .circleCrop()
+                            .into(studentPhoto);
+                }
+            }
         }
-
         navigationManager = FragmentNavigationManager.getmInstance(this);
 
 

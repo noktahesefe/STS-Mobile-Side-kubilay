@@ -24,13 +24,21 @@ public class User implements Serializable {
     private int parent_id;
     protected int teacher_id;
     protected int course_id;
-    private int student_id;
+    protected int student_id;
     private int classroom_id;
-    private int school_no;
+    protected int school_no;
     protected Classroom classroom;
     protected List<Classroom> classrooms;
     protected Lecture course;
     private List<Student> students;
+    @SerializedName("image_student")
+    protected String sendStudentPicture;
+    @SerializedName("image_teacher")
+    protected String sendTeacherPicture;
+    @SerializedName("student_image")
+    protected String getStudentImage;
+    @SerializedName("teacher_image")
+    protected String getTeacherImage;
 
 
 
@@ -162,8 +170,37 @@ public class User implements Serializable {
 
     public void setPhone(String phone) {
         this.phone = phone;
-
     }
 
+    public String getSendStudentPicture() {
+        return sendStudentPicture;
+    }
 
+    public void setSendStudentPicture(String sendStudentPicture) {
+        this.sendStudentPicture = sendStudentPicture;
+    }
+
+    public String getSendTeacherPicture() {
+        return sendTeacherPicture;
+    }
+
+    public void setSendTeacherPicture(String sendTeacherPicture) {
+        this.sendTeacherPicture = sendTeacherPicture;
+    }
+
+    public String getGetStudentImage() {
+        return getStudentImage;
+    }
+
+    public void setGetStudentImage(String getStudentImage) {
+        this.getStudentImage = getStudentImage;
+    }
+
+    public String getGetTeacherImage() {
+        return getTeacherImage;
+    }
+
+    public void setGetTeacherImage(String getTeacherImage) {
+        this.getTeacherImage = getTeacherImage;
+    }
 }
