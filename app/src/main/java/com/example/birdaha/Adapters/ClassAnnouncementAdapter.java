@@ -47,7 +47,7 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
     @Override
     public ClassAnnouncementViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.recycler_view_row, parent, false);
+        View view = inflater.inflate(R.layout.row_teacher_announcement, parent, false);
         return new ClassAnnouncementViewHolder(view, classAnnouncementViewInterface);
     }
 
@@ -61,8 +61,8 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
     @Override
     public void onBindViewHolder(@NonNull ClassAnnouncementViewHolder holder, int position) {
         ClassAnnouncementModel current = classAnnouncementModels.get(position);
-        holder.textViewTitle.setText(current.getTitle());
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
+        holder.textViewName.setText(current.getTitle());
+        holder.textViewName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(classAnnouncementViewInterface != null){
@@ -120,18 +120,14 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
      */
     public static class ClassAnnouncementViewHolder extends RecyclerView.ViewHolder {
 
-        TextView textViewTitle;
-        CardView cardView;
+        TextView textViewName;
 
         public ClassAnnouncementViewHolder(@NonNull View itemView, ClassAnnouncementViewInterface classAnnouncementViewInterface) {
             super(itemView);
 
             // Initialize the textViewTitle variable with the view from the layout with id textView
-            textViewTitle = itemView.findViewById(R.id.homework_detail_name);
+            textViewName = itemView.findViewById(R.id.announcement_title);
 
-
-            // Initialize the cardView variable with the view from the layout with id cardView2
-            cardView = itemView.findViewById(R.id.cardView2);
         }
     }
 }

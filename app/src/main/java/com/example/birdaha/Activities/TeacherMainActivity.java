@@ -108,6 +108,8 @@ public class TeacherMainActivity extends AppCompatActivity {
                     drawerLayout.closeDrawer(GravityCompat.START);
                 }
 
+                //navigationManager.showFragment(TeacherProfileFragment.newInstance("teachId"), false);
+                //drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
 

@@ -16,9 +16,9 @@ public class Student extends User{
 
     public Student(String name, int student_id, Classroom classroom, int school_no){
         this.name = name;
-        //this.student_id = student_id;
+        this.student_id = student_id;
         //this.classroom_id = classroom_id;
-        //this.school_no = school_no;
+        this.school_no = school_no;
         this.classroom = classroom;
         this.homeworks = new ArrayList<>();
     }

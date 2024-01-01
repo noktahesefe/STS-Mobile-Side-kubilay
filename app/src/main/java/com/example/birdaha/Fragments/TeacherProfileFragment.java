@@ -5,14 +5,15 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,8 +28,21 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.example.birdaha.General.ProfilePictureRespond;
+import com.example.birdaha.General.SendProfilePictureTeacher;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Teacher;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
+import retrofit2.http.POST;
 
 /**
  * The TeacherProfileFragment class represents a fragment displaying a teacher's profile.
@@ -37,6 +51,11 @@ import com.example.birdaha.Users.Teacher;
  */
 public class TeacherProfileFragment extends Fragment {
 
+    interface AddProfilePicture{
+        @POST("api/v1/teacher/add/image")
+        Call<ProfilePictureRespond> addProfilePicture(@Body SendProfilePictureTeacher teacher);
+    }
+
     TextView nameSurname;
     TextView lectures;
     Button changeProfilePicture;
@@ -44,6 +63,8 @@ public class TeacherProfileFragment extends Fragment {
     ImageView profilePicture;
     View teacherClassroomsContainer;
     boolean isGranted = false;
+    private String image;
+
     // Activity result launcher for requesting gallery access permission
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), this::handlePermissionResult);
@@ -56,6 +77,44 @@ public class TeacherProfileFragment extends Fragment {
                     Intent data = result.getData();
                     if (data != null) {
                         Uri selectedImage = data.getData();
+                        try {
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(),selectedImage);
+                            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                            byte[] byteArray = byteArrayOutputStream.toByteArray();
+                            image = Base64.encodeToString(byteArray,Base64.DEFAULT);
+                            Bundle bundle = getArguments();
+                            if(bundle != null){
+                                Teacher teacher = (Teacher) bundle.getSerializable("teacher");
+                                Log.d("teacherid",String.valueOf(teacher.getTeacher_id()));
+                                SendProfilePictureTeacher sendPP = new SendProfilePictureTeacher(image,teacher.getTeacher_id());
+                                Retrofit retrofit = new Retrofit.Builder()
+                                        .baseUrl("http://sinifdoktoruadmin.online/")
+                                        .addConverterFactory(GsonConverterFactory.create())
+                                        .build();
+                                AddProfilePicture sendProfilePicture = retrofit.create(AddProfilePicture.class);
+                                sendProfilePicture.addProfilePicture(sendPP).enqueue(new Callback<ProfilePictureRespond>() {
+                                    @Override
+                                    public void onResponse(Call<ProfilePictureRespond> call, Response<ProfilePictureRespond> response) {
+                                        if(response.isSuccessful() && response.body() != null){
+                                            ProfilePictureRespond respond = response.body();
+                                            Toast.makeText(requireActivity(), respond.getSuccess() + response.code(), Toast.LENGTH_SHORT).show();
+                                            Log.d("Respond",respond.getSuccess());
+                                        }
+                                        else{
+                                            Toast.makeText(requireActivity(), "Response Unsuccessful" + response.code(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<ProfilePictureRespond> call, Throwable t) {
+                                        Toast.makeText(requireActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        } catch (IOException e){
+                            e.printStackTrace();
+                        }
                         Glide.with(this)
                                 .load(selectedImage)
                                 .circleCrop()
@@ -151,12 +210,6 @@ public class TeacherProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_teacher_profile, container, false);
-
-
-        Animation fadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
-        Animation fadeOut = AnimationUtils.loadAnimation(getContext(), R.anim.fade_out);
-
-
         Bundle bundle = getArguments();
         if(bundle != null){
             Teacher teacher = (Teacher) bundle.getSerializable("teacher");
@@ -182,28 +235,17 @@ public class TeacherProfileFragment extends Fragment {
 
 
 
-        classes.setOnClickListener(v -> {
-            if (teacherClassroomsContainer.getVisibility() == View.INVISIBLE) {
-                teacherClassroomsContainer.startAnimation(fadeIn);
-                teacherClassroomsContainer.setVisibility(View.VISIBLE);
-            } else {
-                teacherClassroomsContainer.startAnimation(fadeOut);
-                // Add a listener to set visibility to INVISIBLE when the animation ends
-                fadeOut.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {}
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        teacherClassroomsContainer.setVisibility(View.INVISIBLE);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {}
-                });
+        classes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(teacherClassroomsContainer.getVisibility() == View.INVISIBLE){
+                    teacherClassroomsContainer.setVisibility(View.VISIBLE);
+                }
+                else{
+                    teacherClassroomsContainer.setVisibility(View.INVISIBLE);
+                }
             }
         });
-
 
         return view;
     }

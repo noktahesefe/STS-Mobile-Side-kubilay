@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -23,19 +26,44 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.birdaha.Adapters.HomeworkAdapter;
 import com.example.birdaha.Adapters.StudentHomeworkAdapter;
+import com.example.birdaha.Classrooms.Classroom;
+import com.example.birdaha.General.HomeworksStudent;
 import com.example.birdaha.General.HwModel;
+import com.example.birdaha.General.StudentModel;
 import com.example.birdaha.R;
+import com.example.birdaha.Users.Student;
 import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
 
 /**
  * This activity displays a list of homework modules.
  */
-public class StudentHomeworkScreen extends AppCompatActivity implements ClassroomHomeworkViewInterface {
+public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomeworkViewInterface {
+
+    interface GetHomework{
+        @GET("api/v1/homeworks/{classroomId}/{studentId}")
+        Call<HomeworksStudent> getHomeworks(@Path("classroomId") int classroomId,
+                                            @Path("studentId") int studentId);
+    }
+
     SearchView search;
-    ArrayList<HwModel> hwModels;
+    List<HwModel> hwModels = new ArrayList<>();
+
+    private HomeworkAdapter homeworkAdapter;
 
 
     @Override
@@ -47,14 +75,45 @@ public class StudentHomeworkScreen extends AppCompatActivity implements Classroo
 
         RecyclerView recyclerView = findViewById(R.id.hwRecyclerView);
 
+        Student student = null;
+        Classroom classroom = null;
+
         Intent intent = getIntent();
         if (intent != null) {
-            hwModels = (ArrayList<HwModel>) intent.getSerializableExtra("homeworks");
+            student = (Student) intent.getSerializableExtra("student");
+            classroom = (Classroom) intent.getSerializableExtra("classroom");
+            //hwModels = (ArrayList<HwModel>) intent.getSerializableExtra("homeworks");
         }
 
+        Log.d("classid",String.valueOf(classroom.getClassroom_id()));
+        Log.d("studentid",String.valueOf(student.getStudent_id()));
 
-        StudentHomeworkAdapter studentHomeworkAdapter = new StudentHomeworkAdapter(this, hwModels, this);
-        recyclerView.setAdapter(studentHomeworkAdapter);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://sinifdoktoruadmin.online/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        GetHomework getHomework = retrofit.create(GetHomework.class);
+        getHomework.getHomeworks(classroom.getClassroom_id(),student.getStudent_id()).enqueue(new Callback<HomeworksStudent>() {
+            @Override
+            public void onResponse(Call<HomeworksStudent> call, Response<HomeworksStudent> response) {
+                if(response.isSuccessful() && response.body() != null){
+                    HomeworksStudent models = response.body();
+                    Log.d("Response",new Gson().toJson(response.body()));
+                    hwModels = models.getHomeworks();
+                    StudentHomeworkAdapter studentHomeworkAdapter = new StudentHomeworkAdapter(HomeWorkScreen.this, (ArrayList<HwModel>) hwModels, HomeWorkScreen.this);
+                    recyclerView.setAdapter(studentHomeworkAdapter);
+                    Toast.makeText(HomeWorkScreen.this, "Ödevler Listeleniyor", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(HomeWorkScreen.this, "Response Unsuccessful", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<HomeworksStudent> call, Throwable t) {
+                Toast.makeText(HomeWorkScreen.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         View baselineFilterView = findViewById(R.id.filterView);
@@ -73,7 +132,7 @@ public class StudentHomeworkScreen extends AppCompatActivity implements Classroo
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                studentHomeworkAdapter.getFilter().filter(newText);
+                homeworkAdapter.getFilter().filter(newText);
                 return true;
             }
         });
@@ -134,19 +193,19 @@ public class StudentHomeworkScreen extends AppCompatActivity implements Classroo
         dueDate.setText(clickedItem.getDue_date());
         content.setText(clickedItem.getInfo());
 
-        /*
-        byte[] imageBytes = Base64.decode(clickedItem.getImage(), Base64.DEFAULT);
-        Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes,0, imageBytes.length);
-        Glide.with(StudentHomeworkScreen.this)
-                .load(decodedImage)
-                .into(imageView);
+
 
         // If the clickedItem has no image, do not open the full screen view
-        if(!clickedItem.getImage().equals("")){
+        if(clickedItem.getGetImage() != null){
+            byte[] imageBytes = Base64.decode(clickedItem.getGetImage(), Base64.DEFAULT);
+            Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes,0, imageBytes.length);
+            Glide.with(HomeWorkScreen.this)
+                    .load(decodedImage)
+                    .into(imageView);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final Dialog dialog = new Dialog(StudentHomeworkScreen.this, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+                    final Dialog dialog = new Dialog(HomeWorkScreen.this, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
                     dialog.setContentView(R.layout.dialog_full_screen_image);
 
                     ImageView fullScreenImage = dialog.findViewById(R.id.fullScreenImageView);
@@ -161,11 +220,6 @@ public class StudentHomeworkScreen extends AppCompatActivity implements Classroo
                 }
             });
         }
-
-
-         BURAK BURADA HATA VAR KANKA */
-
-
 
         editButton.setVisibility(View.INVISIBLE);
         saveButton.setVisibility(View.INVISIBLE);

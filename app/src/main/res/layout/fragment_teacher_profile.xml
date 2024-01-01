@@ -37,11 +37,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="15dp"
         android:layout_marginTop="28dp"
         android:text="Resim Ekle"
         android:textAllCaps="false"
         android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/teacher_profilePicture"
         app:layout_constraintStart_toStartOf="@+id/teacher_profilePicture"
         app:layout_constraintTop_toBottomOf="@+id/teacher_profilePicture" />
 

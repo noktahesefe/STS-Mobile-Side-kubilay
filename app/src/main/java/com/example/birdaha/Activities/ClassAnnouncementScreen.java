@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,15 +15,32 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.birdaha.Adapters.ClassAnnouncementAdapter;
+import com.example.birdaha.Classrooms.Classroom;
+import com.example.birdaha.General.AnnouncementsStudent;
 import com.example.birdaha.General.ClassAnnouncementModel;
 import com.example.birdaha.R;
 import com.example.birdaha.Utilities.ClassAnnouncementViewInterface;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
 
 public class ClassAnnouncementScreen extends AppCompatActivity implements ClassAnnouncementViewInterface {
+
+    interface GetAnnouncement{
+        @GET("api/v1/announcements/{classroomId}")
+        Call<AnnouncementsStudent> getAnnouncements(@Path("classroomId") int classroomId);
+    }
     SearchView search;
-    ArrayList<ClassAnnouncementModel> classAnnouncementModels;
+    List<ClassAnnouncementModel> classAnnouncementModels;
+    ClassAnnouncementAdapter classAnnouncementAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,14 +49,40 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
 
         search = findViewById(R.id.searchView_Announcement);
 
+        Classroom classroom = null;
+
         Intent intent = getIntent();
         if(intent != null){
-            classAnnouncementModels = (ArrayList<ClassAnnouncementModel>) intent.getSerializableExtra("classAnnouncements");
+            classroom = (Classroom) intent.getSerializableExtra("classroom");
+            //classAnnouncementModels = (ArrayList<ClassAnnouncementModel>) intent.getSerializableExtra("classAnnouncements");
         }
 
-        //setClassAnnouncementModels();
-        ClassAnnouncementAdapter classAnnouncementAdapter = new ClassAnnouncementAdapter(this, classAnnouncementModels, this);
-        recyclerView.setAdapter(classAnnouncementAdapter);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://sinifdoktoruadmin.online/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        GetAnnouncement getAnnouncement = retrofit.create(GetAnnouncement.class);
+        getAnnouncement.getAnnouncements(classroom.getClassroom_id()).enqueue(new Callback<AnnouncementsStudent>() {
+            @Override
+            public void onResponse(Call<AnnouncementsStudent> call, Response<AnnouncementsStudent> response) {
+                if(response.isSuccessful() && response.body() != null){
+                    AnnouncementsStudent models = response.body();
+                    classAnnouncementModels = models.getClassAnnouncements();
+                    classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassAnnouncementScreen.this, (ArrayList<ClassAnnouncementModel>) classAnnouncementModels, ClassAnnouncementScreen.this);
+                    recyclerView.setAdapter(classAnnouncementAdapter);
+                    Toast.makeText(ClassAnnouncementScreen.this, "Duyurular Listeleniyor", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(ClassAnnouncementScreen.this, "Response Unsuccessful", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AnnouncementsStudent> call, Throwable t) {
+                Toast.makeText(ClassAnnouncementScreen.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Set up the search functionality
@@ -64,6 +108,16 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
         });
     }
 
+    /**
+     * This method initializes the list of class announcements.
+     * It retrieves the announcement titles from the resources and creates a ClassAnnouncementModel for each title.
+     */
+    private void setClassAnnouncementModels(){
+        String[] titles = getResources().getStringArray(R.array.Announcements);
+        for (int i = 0; i < titles.length; i++) {
+            classAnnouncementModels.add(new ClassAnnouncementModel(titles[i]));
+        }
+    }
     public void onClassAnnouncementItemClick(ClassAnnouncementModel clickedItem, View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = LayoutInflater.from(view.getContext());

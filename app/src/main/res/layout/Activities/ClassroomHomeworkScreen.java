@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.birdaha.Adapters.HomeworkAdapter;
 import com.example.birdaha.General.HwModel;
 import com.example.birdaha.R;
 
@@ -26,8 +27,8 @@ public class ClassroomHomeworkScreen extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.hwRecyclerView_classroom);
 
         setHwModules();
-        TeacherHomeworkAdapter teacherHomeworkAdapter = new TeacherHomeworkAdapter(this, hwModels,this);
-        recyclerView.setAdapter(teacherHomeworkAdapter);
+        HomeworkAdapter homeworkAdapter = new HomeworkAdapter(this, hwModels,this);
+        recyclerView.setAdapter(homeworkAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         View baselineFilterView = findViewById(R.id.filterView);
