@@ -11,6 +11,8 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -42,7 +44,6 @@ public class TeacherProfileFragment extends Fragment {
     ImageView profilePicture;
     View teacherClassroomsContainer;
     boolean isGranted = false;
-
     // Activity result launcher for requesting gallery access permission
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), this::handlePermissionResult);
@@ -150,6 +151,12 @@ public class TeacherProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_teacher_profile, container, false);
+
+
+        Animation fadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
+        Animation fadeOut = AnimationUtils.loadAnimation(getContext(), R.anim.fade_out);
+
+
         Bundle bundle = getArguments();
         if(bundle != null){
             Teacher teacher = (Teacher) bundle.getSerializable("teacher");
@@ -175,17 +182,28 @@ public class TeacherProfileFragment extends Fragment {
 
 
 
-        classes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(teacherClassroomsContainer.getVisibility() == View.INVISIBLE){
-                    teacherClassroomsContainer.setVisibility(View.VISIBLE);
-                }
-                else{
-                    teacherClassroomsContainer.setVisibility(View.INVISIBLE);
-                }
+        classes.setOnClickListener(v -> {
+            if (teacherClassroomsContainer.getVisibility() == View.INVISIBLE) {
+                teacherClassroomsContainer.startAnimation(fadeIn);
+                teacherClassroomsContainer.setVisibility(View.VISIBLE);
+            } else {
+                teacherClassroomsContainer.startAnimation(fadeOut);
+                // Add a listener to set visibility to INVISIBLE when the animation ends
+                fadeOut.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {}
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        teacherClassroomsContainer.setVisibility(View.INVISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {}
+                });
             }
         });
+
 
         return view;
     }

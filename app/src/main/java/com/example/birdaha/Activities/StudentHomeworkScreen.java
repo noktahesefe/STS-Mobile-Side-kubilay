@@ -134,6 +134,7 @@ public class StudentHomeworkScreen extends AppCompatActivity implements Classroo
         dueDate.setText(clickedItem.getDue_date());
         content.setText(clickedItem.getInfo());
 
+        /*
         byte[] imageBytes = Base64.decode(clickedItem.getImage(), Base64.DEFAULT);
         Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes,0, imageBytes.length);
         Glide.with(StudentHomeworkScreen.this)
@@ -160,6 +161,11 @@ public class StudentHomeworkScreen extends AppCompatActivity implements Classroo
                 }
             });
         }
+
+
+         BURAK BURADA HATA VAR KANKA */
+
+
 
         editButton.setVisibility(View.INVISIBLE);
         saveButton.setVisibility(View.INVISIBLE);

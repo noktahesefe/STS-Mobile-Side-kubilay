@@ -29,7 +29,7 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
         setContentView(R.layout.activity_student_announcement_screen);
         RecyclerView recyclerView = findViewById(R.id.caRecyclerView);
 
-        search = findViewById(R.id.searchView_students);
+        search = findViewById(R.id.searchView_Announcement);
 
         Intent intent = getIntent();
         if(intent != null){
@@ -64,16 +64,6 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
         });
     }
 
-    /**
-     * This method initializes the list of class announcements.
-     * It retrieves the announcement titles from the resources and creates a ClassAnnouncementModel for each title.
-     */
-    private void setClassAnnouncementModels(){
-        String[] titles = getResources().getStringArray(R.array.Announcements);
-        for (int i = 0; i < titles.length; i++) {
-            classAnnouncementModels.add(new ClassAnnouncementModel(titles[i]));
-        }
-    }
     public void onClassAnnouncementItemClick(ClassAnnouncementModel clickedItem, View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = LayoutInflater.from(view.getContext());

@@ -355,6 +355,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         content.setText(clickedItem.getInfo());
 
 
+        /*
         // Even the image is null, decode it so that it displays nothing
         byte[] imageBytes = Base64.decode(clickedItem.getImage(), Base64.DEFAULT);
         Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes,0, imageBytes.length);
@@ -392,6 +393,8 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                 }
             });
         }
+
+        BURAK KANKA RESİMDE SIKINTI VAR BURADA SEN HALLETMİŞSİNDİR ZATEN DİYE DÜŞÜNÜYORUM ZATEN <3*/
 
 
 
