@@ -63,7 +63,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
     SearchView search;
     List<HwModel> hwModels = new ArrayList<>();
 
-    private HomeworkAdapter homeworkAdapter;
+    private StudentHomeworkAdapter homeworkAdapter;
 
 
     @Override
@@ -97,12 +97,13 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
             @Override
             public void onResponse(Call<HomeworksStudent> call, Response<HomeworksStudent> response) {
                 if(response.isSuccessful() && response.body() != null){
+                    Toast.makeText(HomeWorkScreen.this, "Ödevler Listeleniyor", Toast.LENGTH_SHORT).show();
                     HomeworksStudent models = response.body();
                     Log.d("Response",new Gson().toJson(response.body()));
                     hwModels = models.getHomeworks();
-                    StudentHomeworkAdapter studentHomeworkAdapter = new StudentHomeworkAdapter(HomeWorkScreen.this, (ArrayList<HwModel>) hwModels, HomeWorkScreen.this);
-                    recyclerView.setAdapter(studentHomeworkAdapter);
-                    Toast.makeText(HomeWorkScreen.this, "Ödevler Listeleniyor", Toast.LENGTH_SHORT).show();
+                    homeworkAdapter = new StudentHomeworkAdapter(HomeWorkScreen.this, (ArrayList<HwModel>) hwModels, HomeWorkScreen.this);
+                    recyclerView.setAdapter(homeworkAdapter);
+
                 }
                 else{
                     Toast.makeText(HomeWorkScreen.this, "Response Unsuccessful", Toast.LENGTH_SHORT).show();
