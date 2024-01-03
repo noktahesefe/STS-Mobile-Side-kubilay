@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.birdaha.Adapters.HomeworkAdapter;
+import com.example.birdaha.Adapters.StudentHomeworkAdapter;
 import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.General.HomeworksStudent;
 import com.example.birdaha.General.HwModel;
@@ -99,8 +100,8 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
                     HomeworksStudent models = response.body();
                     Log.d("Response",new Gson().toJson(response.body()));
                     hwModels = models.getHomeworks();
-                    homeworkAdapter = new HomeworkAdapter(HomeWorkScreen.this, (ArrayList<HwModel>) hwModels, HomeWorkScreen.this);
-                    recyclerView.setAdapter(homeworkAdapter);
+                    StudentHomeworkAdapter studentHomeworkAdapter = new StudentHomeworkAdapter(HomeWorkScreen.this, (ArrayList<HwModel>) hwModels, HomeWorkScreen.this);
+                    recyclerView.setAdapter(studentHomeworkAdapter);
                     Toast.makeText(HomeWorkScreen.this, "Ödevler Listeleniyor", Toast.LENGTH_SHORT).show();
                 }
                 else{

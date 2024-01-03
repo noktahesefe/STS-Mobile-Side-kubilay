@@ -1,7 +1,6 @@
 package com.example.birdaha.Adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +9,6 @@ import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.birdaha.General.HwModel;
@@ -19,15 +17,14 @@ import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.HomeworkViewHolder> implements Filterable{
+public class StudentHomeworkAdapter extends RecyclerView.Adapter<StudentHomeworkAdapter.HomeworkViewHolder> implements Filterable{
     private final ClassroomHomeworkViewInterface homeworkViewInterface;
     Context context;
     ArrayList<HwModel> hwModels;
     ArrayList<HwModel> hwModelsFiltered;
 
-    public HomeworkAdapter(Context context, ArrayList<HwModel> hwModels, ClassroomHomeworkViewInterface homeworkViewInterface){
+    public StudentHomeworkAdapter(Context context, ArrayList<HwModel> hwModels, ClassroomHomeworkViewInterface homeworkViewInterface){
         this.context = context;
         this.hwModels = hwModels;
         this.hwModelsFiltered = hwModels;
@@ -38,7 +35,7 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
     @Override
     public HomeworkViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.row_teacher_homework, parent, false);
+        View view = inflater.inflate(R.layout.row_student_homework, parent, false);
         return new HomeworkViewHolder(view, homeworkViewInterface);
     }
 
@@ -113,9 +110,11 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
         public HomeworkViewHolder(@NonNull View itemView, ClassroomHomeworkViewInterface homeworkViewInterface) {
             super(itemView);
 
+            // Initialize the textViewTitle variable with the view from the layout with id textView
+            //textViewTitle = itemView.findViewById(R.id.studentName);
 
             // Initialize the cardView variable with the view from the layout with id cardView
-            textViewname = itemView.findViewById(R.id.homework_title);
+            textViewname = itemView.findViewById(R.id.student_homework_title);
         }
     }
 }

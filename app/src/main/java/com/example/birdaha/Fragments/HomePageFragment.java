@@ -162,7 +162,7 @@ public class HomePageFragment extends Fragment {
                             LayoutInflater inflater = LayoutInflater.from(view.getContext());
                             View overlayView = inflater.inflate(R.layout.event_detail_overlay, null);
                             ImageView imageView = overlayView.findViewById(R.id.event_detail_image);
-                            TextView detail = overlayView.findViewById(R.id.event_detail);
+                            TextView detail = overlayView.findViewById(R.id.event_detail_detail);
                             if(currentEvent.getImage() != null){
                                 byte[] byteArray = Base64.decode(currentEvent.getImage(),Base64.DEFAULT);
                                 Bitmap decodedImage = BitmapFactory.decodeByteArray(byteArray,0, byteArray.length);
