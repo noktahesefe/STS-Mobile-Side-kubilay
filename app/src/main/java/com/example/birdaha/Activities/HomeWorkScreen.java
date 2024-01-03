@@ -63,7 +63,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
     SearchView search;
     List<HwModel> hwModels = new ArrayList<>();
 
-    private HomeworkAdapter homeworkAdapter;
+    private StudentHomeworkAdapter homeworkAdapter;
 
 
     @Override
@@ -100,8 +100,8 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
                     HomeworksStudent models = response.body();
                     Log.d("Response",new Gson().toJson(response.body()));
                     hwModels = models.getHomeworks();
-                    StudentHomeworkAdapter studentHomeworkAdapter = new StudentHomeworkAdapter(HomeWorkScreen.this, (ArrayList<HwModel>) hwModels, HomeWorkScreen.this);
-                    recyclerView.setAdapter(studentHomeworkAdapter);
+                     homeworkAdapter = new StudentHomeworkAdapter(HomeWorkScreen.this, (ArrayList<HwModel>) hwModels, HomeWorkScreen.this);
+                    recyclerView.setAdapter(homeworkAdapter);
                     Toast.makeText(HomeWorkScreen.this, "Ödevler Listeleniyor", Toast.LENGTH_SHORT).show();
                 }
                 else{

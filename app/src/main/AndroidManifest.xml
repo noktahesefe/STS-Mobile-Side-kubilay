@@ -14,16 +14,7 @@
         android:label=" "
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
-        android:theme="@style/Theme.BirDaha" >
-        <!-- <activity android:name="com.example.birdaha.Activities.ParentMainActivity"
-             android:exported="true">
-
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-    </activity>-->
+        android:theme="@style/Theme.Dialog" >
 
         <activity
             android:name=".Activities.StudentMainActivity"
@@ -32,24 +23,19 @@
             />
         <activity
             android:name=".Activities.ClassAnnouncementScreen"
-            android:exported="false"
-            android:theme="@style/TransparentActionBar"/>
+            android:exported="false" />
         <activity
             android:name=".Activities.ClassRoomAnnouncementScreen"
-            android:exported="false"
-            android:theme="@style/TransparentActionBar"/>
+            android:exported="false" />
         <activity
             android:name=".Activities.ClassroomHomeworkScreen"
-            android:exported="false"
-            android:theme="@style/TransparentActionBar"/>
+            android:exported="false" />
         <activity
             android:name=".Activities.HomeworkStudentsScreen"
-            android:exported="false"
-            android:theme="@style/TransparentActionBar"/>
+            android:exported="false" />
         <activity
             android:name=".Activities.HomeWorkScreen"
-            android:exported="false"
-            android:theme="@style/TransparentActionBar"/>
+            android:exported="false" />
         <activity
             android:name=".Activities.ClassroomScreen"
             android:exported="false"

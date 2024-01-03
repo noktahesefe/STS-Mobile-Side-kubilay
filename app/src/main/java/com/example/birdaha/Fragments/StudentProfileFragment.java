@@ -99,7 +99,7 @@ public class StudentProfileFragment extends Fragment {
                         try {
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(),selectedImage);
                             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 10, byteArrayOutputStream);
                             byte[] byteArray = byteArrayOutputStream.toByteArray();
                             image = Base64.encodeToString(byteArray,Base64.DEFAULT);
                             Bundle bundle = getArguments();

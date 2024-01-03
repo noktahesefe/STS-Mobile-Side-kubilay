@@ -154,7 +154,7 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
 
         // Get the form controls from the dialog view
         EditText assignmentTitleEditText = dialogView.findViewById(R.id.lectureNameEditText);
-        EditText teacherName2 = dialogView.findViewById(R.id.add_announcement_teacher_name);
+        EditText teacherName2 = dialogView.findViewById(R.id.hw_lecture);
         EditText contentEditText = dialogView.findViewById(R.id.add_announcement_content);
         Button saveButton = dialogView.findViewById(R.id.saveButton);
 

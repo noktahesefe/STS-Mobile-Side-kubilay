@@ -26,6 +26,9 @@ import androidx.activity.result.contract.ActivityResultContracts;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -175,9 +178,11 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         addingHomeworkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAddAssignmentDialog();
+                showHwDialog();
             }
         });
+
+
 
 
         // Set a listener for the SearchView to handle query text changes
@@ -205,7 +210,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         addingHomeworkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAddAssignmentDialog();
+                showHwDialog();
             }
         });
 
@@ -248,6 +253,23 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             }
         });
 
+    }
+
+    public void showHwDialog()
+    {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        CustomDialogFragment newFragment = new CustomDialogFragment();
+
+        Bundle args = new Bundle();
+        args.putSerializable("teacher", getIntent().getSerializableExtra("teacher"));
+        args.putSerializable("classroom", getIntent().getSerializableExtra("classroom"));
+        newFragment.setArguments(args);
+
+
+
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        transaction.replace(android.R.id.content, newFragment).addToBackStack(null).commit();
     }
 
     private void showAddAssignmentDialog() {
@@ -329,16 +351,6 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                         }
                     });
                 }
-
-                // Create a new HwModel object with the entered title and description
-                //HwModel newHomework = new HwModel();
-
-                // Add the new homework to the hwModels list
-                //hwModels.add(newHomework);
-
-                // Notify the adapter that the data set has changed
-                //homeworkAdapter.notifyDataSetChanged();
-
                 // Dismiss the dialog
                 dialog.dismiss();
             }
