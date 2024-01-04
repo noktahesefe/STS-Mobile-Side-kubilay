@@ -10,6 +10,9 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
@@ -82,7 +85,14 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
     }
     SearchView search;
 
-    List<HwModel> hwModels = new ArrayList<>();
+    ArrayList<HwModel> hwModels = new ArrayList<>();
+
+    private ArrayList<HwModel> expiredHws;
+    private ArrayList<HwModel> ongoingHws;
+    private ArrayList<StudentModel> students;
+    private RecyclerView recyclerView;
+    private Context context;
+    private ClassroomHomeworkViewInterface homeworkViewInterface;
 
     private ArrayList<HwModel> expiredHws;
     private ArrayList<HwModel> ongoingHws;
@@ -111,7 +121,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
                         homeworkImage.setImageBitmap(bitmap);
                         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, byteArrayOutputStream);
                         byte[] byteArray = byteArrayOutputStream.toByteArray();
                         image = Base64.encodeToString(byteArray,Base64.DEFAULT);
                     } catch(IOException e){
@@ -311,6 +321,35 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         EditText hw_dueDate = dialogView.findViewById(R.id.hw_deadline_content);
         EditText hw_content = dialogView.findViewById(R.id.hw_content_content);
         Button saveButton = dialogView.findViewById(R.id.saveButton);
+
+        saveButton.setEnabled(false);
+
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                boolean allFieldsFilled = !TextUtils.isEmpty(hw_Name.getText()) &&
+                        !TextUtils.isEmpty(hw_dueDate.getText()) &&
+                        !TextUtils.isEmpty(hw_content.getText());
+
+                // Enable or disable the "Save" button based on the condition
+                saveButton.setEnabled(allFieldsFilled);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+
+        hw_Name.addTextChangedListener(textWatcher);
+        hw_dueDate.addTextChangedListener(textWatcher);
+        hw_content.addTextChangedListener(textWatcher);
+
 
         // Create the dialog
         final AlertDialog dialog = builder.create();

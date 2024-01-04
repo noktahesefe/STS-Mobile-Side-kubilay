@@ -92,11 +92,11 @@ public class StudentMainActivity extends AppCompatActivity {
         if(intent != null){
             Student student = (Student) intent.getSerializableExtra("user");
             nameSurname.setText(student.getName());
-            SharedPreferences preferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+            SharedPreferences preferences = getSharedPreferences("StudentPrefs", Context.MODE_PRIVATE);
             String key = "profile_data_" + student.getStudent_id();
             String combinedData = preferences.getString(key,"");
             String[] dataParts = combinedData.split("\\|");
-            System.out.println(Arrays.toString(dataParts));
+            //System.out.println(Arrays.toString(dataParts));
             if(dataParts.length == 2){
                 int studentId = Integer.parseInt(dataParts[0]);
                 String encodedImage = dataParts[1];
@@ -223,9 +223,7 @@ public class StudentMainActivity extends AppCompatActivity {
     private void selectFirstItemAsDefault() {
 
         if(navigationManager != null)
-        {
             navigationManager.showFragment(HomePageFragment.newInstance("userId"), false);
-        }
 
     }
 

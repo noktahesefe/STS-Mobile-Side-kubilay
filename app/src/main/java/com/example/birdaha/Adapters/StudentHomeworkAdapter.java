@@ -47,7 +47,6 @@ public class StudentHomeworkAdapter extends RecyclerView.Adapter<StudentHomework
 
     @Override
     public void onBindViewHolder(@NonNull HomeworkViewHolder holder, int position) {
-
         ZoneId turkeyZone = ZoneId.of("Europe/Istanbul");
         LocalDate localDate = LocalDate.now(turkeyZone);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

@@ -67,6 +67,7 @@ import retrofit2.http.Path;
  * and handles any necessary view setup.
  */
 public class StudentProfileFragment extends Fragment {
+    private static StudentProfileFragment instance = null;
 
     interface AddProfilePicture{
         @POST("api/v1/student/add/image")
@@ -86,7 +87,9 @@ public class StudentProfileFragment extends Fragment {
 
     // Activity result launcher for requesting gallery access permission
     private final ActivityResultLauncher<String> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), this::handlePermissionResult);
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                handlePermissionResult();
+            });
 
     // Activity result launcher for launching the image picker
     private final ActivityResultLauncher<Intent> imagePickerLauncher =
@@ -99,14 +102,14 @@ public class StudentProfileFragment extends Fragment {
                         try {
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(),selectedImage);
                             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 20, byteArrayOutputStream);
                             byte[] byteArray = byteArrayOutputStream.toByteArray();
                             image = Base64.encodeToString(byteArray,Base64.DEFAULT);
                             Bundle bundle = getArguments();
                             if(bundle != null){
                                 Student student = (Student) bundle.getSerializable("student");
                                 Log.d("studentid",String.valueOf(student.getStudent_id()));
-                                Log.d("image",image);
+                                //Log.d("image",image);
                                 SendProfilePictureStudent sendPP = new SendProfilePictureStudent(image, student.getStudent_id());
                                 Retrofit retrofit = new Retrofit.Builder()
                                         .baseUrl("http://sinifdoktoruadmin.online/")
@@ -121,7 +124,7 @@ public class StudentProfileFragment extends Fragment {
                                             Toast.makeText(requireActivity(), respond.getSuccess() + response.code(), Toast.LENGTH_SHORT).show();
                                             Log.d("Respond",respond.getSuccess());
                                             String combinedData = student.getStudent_id() + "|" + image;
-                                            SharedPreferences preferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                                            SharedPreferences preferences = requireActivity().getSharedPreferences("StudentPrefs", Context.MODE_PRIVATE);
                                             SharedPreferences.Editor editor = preferences.edit();
                                             String key = "profile_data_" + student.getStudent_id();
                                             editor.putString(key,combinedData);
@@ -153,7 +156,9 @@ public class StudentProfileFragment extends Fragment {
      *
      * @param isGranted True if the permission is granted, false otherwise.
      */
-    private void handlePermissionResult(boolean isGranted) {
+    private void handlePermissionResult() {
+        SharedPreferences preferences = getContext().getSharedPreferences("MyPrefs",Context.MODE_PRIVATE);
+        boolean isGranted = preferences.getBoolean("isGranted",false);
         if (isGranted) {
             openGallery();
         } else {
@@ -164,7 +169,10 @@ public class StudentProfileFragment extends Fragment {
                     .setPositiveButton("İzin ver", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            StudentProfileFragment.this.isGranted = true;
+                            SharedPreferences preferences = getContext().getSharedPreferences("MyPrefs",Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putBoolean("isGranted",true);
+                            editor.apply();
                             openGallery();
                         }
                     })
@@ -198,12 +206,14 @@ public class StudentProfileFragment extends Fragment {
      * @return A new instance of StudentProfileFragment.
      */
     public static StudentProfileFragment newInstance(Student student) {
-        StudentProfileFragment fragment = new StudentProfileFragment();
-        Bundle args = new Bundle();
-        args.putSerializable("student",student);
-        //args.putString(KEY_TITLE, param1);
-        fragment.setArguments(args);
-        return fragment;
+        if(instance == null){
+            instance = new StudentProfileFragment();
+            Bundle args = new Bundle();
+            args.putSerializable("student",student);
+            //args.putString(KEY_TITLE, param1);
+            instance.setArguments(args);
+        }
+        return instance;
     }
 
     /**
@@ -264,11 +274,11 @@ public class StudentProfileFragment extends Fragment {
             });
 
             profilePicture = (ImageView) view.findViewById(R.id.student_profilePicture);
-            SharedPreferences preferences = getActivity().getSharedPreferences("MyPrefs",Context.MODE_PRIVATE);
+            SharedPreferences preferences = getActivity().getSharedPreferences("StudentPrefs",Context.MODE_PRIVATE);
             String key = "profile_data_" + student.getStudent_id();
             String combinedData = preferences.getString(key,"");
             String[] dataParts = combinedData.split("\\|");
-            System.out.println(Arrays.toString(dataParts));
+            //System.out.println(Arrays.toString(dataParts));
             if(dataParts.length == 2){
                 int studentId = Integer.parseInt(dataParts[0]);
                 String encodedImage = dataParts[1];
@@ -327,7 +337,12 @@ public class StudentProfileFragment extends Fragment {
 
         /*String title = getArguments().getString(KEY_TITLE);
         ((TextView)view.findViewById(R.id.title)).setText(title);*/
+    }
 
-
+    @Override
+    public void onDetach(){
+        super.onDetach();
+        System.out.println("Deadge");
+        instance = null;
     }
 }

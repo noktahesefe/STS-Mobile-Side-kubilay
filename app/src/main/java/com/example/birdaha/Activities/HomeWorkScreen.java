@@ -101,9 +101,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         Student student = null;
         Classroom classroom = null;
 
-        Student student = null;
-        Classroom classroom = null;
-
         Intent intent = getIntent();
         if (intent != null) {
             student = (Student) intent.getSerializableExtra("student");

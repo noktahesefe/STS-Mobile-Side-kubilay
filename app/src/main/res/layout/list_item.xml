@@ -12,6 +12,7 @@
     <ImageView
         android:layout_width="128px"
         android:layout_height="128px"
+        android:id="@+id/student_image"
         app:srcCompat="@drawable/ic_account_circle_white_24">
 
     </ImageView>

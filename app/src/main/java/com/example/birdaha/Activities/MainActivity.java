@@ -190,6 +190,14 @@ public class MainActivity extends AppCompatActivity {
                             break;
                         case 203:
                             Parent parent = new Parent(user.getName(), user.getParent_id(), user.getStudents());
+                            SharedPreferences preferences = getSharedPreferences("ParentPrefs",Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = preferences.edit();
+                            for(Student currentStudent : user.getStudents()){
+                                String combinedData = currentStudent.getStudent_id() + "|" + currentStudent.getGetStudentImage();
+                                String key = "parent_student_data_" + currentStudent.getStudent_id();
+                                editor.putString(key,combinedData);
+                                editor.apply();
+                            }
                             Intent intent3 = new Intent(MainActivity.this, ParentMainActivity.class);
                             intent3.putExtra("user", parent);
                             Toast.makeText(MainActivity.this, "Parent logged in", Toast.LENGTH_SHORT).show();

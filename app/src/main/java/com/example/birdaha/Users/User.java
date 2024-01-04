@@ -26,6 +26,7 @@ public class User implements Serializable {
     protected int course_id;
     protected int student_id;
     private int classroom_id;
+    @SerializedName("student_no")
     protected int school_no;
     protected Classroom classroom;
     protected List<Classroom> classrooms;
