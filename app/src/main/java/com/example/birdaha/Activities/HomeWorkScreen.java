@@ -68,6 +68,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
     }
 
     SearchView search;
+
     ArrayList<HwModel> hwModels = new ArrayList<>();
     private RecyclerView recyclerView;
 
@@ -80,6 +81,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
     private ArrayList<HwModel> ongoingHws;
 
     private AlertDialog filterDialog = null;
+
 
 
     @Override
@@ -95,6 +97,9 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
 
         context = this;
         homeworkViewInterface = this;
+
+        Student student = null;
+        Classroom classroom = null;
 
         Student student = null;
         Classroom classroom = null;
@@ -122,6 +127,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
                     HomeworksStudent models = response.body();
                     Log.d("Response",new Gson().toJson(response.body()));
                     hwModels = models.getHomeworks();
+
                     for(HwModel o : hwModels)
                     {
                         LocalDate today = LocalDate.now();

@@ -55,9 +55,7 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
 
         HwModel current = hwModels.get(position);
         holder.textViewname.setText(current.getTitle());
-
         holder.textViewname.setBackground((current.getDue_date().compareTo(formattedDateTime) < 0) ? context.getDrawable(R.drawable.darkgray_round_background) : context.getDrawable(R.drawable.blue_round_background));
-
         holder.textViewname.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

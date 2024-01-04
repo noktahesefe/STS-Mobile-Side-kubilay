@@ -89,6 +89,7 @@ public class HomePageFragment extends Fragment {
     }
 
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,7 +115,6 @@ public class HomePageFragment extends Fragment {
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
-
     }
 
     @Override
@@ -214,6 +214,124 @@ public class HomePageFragment extends Fragment {
             setImageSlider(instance.slideModels, instance.events);
         }
 
+
+
+
+        /*ImageSlider imageSlider = view.findViewById(R.id.image_slider);
+        ArrayList<Event> events = new ArrayList<>();
+        events.add(new Event(1,R.drawable.img,ScaleTypes.CENTER_CROP,"Etkinlik 1","Etkinlik 1 İçerik"));
+        events.add(new Event(2,R.drawable.img_1,ScaleTypes.FIT,"Etkinlik 2","Etkinlik 2 İçerik"));
+
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://sinifdoktoruadmin.online/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        EventAndAnnouncement getEventAnnouncement = retrofit.create(EventAndAnnouncement.class);
+        getEventAnnouncement.getEventAndAnnouncement().enqueue(new Callback<EventAndAnnouncements>() {
+            @Override
+            public void onResponse(Call<EventAndAnnouncements> call, Response<EventAndAnnouncements> response) {
+                if(response.isSuccessful() && response.body() != null){
+                    Toast.makeText(requireActivity(), "Response Successful!", Toast.LENGTH_SHORT).show();
+                    EventAndAnnouncements respond = response.body();
+                    events = respond.getEvents();
+                    ImageSlider imageSlider = view.findViewById(R.id.image_slider);
+                    ArrayList<SlideModel> slideModels = new ArrayList<>();
+                    for(Event currentEvent : events){
+                        //Log.d("Event id",String.valueOf(currentEvent.getEvent_id()));
+                        if(currentEvent.getImage() != null){
+                            byte[] byteArray = Base64.decode(currentEvent.getImage(),Base64.DEFAULT);
+                            Bitmap decodedImage = BitmapFactory.decodeByteArray(byteArray,0, byteArray.length);
+                            File directory = new File(requireContext().getCacheDir(), "event_images");
+                            if(!directory.exists()){
+                                if(directory.mkdirs()){
+                                    Log.d("Directory","Directory created");
+                                }
+                            }
+                            else{
+                                Log.d("Directory","No Directory");
+                            }
+                            File imageFile = new File(directory,"event_" + currentEvent.getEvent_id() + ".jpg");
+                            try{
+                                FileOutputStream fos = new FileOutputStream(imageFile);
+                                decodedImage.compress(Bitmap.CompressFormat.JPEG,100,fos);
+                                fos.close();
+                            } catch (IOException e){
+                                e.printStackTrace();
+                            }
+                            Uri imageUri = Uri.fromFile(imageFile);
+
+                            slideModels.add(new SlideModel(imageUri.toString(), currentEvent.getTitle(),ScaleTypes.CENTER_CROP));
+                        }
+                        else{
+                            slideModels.add(new SlideModel(R.drawable.img_1,currentEvent.getTitle(),ScaleTypes.CENTER_CROP));
+                        }
+                    }
+                    imageSlider.setImageList(slideModels,ScaleTypes.FIT);
+                    imageSlider.setSlideAnimation(AnimationTypes.ZOOM_OUT);
+
+                    imageSlider.setItemClickListener(new ItemClickListener() {
+                        @Override
+                        public void onItemSelected(int i) {
+
+                            // Get the Vibrator service
+                            Vibrator vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+                            if (vibrator != null && vibrator.hasVibrator()) {
+                                // Create a vibration effect
+                                // You can customize this effect as per your preference
+                                VibrationEffect effect = VibrationEffect.createOneShot(15, VibrationEffect.DEFAULT_AMPLITUDE);
+                                vibrator.vibrate(effect);
+                            }
+                            //SlideModel currentEvent = slideModels.get(i);
+                            Event currentEvent = events.get(i);
+                            AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                            LayoutInflater inflater = LayoutInflater.from(view.getContext());
+                            View overlayView = inflater.inflate(R.layout.event_detail_overlay, null);
+                            ImageView imageView = overlayView.findViewById(R.id.event_detail_image);
+                            TextView detail = overlayView.findViewById(R.id.event_detail_detail);
+                            if(currentEvent.getImage() != null){
+                                byte[] byteArray = Base64.decode(currentEvent.getImage(),Base64.DEFAULT);
+                                Bitmap decodedImage = BitmapFactory.decodeByteArray(byteArray,0, byteArray.length);
+                                Glide.with(requireActivity())
+                                        .load(decodedImage)
+                                        .into(imageView);
+                            }
+                            else{
+                                Glide.with(requireActivity())
+                                        .load(R.drawable.img_1)
+                                        .into(imageView);
+                            }
+
+                            //imageView.setImageResource(currentEvent.getImagePath());
+                            detail.setText(currentEvent.getDetails());
+
+                            builder.setView(overlayView);
+
+                            AlertDialog dialog = builder.create();
+                            dialog.show();
+                        }
+
+                        @Override
+                        public void doubleClick(int position) {
+                            // Implement your logic for double click here
+                        }
+                    });
+
+                    List<GeneralAnnouncement> generalAnnouncements = respond.getGeneralAnnouncements();
+                    getChildFragmentManager().beginTransaction()
+                            .replace(R.id.announcement_container, new GeneralAnnouncementFragment(generalAnnouncements))
+                            .commit();
+                }
+                else{
+                    Toast.makeText(requireActivity(), "Response Unsuccessful! " +" " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<EventAndAnnouncements> call, Throwable t) {
+                Toast.makeText(requireActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
 
 
