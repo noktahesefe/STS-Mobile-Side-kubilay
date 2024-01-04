@@ -2,10 +2,13 @@ package com.example.birdaha.Fragments;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -80,7 +83,7 @@ public class TeacherProfileFragment extends Fragment {
                         try {
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(),selectedImage);
                             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 20, byteArrayOutputStream);
                             byte[] byteArray = byteArrayOutputStream.toByteArray();
                             image = Base64.encodeToString(byteArray,Base64.DEFAULT);
                             Bundle bundle = getArguments();
@@ -100,6 +103,13 @@ public class TeacherProfileFragment extends Fragment {
                                             ProfilePictureRespond respond = response.body();
                                             Toast.makeText(requireActivity(), respond.getSuccess() + response.code(), Toast.LENGTH_SHORT).show();
                                             Log.d("Respond",respond.getSuccess());
+                                            String combinedData = teacher.getTeacher_id() + "|" + image;
+                                            SharedPreferences preferences = requireContext().getSharedPreferences("TeacherPrefs", Context.MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = preferences.edit();
+                                            String key = "teacher_profile_data_" + teacher.getTeacher_id();
+                                            editor.putString(key,combinedData);
+                                            editor.apply();
+
                                         }
                                         else{
                                             Toast.makeText(requireActivity(), "Response Unsuccessful" + response.code(), Toast.LENGTH_SHORT).show();
@@ -217,7 +227,7 @@ public class TeacherProfileFragment extends Fragment {
             lectures = view.findViewById(R.id.teacher_lectures_info);
             changeProfilePicture = view.findViewById(R.id.teacher_gallery);
             classes = view.findViewById(R.id.teacher_classes);
-            profilePicture = view.findViewById(R.id.teacher_profilePicture);
+
 
             nameSurname.setText(teacher.getName());
             lectures.setText(teacher.getCourse().getName());
@@ -228,8 +238,25 @@ public class TeacherProfileFragment extends Fragment {
                     .addToBackStack(null)
                     .commit();
             teacherClassroomsContainer.setVisibility(View.INVISIBLE);
-        }
 
+            profilePicture = view.findViewById(R.id.teacher_profilePicture);
+            SharedPreferences preferences = requireContext().getSharedPreferences("TeacherPrefs",Context.MODE_PRIVATE);
+            String key = "teacher_profile_data_" + teacher.getTeacher_id();
+            String combinedData = preferences.getString(key,"");
+            String[] dataParts = combinedData.split("\\|");
+            if(dataParts.length == 2){
+                int teacherId = Integer.parseInt(dataParts[0]);
+                String encodedImage = dataParts[1];
+                if(teacher.getTeacher_id() == teacherId){
+                    byte[] byteArray = Base64.decode(encodedImage,Base64.DEFAULT);
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray,0, byteArray.length);
+                    Glide.with(requireActivity())
+                            .load(bitmap)
+                            .circleCrop()
+                            .into(profilePicture);
+                }
+            }
+        }
 
         changeProfilePicture.setOnClickListener(v -> checkPermissionAndOpenGallery());
 

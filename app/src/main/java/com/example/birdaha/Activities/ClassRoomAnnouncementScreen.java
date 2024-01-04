@@ -237,6 +237,7 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
 
         title.setEnabled(false);
         details.setEnabled(false);
+        teacherName.setEnabled(false);
 
         editButton.setOnClickListener(v -> {
             // Enable EditTexts to make them editable

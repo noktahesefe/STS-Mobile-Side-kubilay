@@ -1,6 +1,8 @@
 package com.example.birdaha.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,6 +30,8 @@ import com.example.birdaha.Helper.LocalDataManager;
 import com.example.birdaha.Interface.NavigationManager;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Teacher;
+
+import java.util.Arrays;
 
 
 /**
@@ -76,6 +80,23 @@ public class TeacherMainActivity extends AppCompatActivity {
         if(intent != null){
             Teacher teacher = (Teacher) intent.getSerializableExtra("user");
             nameSurname.setText(teacher.getName());
+            SharedPreferences preferences = getSharedPreferences("TeacherPrefs",Context.MODE_PRIVATE);
+            String key = "teacher_profile_data_" + teacher.getTeacher_id();
+            String combinedData = preferences.getString(key,"");
+            String[] dataParts = combinedData.split("\\|");
+            System.out.println(Arrays.toString(dataParts));
+            if(dataParts.length == 2){
+                int teacherId = Integer.parseInt(dataParts[0]);
+                String encodedImage = dataParts[1];
+                if(teacher.getTeacher_id() == teacherId){
+                    byte[] byteArray = Base64.decode(encodedImage,Base64.DEFAULT);
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray,0, byteArray.length);
+                    Glide.with(this)
+                            .load(bitmap)
+                            .circleCrop()
+                            .into(teacherPhoto);
+                }
+            }
             /*if(teacher.getTeacher_image() != null){
                 byte[] imageBytes = Base64.decode(teacher.getTeacher_image(), Base64.DEFAULT);
                 Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes,0, imageBytes.length);
