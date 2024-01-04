@@ -27,6 +27,8 @@ public class FragmentNavigationManager implements NavigationManager {
      */
     private FragmentManager mFragmentManager;
 
+    private Fragment currFragment;
+
     /**
      * Retrieves the instance of FragmentNavigationManager.
      *
@@ -60,6 +62,7 @@ public class FragmentNavigationManager implements NavigationManager {
      */
     @Override
     public void showFragment(Fragment fragmentContent, boolean b) {
+        currFragment = fragmentContent;
         FragmentManager fm = mFragmentManager;
         FragmentTransaction ft = fm.beginTransaction().replace(R.id.FrameLayout_container, fragmentContent);
         ft.addToBackStack(null);
@@ -70,5 +73,9 @@ public class FragmentNavigationManager implements NavigationManager {
             ft.commit();
 
         fm.executePendingTransactions();
+    }
+
+    public Fragment getCurrFragment() {
+        return currFragment;
     }
 }

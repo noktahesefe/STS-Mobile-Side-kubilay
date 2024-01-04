@@ -94,6 +94,13 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
     private Context context;
     private ClassroomHomeworkViewInterface homeworkViewInterface;
 
+    private ArrayList<HwModel> expiredHws;
+    private ArrayList<HwModel> ongoingHws;
+    private ArrayList<StudentModel> students;
+    private RecyclerView recyclerView;
+    private Context context;
+    private ClassroomHomeworkViewInterface homeworkViewInterface;
+
     Button addingHomeworkButton;
     Button gradeButton;
     private ImageView homeworkImage;
@@ -374,6 +381,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                         public void onResponse(Call<UpdateRespond> call, Response<UpdateRespond> response) {
                             if(response.isSuccessful() && response.body() != null){
                                 hwModels.add(hwModel);
+
                                 for(HwModel o : hwModels)
                                 {
                                     LocalDateTime today = LocalDateTime.now();
@@ -386,6 +394,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                                 }
 
                                 sortListByDate(hwModels);
+
                                 homeworkAdapter.notifyDataSetChanged();
                                 Toast.makeText(ClassroomHomeworkScreen.this, "Ödev başarıyla eklendi", Toast.LENGTH_SHORT).show();
                                 Log.d("Response",new Gson().toJson(response.body()));
