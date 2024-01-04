@@ -94,7 +94,7 @@ public class EventFragment extends Fragment implements EventRecyclerViewInterfac
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
         View overlayView = inflater.inflate(R.layout.event_detail_overlay, null);
         ImageView imageView = overlayView.findViewById(R.id.event_detail_image);
-        TextView detail = overlayView.findViewById(R.id.event_detail);
+        TextView detail = overlayView.findViewById(R.id.event_detail_detail);
         imageView.setImageResource(currentEvent.getImageResource());
         detail.setText(currentEvent.getDetails());
 

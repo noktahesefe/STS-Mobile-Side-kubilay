@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -27,30 +29,50 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.birdaha.Adapters.HomeworkAdapter;
+import com.example.birdaha.Adapters.StudentHomeworkAdapter;
+import com.example.birdaha.Classrooms.Classroom;
+import com.example.birdaha.General.HomeworksStudent;
 import com.example.birdaha.General.HwModel;
 import com.example.birdaha.General.StudentModel;
 import com.example.birdaha.R;
+import com.example.birdaha.Users.Student;
 import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
+import com.google.gson.Gson;
 
-import java.net.ConnectException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
 
 /**
  * This activity displays a list of homework modules.
  */
 public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomeworkViewInterface {
-    SearchView search;
-    ArrayList<HwModel> hwModels;
 
-    RecyclerView recyclerView;
-    HomeworkAdapter homeworkAdapter;
+    interface GetHomework{
+        @GET("api/v1/homeworks/{classroomId}/{studentId}")
+        Call<HomeworksStudent> getHomeworks(@Path("classroomId") int classroomId,
+                                            @Path("studentId") int studentId);
+    }
+
+    SearchView search;
+    ArrayList<HwModel> hwModels = new ArrayList<>();
+    private RecyclerView recyclerView;
+
+    private StudentHomeworkAdapter homeworkAdapter;
+
     private Context context;
     private ClassroomHomeworkViewInterface homeworkViewInterface;
 
@@ -58,6 +80,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
     private ArrayList<HwModel> ongoingHws;
 
     private AlertDialog filterDialog = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,27 +96,59 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         context = this;
         homeworkViewInterface = this;
 
+        Student student = null;
+        Classroom classroom = null;
+
         Intent intent = getIntent();
         if (intent != null) {
-            hwModels = (ArrayList<HwModel>) intent.getSerializableExtra("homeworks");
+            student = (Student) intent.getSerializableExtra("student");
+            classroom = (Classroom) intent.getSerializableExtra("classroom");
+            //hwModels = (ArrayList<HwModel>) intent.getSerializableExtra("homeworks");
         }
 
-        for(HwModel o : hwModels)
-        {
-            LocalDateTime today = LocalDateTime.now();
-            LocalDateTime localDate = LocalDate.parse(o.getDue_date()).atStartOfDay();
+        Log.d("classid",String.valueOf(classroom.getClassroom_id()));
+        Log.d("studentid",String.valueOf(student.getStudent_id()));
 
-            if(localDate.isAfter(today))
-                ongoingHws.add(o);
-            else
-                expiredHws.add(o);
-        }
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://sinifdoktoruadmin.online/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        GetHomework getHomework = retrofit.create(GetHomework.class);
+        getHomework.getHomeworks(classroom.getClassroom_id(),student.getStudent_id()).enqueue(new Callback<HomeworksStudent>() {
+            @Override
+            public void onResponse(Call<HomeworksStudent> call, Response<HomeworksStudent> response) {
+                if(response.isSuccessful() && response.body() != null){
+                    Toast.makeText(HomeWorkScreen.this, "Ödevler Listeleniyor", Toast.LENGTH_SHORT).show();
+                    HomeworksStudent models = response.body();
+                    Log.d("Response",new Gson().toJson(response.body()));
+                    hwModels = models.getHomeworks();
+                    for(HwModel o : hwModels)
+                    {
+                        LocalDate today = LocalDate.now();
+                        LocalDate localDate = LocalDate.parse(o.getDue_date());
 
-        sortListByDate(hwModels);
+                        if(localDate.isBefore(today))
+                            expiredHws.add(o);
+                        else
+                            ongoingHws.add(o);
+                    }
 
-        HomeworkAdapter homeworkAdapter = new HomeworkAdapter(context, hwModels, homeworkViewInterface);
-        recyclerView.setAdapter(homeworkAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                    sortListByDate(hwModels);
+                    homeworkAdapter = new StudentHomeworkAdapter(context, (ArrayList<HwModel>) hwModels, homeworkViewInterface);
+                    recyclerView.setAdapter(homeworkAdapter);
+
+                }
+                else{
+                    Toast.makeText(HomeWorkScreen.this, "Response Unsuccessful", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<HomeworksStudent> call, Throwable t) {
+                Toast.makeText(HomeWorkScreen.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         View baselineFilterView = findViewById(R.id.filterView);
         baselineFilterView.setOnClickListener(new View.OnClickListener() {
@@ -120,8 +175,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
     // This method is called when the user clicks on the filter icon
     private void showOverlay() {
 
-        if(filterDialog == null)
-        {
+        if(filterDialog == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             LayoutInflater inflater = LayoutInflater.from(this);
             View overlayView = inflater.inflate(R.layout.filter_overlay, null);
@@ -138,15 +192,9 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
             filterDialog.getWindow().setAttributes(layoutParams);
 
             // Find the checkboxes in the overlay layout
-
             CheckBox checkBox1 = overlayView.findViewById(R.id.checkBox);
-            /*else
-                overlayView.findViewById(R.id.checkBox).setEnabled(checkBox1.isEnabled());*/
-
-
             CheckBox checkBox2 = overlayView.findViewById(R.id.checkBox2);
-            /*else
-                overlayView.findViewById(R.id.checkBox2).setEnabled(checkBox2.isEnabled());*/
+
 
             checkBox1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -168,7 +216,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
 
 
                     sortListByDate(hwModels);
-                    HomeworkAdapter homeworkAdapter = new HomeworkAdapter(context, hwModels, homeworkViewInterface);
+                    homeworkAdapter = new StudentHomeworkAdapter(context, hwModels, homeworkViewInterface);
                     recyclerView.setAdapter(homeworkAdapter);
                     recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 }
@@ -193,17 +241,15 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
                     }
 
                     sortListByDate(hwModels);
-                    HomeworkAdapter homeworkAdapter = new HomeworkAdapter(context, hwModels, homeworkViewInterface);
+                    homeworkAdapter = new StudentHomeworkAdapter(context, hwModels, homeworkViewInterface);
                     recyclerView.setAdapter(homeworkAdapter);
                     recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 }
             });
 
+            // Add any additional customization or logic to the checkboxes here
         }
-
-        // Add any additional customization or logic to the checkboxes here
-
-        filterDialog.show();
+            filterDialog.show();
     }
 
     @Override
@@ -235,14 +281,15 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         dueDate.setText(clickedItem.getDue_date());
         content.setText(clickedItem.getInfo());
 
-/*        byte[] imageBytes = Base64.decode(clickedItem.getImage(), Base64.DEFAULT);
-        Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes,0, imageBytes.length);
-        Glide.with(HomeWorkScreen.this)
-                .load(decodedImage)
-                .into(imageView);
+
 
         // If the clickedItem has no image, do not open the full screen view
-        if(!clickedItem.getImage().equals("")){
+        if(clickedItem.getGetImage() != null){
+            byte[] imageBytes = Base64.decode(clickedItem.getGetImage(), Base64.DEFAULT);
+            Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes,0, imageBytes.length);
+            Glide.with(HomeWorkScreen.this)
+                    .load(decodedImage)
+                    .into(imageView);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -260,7 +307,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
                     dialog.show();
                 }
             });
-        }*/
+        }
 
         editButton.setVisibility(View.INVISIBLE);
         saveButton.setVisibility(View.INVISIBLE);
@@ -275,24 +322,31 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
     }
 
     private void sortListByDate(ArrayList<HwModel> list){
+        ZoneId turkeyZone = ZoneId.of("Europe/Istanbul");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDateTime today = LocalDateTime.now();
+        LocalDate today = LocalDate.now(turkeyZone);
 
         Comparator<HwModel> dateComparator = (date1, date2) -> {
-            LocalDateTime localDate1 = LocalDate.parse(date1.getDue_date(), formatter).atStartOfDay();
-            LocalDateTime localDate2 = LocalDate.parse(date2.getDue_date(), formatter).atStartOfDay();
+            LocalDate localDate1 = LocalDate.parse(date1.getDue_date(), formatter);
+            LocalDate localDate2 = LocalDate.parse(date2.getDue_date(), formatter);
 
-            if (localDate1.isAfter(today) && localDate2.isAfter(today)) {
-                return localDate1.compareTo(localDate2);
-            } else if (localDate1.isBefore(today)) {
-                return 1;
-            } else if (localDate2.isBefore(today)) {
-                return -1;
+            if (localDate1.isEqual(today)) {
+                return -1; // Bugünkü tarihleri en önce sırala
+            } else if (localDate2.isEqual(today)) {
+                return 1; // Bugünkü tarihleri en önce sırala
+            } else if (localDate1.isBefore(today) && localDate2.isBefore(today)) {
+                return localDate2.compareTo(localDate1); // Geçmiş tarihleri büyükten küçüğe sırala
+            } else if (localDate1.isAfter(today) && localDate2.isAfter(today)) {
+                return localDate1.compareTo(localDate2); // Gelecek tarihleri küçükten büyüğe sırala
+            } else if (localDate1.isBefore(today) && localDate2.isAfter(today)) {
+                return 1; // Geçmiş tarihleri gelecek tarihlerden sonra sırala
             } else {
-                return localDate1.compareTo(localDate2);
+                return -1; // Gelecek tarihleri geçmiş tarihlerden önce sırala
             }
         };
 
         Collections.sort(list, dateComparator);
     }
+
+
 }

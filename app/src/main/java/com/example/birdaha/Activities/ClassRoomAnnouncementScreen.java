@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.birdaha.Adapters.ClassAnnouncementAdapter;
 import com.example.birdaha.Classrooms.Classroom;
+import com.example.birdaha.General.AnnouncementsTeacher;
 import com.example.birdaha.General.ClassAnnouncementModel;
 import com.example.birdaha.General.UpdateRespond;
 import com.example.birdaha.R;
@@ -31,11 +33,17 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public class ClassRoomAnnouncementScreen extends AppCompatActivity implements ClassAnnouncementViewInterface {
 
     interface MakeAnnouncement{
+
+        @GET("api/v1/teacher/announcements/{classroomId}")
+        Call<AnnouncementsTeacher> getAnnouncements(@Path("classroomId") int classroomId);
+
         @POST("/api/v1/announcement/add")
         Call<ClassAnnouncementModel> makeAnnouncement(@Body ClassAnnouncementModel classAnnouncementModel);
 
@@ -49,6 +57,8 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
 
     Button addingAnnouncementButton;
 
+    ClassAnnouncementAdapter classAnnouncementAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,15 +68,45 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
         search = findViewById(R.id.searchView_students);
         addingAnnouncementButton = findViewById(R.id.adding_announcement_button);
 
+        Classroom classroom = null;
+
         Intent intent = getIntent();
         if(intent != null){
+            classroom = (Classroom) intent.getSerializableExtra("classroom");
             classAnnouncementModels = (ArrayList<ClassAnnouncementModel>) intent.getSerializableExtra("announcements");
         }
 
-        //setClassAnnouncementModels();
-        ClassAnnouncementAdapter classAnnouncementAdapter = new ClassAnnouncementAdapter(this, classAnnouncementModels, this);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://sinifdoktoruadmin.online/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
-        recyclerView.setAdapter(classAnnouncementAdapter);
+        if(classroom != null){
+            MakeAnnouncement getAnnouncement = retrofit.create(MakeAnnouncement.class);
+            getAnnouncement.getAnnouncements(classroom.getClassroom_id()).enqueue(new Callback<AnnouncementsTeacher>() {
+                @Override
+                public void onResponse(Call<AnnouncementsTeacher> call, Response<AnnouncementsTeacher> response) {
+                    if(response.isSuccessful() && response.body() != null){
+                        AnnouncementsTeacher models = response.body();
+                        classAnnouncementModels = (ArrayList<ClassAnnouncementModel>) models.getClassroomAnnouncements();
+
+                        classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassRoomAnnouncementScreen.this, classAnnouncementModels, ClassRoomAnnouncementScreen.this);
+                        recyclerView.setAdapter(classAnnouncementAdapter);
+                        Toast.makeText(ClassRoomAnnouncementScreen.this, "Duyurlar Listeleniyor", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        Toast.makeText(ClassRoomAnnouncementScreen.this, "Response Unsuccessful", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<AnnouncementsTeacher> call, Throwable t) {
+                    Toast.makeText(ClassRoomAnnouncementScreen.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -135,6 +175,7 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
                     Classroom currentClassroom = (Classroom) intent.getSerializableExtra("classroom");
                     Teacher teacher = (Teacher) intent.getSerializableExtra("teacher");
                     ClassAnnouncementModel classAnnouncement = new ClassAnnouncementModel(title, content, currentClassroom.getClassroom_id(),teacher.getTeacher_id());
+                    classAnnouncement.setTeacher(teacher);
                     Retrofit retrofit = new Retrofit.Builder()
                             .baseUrl("http://sinifdoktoruadmin.online/")
                             .addConverterFactory(GsonConverterFactory.create())
@@ -145,6 +186,9 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
                         @Override
                         public void onResponse(Call<ClassAnnouncementModel> call, Response<ClassAnnouncementModel> response) {
                             if(response.isSuccessful() && response.body() != null){
+                                classAnnouncementModels.add(classAnnouncement);
+                                classAnnouncementAdapter.notifyDataSetChanged();
+                                Toast.makeText(ClassRoomAnnouncementScreen.this, "Duyuru başarıyla yapıldı", Toast.LENGTH_SHORT).show();
                                 Log.d("Response",new Gson().toJson(response.body()));
                             }
                         }
@@ -221,6 +265,7 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
                 @Override
                 public void onResponse(Call<UpdateRespond> call, Response<UpdateRespond> response) {
                     if(response.isSuccessful() && response.body() != null){
+                        Toast.makeText(ClassRoomAnnouncementScreen.this, "Duyuru Güncellendi", Toast.LENGTH_SHORT).show();
                         Log.d("ResponseUpdate",new Gson().toJson(response.body()));
                     }
                     else{

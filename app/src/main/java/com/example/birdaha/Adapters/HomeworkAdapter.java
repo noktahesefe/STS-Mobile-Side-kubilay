@@ -1,9 +1,6 @@
 package com.example.birdaha.Adapters;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,14 +11,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.birdaha.General.HwModel;
 import com.example.birdaha.R;
 import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,26 +41,24 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
     @Override
     public HomeworkViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.recycler_view_row2, parent, false);
+        View view = inflater.inflate(R.layout.row_teacher_homework, parent, false);
         return new HomeworkViewHolder(view, homeworkViewInterface);
     }
 
-
     @Override
     public void onBindViewHolder(@NonNull HomeworkViewHolder holder, int position) {
-        HwModel current = hwModels.get(position);
-
-        LocalDateTime localDateTime = LocalDateTime.now();
+        System.out.println(position);
+        ZoneId turkeyZone = ZoneId.of("Europe/Istanbul");
+        LocalDate localDate = LocalDate.now(turkeyZone);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String formattedDateTime = localDateTime.format(formatter);
-        System.out.println(formattedDateTime);
+        String formattedDateTime = localDate.format(formatter);
 
-        if(current.getDue_date().compareTo(formattedDateTime) < 0)
-            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.expired_date));
+        HwModel current = hwModels.get(position);
+        holder.textViewname.setText(current.getTitle());
 
+        holder.textViewname.setBackground((current.getDue_date().compareTo(formattedDateTime) < 0) ? context.getDrawable(R.drawable.darkgray_round_background) : context.getDrawable(R.drawable.blue_round_background));
 
-        holder.textViewTitle.setText(current.getTitle());
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
+        holder.textViewname.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (homeworkViewInterface != null) {
@@ -118,7 +113,7 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
     public static class HomeworkViewHolder extends RecyclerView.ViewHolder{
 
         TextView textViewTitle;
-        CardView cardView;
+        TextView textViewname;
 
         /**
          * Constructor for HomeworkViewHolder.
@@ -130,12 +125,9 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
         public HomeworkViewHolder(@NonNull View itemView, ClassroomHomeworkViewInterface homeworkViewInterface) {
             super(itemView);
 
-            // Initialize the textViewTitle variable with the view from the layout with id textView
-            textViewTitle = itemView.findViewById(R.id.studentName);
 
             // Initialize the cardView variable with the view from the layout with id cardView
-            cardView = itemView.findViewById(R.id.cardView);
-
+            textViewname = itemView.findViewById(R.id.homework_title);
         }
     }
 }
