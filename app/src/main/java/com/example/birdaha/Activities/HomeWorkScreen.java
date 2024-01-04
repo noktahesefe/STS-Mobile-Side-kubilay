@@ -174,13 +174,11 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
 
         // Inflate the overlay_layout.xml file into a View object
 
-        View overlayView = inflater.inflate(R.layout.overlay_homework_layout, null);
+        View overlayView = inflater.inflate(R.layout.dialog_hw_detail, null);
         EditText courseName = overlayView.findViewById(R.id.homework_detail_course_name);
         EditText title = overlayView.findViewById(R.id.homework_detail_title);
         EditText dueDate = overlayView.findViewById(R.id.homework_detail_duedate);
         EditText content = overlayView.findViewById(R.id.homework_detail_content);
-        Button editButton = overlayView.findViewById(R.id.editButton);
-        Button saveButton = overlayView.findViewById(R.id.saveButton);
         ImageView imageView = overlayView.findViewById(R.id.homework_detail_image);
 
         courseName.setEnabled(false);
@@ -221,8 +219,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
             });
         }
 
-        editButton.setVisibility(View.INVISIBLE);
-        saveButton.setVisibility(View.INVISIBLE);
         // Set the inflated view as the custom view for the AlertDialog
         builder.setView(overlayView);
 

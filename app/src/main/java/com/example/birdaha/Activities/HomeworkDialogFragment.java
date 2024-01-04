@@ -21,7 +21,6 @@ import com.example.birdaha.General.HwModel;
 import com.example.birdaha.General.UpdateRespond;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Teacher;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 
 import java.util.Calendar;
@@ -33,7 +32,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class CustomDialogFragment extends DialogFragment {
+public class HomeworkDialogFragment extends DialogFragment {
 
 
     private EditText hw_title, hw_due_date, hw_content, hw_course_name;
@@ -50,8 +49,6 @@ public class CustomDialogFragment extends DialogFragment {
 
         hw_title = view.findViewById(R.id.hw_title);
         hw_content = view.findViewById(R.id.hw_content);
-        hw_course_name = view.findViewById(R.id.hw_lecture);
-
         hw_due_date = view.findViewById(R.id.dateEditText);
 
         // Set up the date picker dialog
@@ -81,9 +78,8 @@ public class CustomDialogFragment extends DialogFragment {
 
             String title = hw_title.getText().toString();
             String content = hw_content.getText().toString();
-            String lecture_name = hw_course_name.getText().toString();
             String due_date = hw_due_date.getText().toString();
-            HwModel hwModel = new HwModel(classroom.getClassroom_id(), teacher.getTeacher_id(), title, content, lecture_name, due_date);
+            HwModel hwModel = new HwModel(classroom.getClassroom_id(),teacher.getTeacher_id(),teacher.getCourse().getName(),due_date,title,content,image);
             hwModel.setGetImage(image);
 
             // Retrofit call

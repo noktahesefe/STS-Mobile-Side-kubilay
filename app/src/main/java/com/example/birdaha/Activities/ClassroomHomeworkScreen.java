@@ -26,7 +26,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -258,7 +257,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
     public void showHwDialog()
     {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        CustomDialogFragment newFragment = new CustomDialogFragment();
+        HomeworkDialogFragment newFragment = new HomeworkDialogFragment();
 
         Bundle args = new Bundle();
         args.putSerializable("teacher", getIntent().getSerializableExtra("teacher"));
@@ -271,95 +270,6 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         transaction.replace(android.R.id.content, newFragment).addToBackStack(null).commit();
     }
-
-    private void showAddAssignmentDialog() {
-        // Create an AlertDialog builder
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Ödev Ekleme"); // Set the dialog title
-
-        // Inflate the layout for the add homework form
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_add_homework, null);
-        builder.setView(dialogView);
-        homeworkImage = dialogView.findViewById(R.id.homework_image);
-
-        // Find the select image button
-        Button selectImageButton = dialogView.findViewById(R.id.selectImageButton);
-
-
-
-        // Set a click listener for the "Select Image" button
-        selectImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                galleryLauncher.launch("image/*");
-            }
-        });
-
-
-        // Find views in the dialog layout
-        EditText hw_Name = dialogView.findViewById(R.id.lectureNameEditText);
-        //EditText assignmentDescriptionEditText = dialogView.findViewById(R.id.add_announcement_teacher_name);
-        EditText hw_dueDate = dialogView.findViewById(R.id.hw_deadline_content);
-        EditText hw_content = dialogView.findViewById(R.id.hw_content_content);
-        Button saveButton = dialogView.findViewById(R.id.saveButton);
-
-        // Create the dialog
-        final AlertDialog dialog = builder.create();
-
-        // Set a click listener for the "Save" button in the dialog
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Get the text entered in the title and description EditText fields
-                String hw_name = hw_Name.getText().toString();
-                String hw_date = hw_dueDate.getText().toString();
-                String hw_info = hw_content.getText().toString();
-
-
-                Intent intent = getIntent();
-                if(intent != null){
-                    Teacher teacher = (Teacher) intent.getSerializableExtra("teacher");
-                    Classroom classroom = (Classroom) intent.getSerializableExtra("classroom");
-                    HwModel hwModel = new HwModel(classroom.getClassroom_id(),teacher.getTeacher_id(),teacher.getCourse().getName(),hw_date,hw_name,hw_info,image);
-                    hwModel.setGetImage(image);
-
-                    Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl("http://sinifdoktoruadmin.online/")
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .build();
-                    AddHomework addHomework = retrofit.create(AddHomework.class);
-                    addHomework.addHomework(hwModel).enqueue(new Callback<UpdateRespond>() {
-                        @Override
-                        public void onResponse(Call<UpdateRespond> call, Response<UpdateRespond> response) {
-                            if(response.isSuccessful() && response.body() != null){
-                                hwModels.add(hwModel);
-                                Collections.sort(hwModels);
-                                homeworkAdapter.notifyDataSetChanged();
-                                Toast.makeText(ClassroomHomeworkScreen.this, "Ödev başarıyla eklendi", Toast.LENGTH_SHORT).show();
-                                Log.d("Response",new Gson().toJson(response.body()));
-                            }
-                            else{
-                                Log.d("ResponseError",new Gson().toJson(response.body()));
-                                Log.d("Response",String.valueOf(response.code()));
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<UpdateRespond> call, Throwable t) {
-                            Log.d("Error",t.getMessage());
-                        }
-                    });
-                }
-                // Dismiss the dialog
-                dialog.dismiss();
-            }
-        });
-
-        // Show the dialog
-        dialog.show();
-    }
-
 
     /**
      * Displays an overlay dialog for filtering options.
@@ -388,13 +298,11 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
 
-        View overlayView = inflater.inflate(R.layout.overlay_homework_layout, null);
+        View overlayView = inflater.inflate(R.layout.dialog_hw_detail, null);
         EditText courseName = overlayView.findViewById(R.id.homework_detail_course_name);
         EditText title = overlayView.findViewById(R.id.homework_detail_title);
         EditText dueDate = overlayView.findViewById(R.id.homework_detail_duedate);
         EditText content = overlayView.findViewById(R.id.homework_detail_content);
-        Button editButton = overlayView.findViewById(R.id.editButton);
-        Button saveButton = overlayView.findViewById(R.id.saveButton);
         ImageView imageView = overlayView.findViewById(R.id.homework_detail_image);
 
         courseName.setEnabled(false);
@@ -407,14 +315,6 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         dueDate.setText(clickedItem.getDue_date());
         content.setText(clickedItem.getInfo());
 
-        Intent intent = getIntent();
-        if(intent != null){
-            Teacher currentTeacher = (Teacher) intent.getSerializableExtra("teacher");
-            if(currentTeacher.getTeacher_id() != clickedItem.getTeacher_id()){
-                editButton.setEnabled(false);
-                saveButton.setEnabled(false);
-            }
-        }
 
         // If the clickedItem has no image, do not open the full screen view
         if(clickedItem.getGetImage() != null){
@@ -441,61 +341,6 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                 }
             });
         }
-
-        editButton.setOnClickListener(v -> {
-            // Enable EditTexts to make them editable
-            title.setEnabled(true);
-            dueDate.setEnabled(true);
-            content.setEnabled(true);
-            content.requestFocus();
-        });
-
-        saveButton.setOnClickListener(v -> {
-            int index = hwModels.indexOf(clickedItem);
-            // Save the edited text
-            String updatedTitle = title.getText().toString();
-            String updatedDueDate = dueDate.getText().toString();
-            String updatedContent = content.getText().toString();
-
-            clickedItem.setTitle(updatedTitle);
-            clickedItem.setDue_date(updatedDueDate);
-            clickedItem.setInfo(updatedContent);
-            clickedItem.setImage(image);
-            clickedItem.setGetImage(image);
-
-            System.out.println("hw id:" + clickedItem.getHomework_id());
-            System.out.println("teacher id:" + clickedItem.getTeacher_id());
-            System.out.println("classroom id: " + clickedItem.getClassroom_id());
-
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://sinifdoktoruadmin.online/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-
-            AddHomework updateHomework = retrofit.create(AddHomework.class);
-            updateHomework.updateHomework(clickedItem).enqueue(new Callback<UpdateRespond>() {
-                @Override
-                public void onResponse(Call<UpdateRespond> call, Response<UpdateRespond> response) {
-                    if(response.isSuccessful() && response.body() != null){
-                        Toast.makeText(ClassroomHomeworkScreen.this, "Ödev düzenlendi", Toast.LENGTH_SHORT).show();
-                        hwModels.set(index,clickedItem);
-                        homeworkAdapter.notifyDataSetChanged();
-                    }
-                    else{
-                        Log.d("ResponseUpdate",new Gson().toJson(response.body()));
-                        Log.d("ResponseUpdateCode",String.valueOf(response.code()));
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<UpdateRespond> call, Throwable t) {
-                    Log.d("Error",t.getMessage());
-                }
-            });
-            title.setEnabled(false);
-            dueDate.setEnabled(false);
-            content.setEnabled(false);
-        });
 
         builder.setView(overlayView);
         AlertDialog dialog = builder.create();

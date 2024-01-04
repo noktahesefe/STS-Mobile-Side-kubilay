@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -125,7 +127,7 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
         addingAnnouncementButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAddAnnouncementDialog();
+                showAnnouncementDialog();
             }
         });
 
@@ -154,7 +156,7 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
 
         // Get the form controls from the dialog view
         EditText assignmentTitleEditText = dialogView.findViewById(R.id.lectureNameEditText);
-        EditText teacherName2 = dialogView.findViewById(R.id.hw_lecture);
+        EditText teacherName2 = dialogView.findViewById(R.id.announcement_teacher_name);
         EditText contentEditText = dialogView.findViewById(R.id.add_announcement_content);
         Button saveButton = dialogView.findViewById(R.id.saveButton);
 
@@ -207,29 +209,33 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
         // Show the dialog
         dialog.show();
     }
+    public void showAnnouncementDialog()
+    {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        AnnouncementDialogFragment newFragment = new AnnouncementDialogFragment();
+
+        Bundle args = new Bundle();
+        args.putSerializable("teacher", getIntent().getSerializableExtra("teacher"));
+        args.putSerializable("classroom", getIntent().getSerializableExtra("classroom"));
+        newFragment.setArguments(args);
+
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        transaction.replace(android.R.id.content, newFragment).addToBackStack(null).commit();
+    }
 
     public void onClassAnnouncementItemClick(ClassAnnouncementModel clickedItem, View view) {
         //ClassAnnouncementModel classAnnouncementModel = classAnnouncementModels.get(position);
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
 
-        View overlayView = inflater.inflate(R.layout.overlay_class_announcement_layout, null);
+        View overlayView = inflater.inflate(R.layout.dialog_ann_detail, null);
 
 
         EditText title = overlayView.findViewById(R.id.announcement_detail_name);
         EditText details = overlayView.findViewById(R.id.announcement_detail_content);
         EditText teacherName = overlayView.findViewById(R.id.announcement_detail_teacher);
-        Button editButton = overlayView.findViewById(R.id.edit_button);
-        Button saveButton = overlayView.findViewById(R.id.save_button);
 
-        Intent intent = getIntent();
-        if(intent != null){
-            Teacher currentTeacher = (Teacher) intent.getSerializableExtra("teacher");
-            if(currentTeacher.getTeacher_id() != clickedItem.getTeacher_id()){
-                editButton.setEnabled(false);
-                saveButton.setEnabled(false);
-            }
-        }
 
         title.setText(clickedItem.getTitle());
         details.setText(clickedItem.getDetails());
@@ -238,52 +244,6 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
         title.setEnabled(false);
         details.setEnabled(false);
 
-        editButton.setOnClickListener(v -> {
-            // Enable EditTexts to make them editable
-            title.setEnabled(true);
-            details.setEnabled(true);
-            title.requestFocus();
-        });
-
-        saveButton.setOnClickListener(v -> {
-            // Save the edited text
-            String updatedTitle = title.getText().toString();
-            String updatedDetails = details.getText().toString();
-
-            clickedItem.setTitle(updatedTitle);
-            clickedItem.setDetails(updatedDetails);
-
-            System.out.println(clickedItem.getAnnouncement_id());
-
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://sinifdoktoruadmin.online/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-
-            MakeAnnouncement updateAnnouncement = retrofit.create(MakeAnnouncement.class);
-            updateAnnouncement.updateAnnouncement(clickedItem).enqueue(new Callback<UpdateRespond>() {
-                @Override
-                public void onResponse(Call<UpdateRespond> call, Response<UpdateRespond> response) {
-                    if(response.isSuccessful() && response.body() != null){
-                        Toast.makeText(ClassRoomAnnouncementScreen.this, "Duyuru Güncellendi", Toast.LENGTH_SHORT).show();
-                        Log.d("ResponseUpdate",new Gson().toJson(response.body()));
-                    }
-                    else{
-                        Log.d("ResponseUpdate",new Gson().toJson(response.body()));
-                        Log.d("ResponseUpdateCode",String.valueOf(response.code()));
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<UpdateRespond> call, Throwable t) {
-                    Log.d("Error",t.getMessage());
-                }
-            });
-
-            // Disable EditTexts after saving
-            title.setEnabled(false);
-            details.setEnabled(false);
-        });
 
         builder.setView(overlayView);
         androidx.appcompat.app.AlertDialog dialog = builder.create();

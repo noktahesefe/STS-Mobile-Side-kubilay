@@ -38,7 +38,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="8dp"
                 android:layout_toEndOf="@id/fullscreen_dialog_close"
-                android:text="Add Homework"
+                android:text="Add Announcement"
                 android:textColor="@android:color/white"
                 android:textSize="20sp" />
 
@@ -71,92 +71,51 @@
 
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/hw_titleTextLayout"
+                android:id="@+id/announcement_titleTextLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="15dp"
-                android:hint="Homework Name"
+                android:hint="Announcement Name"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:startIconDrawable="@drawable/baseline_assignment_24">
+                app:startIconDrawable="@drawable/baseline_event_24">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/hw_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/hw_adding_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="15dp"
-                android:hint="Homework Content"
-                app:layout_constraintTop_toBottomOf="@+id/dateTextInputLayout"
-                app:startIconDrawable="@drawable/baseline_topic_24">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/hw_content"
+                    android:id="@+id/lectureNameEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/dateTextInputLayout"
+                android:id="@+id/announcement_adding_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="150dp"
-                android:hint="Enter due date"
-                app:layout_constraintStart_toStartOf="parent"
-                app:startIconDrawable="@drawable/baseline_calendar_today_24"
-                app:layout_constraintTop_toBottomOf="@+id/hw_titleTextLayout">
+                android:layout_margin="15dp"
+                android:hint=""
+                app:layout_constraintTop_toBottomOf="@+id/announcement_titleTextLayout"
+                app:startIconDrawable="@drawable/baseline_topic_24"
+                tools:layout_editor_absoluteX="15dp">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/dateEditText"
+                    android:id="@+id/add_announcement_content"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:hint="" />
-
+                    android:layout_height="150dp"
+                    android:gravity="center"
+                    android:hint="Etkinlik bilgilerini giriniz."
+                    android:inputType="textMultiLine"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.842"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/announcement_teacher_name"
+                    app:layout_constraintVertical_bias="0.022" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-
-            <Button
-                android:id="@+id/hw_adding_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="22dp"
-                android:background="@drawable/blue_round_background"
-                android:text="Resim ekle"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/dateTextInputLayout"
-                app:layout_constraintTop_toBottomOf="@+id/hw_titleTextLayout" />
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:id="@+id/homework_image"
-                android:layout_margin="16dp"
-                android:layout_marginBottom="50dp"
-                android:src="@drawable/baseline_add_photo_alternate_24"
-                android:padding="50dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:background="@drawable/imageview_border"
-                app:layout_constraintHorizontal_bias="0.473"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/hw_adding_content"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

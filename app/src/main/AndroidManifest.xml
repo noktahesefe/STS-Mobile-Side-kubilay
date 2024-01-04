@@ -23,19 +23,19 @@
             />
         <activity
             android:name=".Activities.ClassAnnouncementScreen"
-            android:exported="false" />
+            android:exported="false"/>
         <activity
             android:name=".Activities.ClassRoomAnnouncementScreen"
-            android:exported="false" />
+            android:exported="false"/>
         <activity
             android:name=".Activities.ClassroomHomeworkScreen"
-            android:exported="false" />
+            android:exported="false"/>
         <activity
             android:name=".Activities.HomeworkStudentsScreen"
-            android:exported="false" />
+            android:exported="false"/>
         <activity
             android:name=".Activities.HomeWorkScreen"
-            android:exported="false" />
+            android:exported="false"/>
         <activity
             android:name=".Activities.ClassroomScreen"
             android:exported="false"

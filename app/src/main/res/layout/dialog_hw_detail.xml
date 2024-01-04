@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@drawable/round_background"
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
@@ -22,37 +22,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageButton
-                android:id="@+id/fullscreen_dialog_close"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="8dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="8dp"
-                android:src="@drawable/baseline_close_24" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
                 android:layout_marginStart="8dp"
-                android:layout_toEndOf="@id/fullscreen_dialog_close"
-                android:text="Add Homework"
+                android:text="Homework Detail"
                 android:textColor="@android:color/white"
                 android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/fullscreen_dialog_action"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="8dp"
-                android:background="?attr/selectableItemBackground"
-                android:padding="8dp"
-                android:text="SAVE"
-                android:textColor="@android:color/white" />
 
         </RelativeLayout>
 
@@ -84,7 +62,25 @@
                 app:startIconDrawable="@drawable/baseline_assignment_24">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/hw_title"
+                    android:id="@+id/homework_detail_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/hw_courseTextLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Course Name"
+                android:layout_margin="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/hw_titleTextLayout"
+                app:startIconDrawable="@drawable/baseline_class_24">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/homework_detail_course_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -104,7 +100,7 @@
                 app:startIconDrawable="@drawable/baseline_topic_24">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/hw_content"
+                    android:id="@+id/homework_detail_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -116,14 +112,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="15dp"
-                android:layout_marginEnd="150dp"
-                android:hint="Enter due date"
+                android:layout_marginEnd="15dp"
+                android:hint="Due Date"
                 app:layout_constraintStart_toStartOf="parent"
                 app:startIconDrawable="@drawable/baseline_calendar_today_24"
-                app:layout_constraintTop_toBottomOf="@+id/hw_titleTextLayout">
+                app:layout_constraintTop_toBottomOf="@+id/hw_courseTextLayout">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/dateEditText"
+                    android:id="@+id/homework_detail_duedate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:focusable="false"
@@ -133,30 +129,20 @@
             </com.google.android.material.textfield.TextInputLayout>
 
 
-            <Button
-                android:id="@+id/hw_adding_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="22dp"
-                android:background="@drawable/blue_round_background"
-                android:text="Resim ekle"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/dateTextInputLayout"
-                app:layout_constraintTop_toBottomOf="@+id/hw_titleTextLayout" />
-
             <ImageView
+                android:id="@+id/homework_detail_image"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:id="@+id/homework_image"
                 android:layout_margin="16dp"
-                android:layout_marginBottom="50dp"
-                android:src="@drawable/baseline_add_photo_alternate_24"
-                android:padding="50dp"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:background="@drawable/imageview_border"
-                app:layout_constraintHorizontal_bias="0.473"
+                android:padding="50dp"
+                android:src="@drawable/baseline_add_photo_alternate_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.468"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/hw_adding_content"/>
+                app:layout_constraintTop_toBottomOf="@+id/hw_adding_content"
+                app:layout_constraintVertical_bias="0.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
