@@ -180,7 +180,9 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         EditText dueDate = overlayView.findViewById(R.id.homework_detail_duedate);
         EditText content = overlayView.findViewById(R.id.homework_detail_content);
         ImageView imageView = overlayView.findViewById(R.id.homework_detail_image);
+        Button gradeButton = overlayView.findViewById(R.id.give_grade_button);
 
+        gradeButton.setVisibility(view.INVISIBLE);
         courseName.setEnabled(false);
         title.setEnabled(false);
         dueDate.setEnabled(false);

@@ -12,10 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.birdaha.General.HwModel;
 import com.example.birdaha.General.StudentModel;
 import com.example.birdaha.R;
-import com.example.birdaha.Users.Student;
 import com.example.birdaha.Utilities.HomeworkStudentsViewInterface;
 
 import java.util.ArrayList;
@@ -45,7 +43,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
     @Override
     public StudentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.recycler_view_row3, parent, false);
+        View view = inflater.inflate(R.layout.row_grade_students, parent, false);
         return new StudentViewHolder(view, studentViewInterface);
     }
 

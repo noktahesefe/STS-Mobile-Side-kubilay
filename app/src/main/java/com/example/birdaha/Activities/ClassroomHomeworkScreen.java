@@ -39,6 +39,7 @@ import com.example.birdaha.General.HwModel;
 import com.example.birdaha.General.StudentModel;
 import com.example.birdaha.General.UpdateRespond;
 import com.example.birdaha.R;
+import com.example.birdaha.Users.Student;
 import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 
 import com.example.birdaha.Users.Teacher;
@@ -87,6 +88,8 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
 
     private HomeworkAdapter homeworkAdapter;
 
+    private Intent intent;
+
 
     private ActivityResultLauncher<String> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
@@ -115,11 +118,11 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         RecyclerView recyclerView = findViewById(R.id.hwRecyclerView_classroom);
         search = findViewById(R.id.searchView_homework);
         addingHomeworkButton = findViewById(R.id.adding_hw_btn);
-        gradeButton = findViewById(R.id.grade_btn);
+
 
         Classroom classroom = null;
 
-        Intent intent = getIntent();
+        intent = getIntent();
         if(intent != null){
             classroom = (Classroom) intent.getSerializableExtra("classroom");
             //hwModels = (ArrayList<HwModel>) intent.getSerializableExtra("homeworks");
@@ -213,21 +216,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             }
         });
 
-        gradeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int homeworkId = 2280;
-                Classroom classroom = (Classroom) intent.getSerializableExtra("classroom");
-                ArrayList<StudentModel> students = (ArrayList<StudentModel>) intent.getSerializableExtra("students");
-                Intent homeworkGradeIntent = new Intent(ClassroomHomeworkScreen.this, HomeworkStudentsScreen.class);
 
-                homeworkGradeIntent.putExtra("students", (Serializable) students);
-                homeworkGradeIntent.putExtra("classroom", classroom);
-                homeworkGradeIntent.putExtra("homeworkId", homeworkId);
-                startActivity(homeworkGradeIntent);
-
-            }
-        });
 
 
         // Set a listener for the SearchView to handle query text changes
@@ -304,6 +293,24 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         EditText dueDate = overlayView.findViewById(R.id.homework_detail_duedate);
         EditText content = overlayView.findViewById(R.id.homework_detail_content);
         ImageView imageView = overlayView.findViewById(R.id.homework_detail_image);
+        Button gradeButton = overlayView.findViewById(R.id.give_grade_button);
+
+        gradeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int homeworkId = 2280;
+                Classroom classroom = (Classroom) intent.getSerializableExtra("classroom");
+                Student students = (Student) intent.getSerializableExtra("students");
+                Intent homeworkGradeIntent = new Intent(ClassroomHomeworkScreen.this, HomeworkStudentsScreen.class);
+
+                homeworkGradeIntent.putExtra("students", (Serializable) students);
+                homeworkGradeIntent.putExtra("classroom", classroom);
+                homeworkGradeIntent.putExtra("homeworkId", homeworkId);
+                startActivity(homeworkGradeIntent);
+
+            }
+        });
+
 
         courseName.setEnabled(false);
         title.setEnabled(false);

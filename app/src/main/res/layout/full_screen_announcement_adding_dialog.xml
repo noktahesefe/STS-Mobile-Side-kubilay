@@ -78,6 +78,7 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="15dp"
                 android:hint="Announcement Name"
+                android:textColorHint="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -86,7 +87,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/lectureNameEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -95,6 +97,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
+                android:textColorHint="@color/black"
                 android:hint=""
                 app:layout_constraintTop_toBottomOf="@+id/announcement_titleTextLayout"
                 app:startIconDrawable="@drawable/baseline_topic_24"
@@ -106,6 +109,8 @@
                     android:layout_height="150dp"
                     android:gravity="center"
                     android:hint="Etkinlik bilgilerini giriniz."
+                    android:textColorHint="@color/black"
+                    android:textColor="@color/black"
                     android:inputType="textMultiLine"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
