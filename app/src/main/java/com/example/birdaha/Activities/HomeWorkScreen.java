@@ -33,10 +33,15 @@ import com.example.birdaha.Adapters.StudentHomeworkAdapter;
 import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.General.HomeworksStudent;
 import com.example.birdaha.General.HwModel;
+import com.example.birdaha.General.NotificationDataModel;
+import com.example.birdaha.General.NotificationModel;
 import com.example.birdaha.General.StudentModel;
+import com.example.birdaha.General.StudentSharedPrefModel;
+import com.example.birdaha.Helper.LocalDataManager;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Student;
 import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
+import com.example.birdaha.Utilities.NotificationService.NotificationJobService;
 import com.google.gson.Gson;
 
 import java.time.LocalDate;
@@ -101,13 +106,37 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         Student student = null;
         Classroom classroom = null;
 
-        Student student = null;
-        Classroom classroom = null;
-
         Intent intent = getIntent();
         if (intent != null) {
             student = (Student) intent.getSerializableExtra("student");
+            System.out.println("hwsc " + student.getClassroom().getName());
+
             classroom = (Classroom) intent.getSerializableExtra("classroom");
+
+            NotificationModel notificationModel = NotificationJobService.fetchNotification(student.getStudent_id());
+
+
+
+
+            String studentsArrayJson = LocalDataManager.getSharedPreference(context, "studentsArray", NotificationDataModel.getDefaultJson());
+            NotificationDataModel notificationDataModel = NotificationDataModel.fromJson(studentsArrayJson);
+            StudentSharedPrefModel studentSharedPref = notificationDataModel.getOrDefault(student.getStudent_id(), student.getClassroom().getName());
+
+            System.out.println(notificationModel.getHomeworkId());
+            studentSharedPref.setLastHomeworkId(notificationModel.getHomeworkId());
+            System.out.println(studentSharedPref.toString());
+
+            notificationDataModel.addOrUpdateStudents(studentSharedPref);
+
+            LocalDataManager.setSharedPreference(context, "studentsArray", notificationDataModel.toJson());
+
+
+
+            //NotificationDataModel.
+
+
+
+
             //hwModels = (ArrayList<HwModel>) intent.getSerializableExtra("homeworks");
         }
 
@@ -126,12 +155,15 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
                     Toast.makeText(HomeWorkScreen.this, "Ödevler Listeleniyor", Toast.LENGTH_SHORT).show();
                     HomeworksStudent models = response.body();
                     Log.d("Response",new Gson().toJson(response.body()));
+                    ZoneId turkeyZone = ZoneId.of("Europe/Istanbul");
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                     hwModels = models.getHomeworks();
 
                     for(HwModel o : hwModels)
                     {
-                        LocalDate today = LocalDate.now();
-                        LocalDate localDate = LocalDate.parse(o.getDue_date());
+                        System.out.println("HWID - " + o.getHomework_id());
+                        LocalDate today = LocalDate.now(turkeyZone);
+                        LocalDate localDate = LocalDate.parse(o.getDue_date(), formatter);
 
                         if(localDate.isBefore(today))
                             expiredHws.add(o);

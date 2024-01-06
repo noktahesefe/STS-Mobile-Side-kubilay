@@ -36,6 +36,8 @@ import com.example.birdaha.Interface.NavigationManager;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Student;
 import com.example.birdaha.Users.Teacher;
+import com.example.birdaha.Utilities.NotificationService.NotificationJobService;
+import com.example.birdaha.Utilities.NotificationService.Service;
 
 import java.util.Arrays;
 
@@ -80,7 +82,7 @@ public class StudentMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_student_main);
 
 
-
+        Service.start(NotificationJobService.class, this, 102, "notification");
 
 
         // The callback can be enabled or disabled here or in handleOnBackPressed()
@@ -91,12 +93,13 @@ public class StudentMainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if(intent != null){
             Student student = (Student) intent.getSerializableExtra("user");
+
             nameSurname.setText(student.getName());
-            SharedPreferences preferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+            SharedPreferences preferences = getSharedPreferences("StudentPrefs", Context.MODE_PRIVATE);
             String key = "profile_data_" + student.getStudent_id();
             String combinedData = preferences.getString(key,"");
             String[] dataParts = combinedData.split("\\|");
-            System.out.println(Arrays.toString(dataParts));
+            //System.out.println(Arrays.toString(dataParts));
             if(dataParts.length == 2){
                 int studentId = Integer.parseInt(dataParts[0]);
                 String encodedImage = dataParts[1];
@@ -223,9 +226,7 @@ public class StudentMainActivity extends AppCompatActivity {
     private void selectFirstItemAsDefault() {
 
         if(navigationManager != null)
-        {
             navigationManager.showFragment(HomePageFragment.newInstance("userId"), false);
-        }
 
     }
 

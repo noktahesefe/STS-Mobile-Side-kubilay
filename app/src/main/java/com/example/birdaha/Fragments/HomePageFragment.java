@@ -89,7 +89,6 @@ public class HomePageFragment extends Fragment {
     }
 
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -293,45 +292,70 @@ public class HomePageFragment extends Fragment {
                             if(currentEvent.getImage() != null){
                                 byte[] byteArray = Base64.decode(currentEvent.getImage(),Base64.DEFAULT);
                                 Bitmap decodedImage = BitmapFactory.decodeByteArray(byteArray,0, byteArray.length);
-                                Glide.with(requireActivity())
-                                        .load(decodedImage)
-                                        .into(imageView);
+                                File directory = new File(requireContext().getCacheDir(), "event_images");
+                                if(!directory.exists()){
+                                    if(directory.mkdirs()){
+                                        Log.d("Directory","Directory created");
+                                    }
+                                }
+                                else{
+                                    Log.d("Directory","No Directory");
+                                }
+                                File imageFile = new File(directory,"event_" + currentEvent.getEvent_id() + ".jpg");
+                                try{
+                                    FileOutputStream fos = new FileOutputStream(imageFile);
+                                    decodedImage.compress(Bitmap.CompressFormat.JPEG,100,fos);
+                                    fos.close();
+                                } catch (IOException e){
+                                    e.printStackTrace();
+                                }
+                                Uri imageUri = Uri.fromFile(imageFile);
+
+                                slideModels.add(new SlideModel(imageUri.toString(), currentEvent.getTitle(),ScaleTypes.CENTER_CROP));
                             }
                             else{
-                                Glide.with(requireActivity())
-                                        .load(R.drawable.img_1)
-                                        .into(imageView);
+                                slideModels.add(new SlideModel(R.drawable.img_1,currentEvent.getTitle(),ScaleTypes.CENTER_CROP));
                             }
-
-                            //imageView.setImageResource(currentEvent.getImagePath());
-                            detail.setText(currentEvent.getDetails());
-
-                            builder.setView(overlayView);
-
-                            AlertDialog dialog = builder.create();
-                            dialog.show();
                         }
 
-                        @Override
-                        public void doubleClick(int position) {
-                            // Implement your logic for double click here
-                        }
-                    });
+                        System.out.println("first");
 
-                    List<GeneralAnnouncement> generalAnnouncements = respond.getGeneralAnnouncements();
-                    getChildFragmentManager().beginTransaction()
-                            .replace(R.id.announcement_container, new GeneralAnnouncementFragment(generalAnnouncements))
-                            .commit();
+                        setImageSlider(slideModels, events);
+
+                        List<GeneralAnnouncement> generalAnnouncements = respond.getGeneralAnnouncements();
+                        getChildFragmentManager().beginTransaction()
+                                .replace(R.id.announcement_container, new GeneralAnnouncementFragment(generalAnnouncements))
+                                .commit();
+                    }
+                    else{
+                        Toast.makeText(requireActivity(), "Response Unsuccessful! " +" " + response.code(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    isPulled = true;
                 }
-                else{
-                    Toast.makeText(requireActivity(), "Response Unsuccessful! " +" " + response.code(), Toast.LENGTH_SHORT).show();
+                @Override
+                public void onFailure(Call<EventAndAnnouncements> call, Throwable t) {
+                    Toast.makeText(requireActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
-            }
-            @Override
-            public void onFailure(Call<EventAndAnnouncements> call, Throwable t) {
-                Toast.makeText(requireActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+            });
+        }
+        else
+        {
+            System.out.println("else");
+            System.out.println();
+            System.out.println("SlideModels");
+            for(SlideModel e : slideModels)
+                System.out.println(e.getTitle());
+
+            System.out.println("Events");
+            for(Event e : events)
+                System.out.println(e.getTitle());
+
+
+
+            setImageSlider(instance.slideModels, instance.events);
+        }
+
 
 
 

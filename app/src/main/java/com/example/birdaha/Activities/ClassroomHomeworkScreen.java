@@ -10,6 +10,9 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
@@ -82,7 +85,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
     }
     SearchView search;
 
-    List<HwModel> hwModels = new ArrayList<>();
+    ArrayList<HwModel> hwModels = new ArrayList<>();
 
     private ArrayList<HwModel> expiredHws;
     private ArrayList<HwModel> ongoingHws;
@@ -111,7 +114,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
                         homeworkImage.setImageBitmap(bitmap);
                         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, byteArrayOutputStream);
                         byte[] byteArray = byteArrayOutputStream.toByteArray();
                         image = Base64.encodeToString(byteArray,Base64.DEFAULT);
                     } catch(IOException e){
@@ -312,6 +315,35 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         EditText hw_content = dialogView.findViewById(R.id.hw_content_content);
         Button saveButton = dialogView.findViewById(R.id.saveButton);
 
+        saveButton.setEnabled(false);
+
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                boolean allFieldsFilled = !TextUtils.isEmpty(hw_Name.getText()) &&
+                        !TextUtils.isEmpty(hw_dueDate.getText()) &&
+                        !TextUtils.isEmpty(hw_content.getText());
+
+                // Enable or disable the "Save" button based on the condition
+                saveButton.setEnabled(allFieldsFilled);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+
+        hw_Name.addTextChangedListener(textWatcher);
+        hw_dueDate.addTextChangedListener(textWatcher);
+        hw_content.addTextChangedListener(textWatcher);
+
+
         // Create the dialog
         final AlertDialog dialog = builder.create();
 
@@ -321,7 +353,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             public void onClick(View v) {
                 // Get the text entered in the title and description EditText fields
                 String hw_name = hw_Name.getText().toString();
-                String hw_date = hw_dueDate.getText().toString();
+                String hw_date = hw_dueDate.getText().toString().replace('/', '-');
                 String hw_info = hw_content.getText().toString();
 
 
@@ -342,11 +374,12 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                         public void onResponse(Call<UpdateRespond> call, Response<UpdateRespond> response) {
                             if(response.isSuccessful() && response.body() != null){
                                 hwModels.add(hwModel);
-
+                                ZoneId turkeyZone = ZoneId.of("Europe/Istanbul");
                                 for(HwModel o : hwModels)
                                 {
-                                    LocalDateTime today = LocalDateTime.now();
-                                    LocalDateTime localDate = LocalDate.parse(o.getDue_date()).atStartOfDay();
+                                    LocalDate today = LocalDate.now(turkeyZone);
+                                    LocalDate localDate = LocalDate.parse(o.getDue_date());
+
 
                                     if(localDate.isAfter(today))
                                         ongoingHws.add(o);
@@ -597,12 +630,11 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
 
     private void sortListByDate(ArrayList<HwModel> list){
         ZoneId turkeyZone = ZoneId.of("Europe/Istanbul");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate today = LocalDate.now(turkeyZone);
 
         Comparator<HwModel> dateComparator = (date1, date2) -> {
-            LocalDate localDate1 = LocalDate.parse(date1.getDue_date(), formatter);
-            LocalDate localDate2 = LocalDate.parse(date2.getDue_date(), formatter);
+            LocalDate localDate1 = LocalDate.parse(date1.getDue_date());
+            LocalDate localDate2 = LocalDate.parse(date2.getDue_date());
 
             if (localDate1.isEqual(today)) {
                 return -1; // Bugünkü tarihleri en önce sırala

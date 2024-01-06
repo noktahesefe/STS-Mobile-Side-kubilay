@@ -1,13 +1,19 @@
 package com.example.birdaha.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -21,7 +27,10 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
+import com.bumptech.glide.Glide;
 import com.example.birdaha.Adapters.CustomExpandableListAdapter;
 import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.Fragments.HomePageFragment;
@@ -33,6 +42,8 @@ import com.example.birdaha.Interface.NavigationManager;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Parent;
 import com.example.birdaha.Users.Student;
+import com.example.birdaha.Utilities.NotificationService.NotificationJobService;
+import com.example.birdaha.Utilities.NotificationService.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -102,9 +113,13 @@ public class ParentMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parent_main);
 
+        Service.start(NotificationJobService.class, this, 102, "notification");
+
         drawerLayout = (DrawerLayout) findViewById(R.id.DrawerLayout_window_field);
         Animation fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in);
 
+        TextView nameSurname = findViewById(R.id.TextView_name_surname);
+        nameSurname.setText(currentParent.getName());
 
         expandableListView = (ExpandableListView) findViewById(R.id.ExpandableList_my_students);    //expandable list for students
         navigationManager = FragmentNavigationManager.getmInstance(this); //get singleton instance
@@ -125,7 +140,12 @@ public class ParentMainActivity extends AppCompatActivity {
         TextView_home_page.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigationManager.showFragment(HomePageFragment.newInstance("userId"), false);
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                Fragment f = fragmentManager.findFragmentById(R.id.FrameLayout_container);
+
+                if(!(f instanceof HomePageFragment))
+                    navigationManager.showFragment(HomePageFragment.newInstance("userId"), false);
+
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
@@ -135,7 +155,12 @@ public class ParentMainActivity extends AppCompatActivity {
         TextView_notifications.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigationManager.showFragment(NotificationFragment.newInstance("userId"), false);
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                Fragment f = fragmentManager.findFragmentById(R.id.FrameLayout_container);
+
+                if(!(f instanceof NotificationFragment))
+                    navigationManager.showFragment(NotificationFragment.newInstance("userId"), false);
+
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
@@ -255,9 +280,14 @@ public class ParentMainActivity extends AppCompatActivity {
                 Intent intent = getIntent();
                 if(intent != null){
                     Student student = lstChild.get(my_students_title).get(childPosition);
+
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    Fragment f = fragmentManager.findFragmentById(R.id.FrameLayout_container);
                     System.out.println(student.getClassroom().getName());
-                    StudentProfileFragment studentProfileFragment = StudentProfileFragment.newInstance(student);
-                    navigationManager.showFragment(studentProfileFragment, false);
+                    if(!(f instanceof StudentProfileFragment) || StudentProfileFragment.getCurrStudent().getSchool_no() != student.getSchool_no()) {
+                        navigationManager.showFragment(StudentProfileFragment.newInstance(student), false);
+                    }
+
                     drawerLayout.closeDrawer(GravityCompat.START);
                 }
 
@@ -283,13 +313,16 @@ public class ParentMainActivity extends AppCompatActivity {
      * Initializes lstChild as a LinkedHashMap with the title and child items.
      */
     private void getData() {
+        //ImageView imageView = expandableListView.findViewById(R.id.student_image);
 
         String title = "Öğrencilerim";
         List<Student> childItem = currentParent.getStudents();
 
+        SharedPreferences preferences = getSharedPreferences("ParentPrefs", Context.MODE_PRIVATE);
+
         for(Student stu : childItem)
         {
-            Classroom classroom = new Classroom(""+stu.getClassroom_id(), stu.getClassroom_id());
+            Classroom classroom = new Classroom("getData() ", stu.getClassroom_id());
             stu.setClassroom(classroom);
         }
 

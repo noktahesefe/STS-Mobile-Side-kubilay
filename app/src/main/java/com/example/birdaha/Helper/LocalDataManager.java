@@ -3,6 +3,9 @@ package com.example.birdaha.Helper;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.example.birdaha.General.NotificationDataModel;
+import com.google.gson.Gson;
+
 public class LocalDataManager {
 
     public static void setSharedPreference(Context context, String key, String value) {
@@ -29,4 +32,5 @@ public class LocalDataManager {
         edit.remove(key);
         edit.commit();
     }
+
 }
