@@ -14,8 +14,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.OnBackPressedCallback;
-import androidx.activity.OnBackPressedDispatcher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -24,7 +22,6 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.example.birdaha.Fragments.HomePageFragment;
@@ -61,7 +58,8 @@ public class StudentMainActivity extends AppCompatActivity {
     /**
      * NavigationManager for switch between fragments
      */
-    private FragmentNavigationManager navigationManager;
+    private NavigationManager navigationManager;
+
 
     /**
      * Called when the activity is created.
@@ -78,12 +76,6 @@ public class StudentMainActivity extends AppCompatActivity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_main);
-
-
-
-
-
-        // The callback can be enabled or disabled here or in handleOnBackPressed()
 
         drawerLayout = (DrawerLayout) findViewById(R.id.DrawerLayout_window_field);
         TextView nameSurname = drawerLayout.findViewById(R.id.TextView_student_name_surname);
@@ -116,10 +108,7 @@ public class StudentMainActivity extends AppCompatActivity {
         setupDrawer();
 
         if(savedInstanceState == null)
-        {
             selectFirstItemAsDefault();
-
-        }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -136,7 +125,7 @@ public class StudentMainActivity extends AppCompatActivity {
                     Fragment f = fragmentManager.findFragmentById(R.id.FrameLayout_container);
 
                     if(!(f instanceof StudentProfileFragment))
-                        navigationManager.showFragment(StudentProfileFragment.newInstance(student), false);
+                        navigationManager.showFragment(StudentProfileFragment.newInstance(student,true), false);
 
                     drawerLayout.closeDrawer(GravityCompat.START);
                 }
@@ -147,7 +136,6 @@ public class StudentMainActivity extends AppCompatActivity {
         TextView_home_page.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 Fragment f = fragmentManager.findFragmentById(R.id.FrameLayout_container);
 
@@ -162,7 +150,6 @@ public class StudentMainActivity extends AppCompatActivity {
         TextView_notifications.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 Fragment f = fragmentManager.findFragmentById(R.id.FrameLayout_container);
 
@@ -223,7 +210,7 @@ public class StudentMainActivity extends AppCompatActivity {
     private void selectFirstItemAsDefault() {
 
         if(navigationManager != null)
-            navigationManager.showFragment(HomePageFragment.newInstance("userId"), false);
+            navigationManager.showFragment(HomePageFragment.newInstance(""), false);
 
     }
 

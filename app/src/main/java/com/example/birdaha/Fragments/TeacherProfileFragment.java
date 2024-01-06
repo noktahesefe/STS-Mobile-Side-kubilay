@@ -65,12 +65,68 @@ public class TeacherProfileFragment extends Fragment {
     Button classes;
     ImageView profilePicture;
     View teacherClassroomsContainer;
-    boolean isGranted = false;
     private String image;
 
+    private ActivityResultLauncher<String> galleryLauncher = registerForActivityResult(
+            new ActivityResultContracts.GetContent(),
+            result -> {
+                if(result != null){
+                    Uri imageUri = result;
+                    try{
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(),imageUri);
+                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, byteArrayOutputStream);
+                        byte[] byteArray = byteArrayOutputStream.toByteArray();
+                        image = Base64.encodeToString(byteArray,Base64.DEFAULT);
+                        Bundle bundle = getArguments();
+                        if(bundle != null) {
+                            Teacher teacher = (Teacher) bundle.getSerializable("teacher");
+                            Log.d("teacherid", String.valueOf(teacher.getTeacher_id()));
+                            SendProfilePictureTeacher sendPP = new SendProfilePictureTeacher(image, teacher.getTeacher_id());
+                            Retrofit retrofit = new Retrofit.Builder()
+                                    .baseUrl("http://sinifdoktoruadmin.online/")
+                                    .addConverterFactory(GsonConverterFactory.create())
+                                    .build();
+                            AddProfilePicture sendProfilePicture = retrofit.create(AddProfilePicture.class);
+                            sendProfilePicture.addProfilePicture(sendPP).enqueue(new Callback<ProfilePictureRespond>() {
+                                @Override
+                                public void onResponse(Call<ProfilePictureRespond> call, Response<ProfilePictureRespond> response) {
+                                    if (response.isSuccessful() && response.body() != null) {
+                                        ProfilePictureRespond respond = response.body();
+                                        String combinedData = teacher.getTeacher_id() + "|" + image;
+                                        SharedPreferences preferences = requireContext().getSharedPreferences("TeacherPrefs", Context.MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = preferences.edit();
+                                        String key = "teacher_profile_data_" + teacher.getTeacher_id();
+                                        editor.putString(key, combinedData);
+                                        editor.apply();
+                                        Glide.with(requireContext())
+                                                .load(bitmap)
+                                                .circleCrop()
+                                                .into(profilePicture);
+                                        Toast.makeText(requireActivity(), "Profil Fotoğrafı Güncellendi", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(requireActivity(), "Response Unsuccessful" + response.code(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<ProfilePictureRespond> call, Throwable t) {
+                                    Toast.makeText(requireActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    } catch (IOException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+    );
+
     // Activity result launcher for requesting gallery access permission
-    private final ActivityResultLauncher<String> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), this::handlePermissionResult);
+    /*private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                handlePermissionResult();
+            });
 
     // Activity result launcher for launching the image picker
     private final ActivityResultLauncher<Intent> imagePickerLauncher =
@@ -132,15 +188,17 @@ public class TeacherProfileFragment extends Fragment {
                         //profilePicture.setImageURI(selectedImage);
                     }
                 }
-            });
+            });*/
 
     /**
      * Handles the result of the permission request for gallery access.
      *
      * @param isGranted True if the permission is granted, false otherwise.
      */
-    private void handlePermissionResult(boolean isGranted) {
-        if (this.isGranted) {
+    /*private void handlePermissionResult() {
+        SharedPreferences preferences = getContext().getSharedPreferences("MyPrefs",Context.MODE_PRIVATE);
+        boolean isGranted = preferences.getBoolean("isGranted",false);
+        if (isGranted) {
             openGallery();
         } else {
             // Permission denied, inform the user and ask again
@@ -150,7 +208,10 @@ public class TeacherProfileFragment extends Fragment {
                     .setPositiveButton("İzin ver", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            TeacherProfileFragment.this.isGranted = true;
+                            SharedPreferences preferences = getContext().getSharedPreferences("MyPrefs",Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putBoolean("isGranted",true);
+                            editor.apply();
                             openGallery();
                         }
                     })
@@ -163,7 +224,7 @@ public class TeacherProfileFragment extends Fragment {
                     .setCancelable(false)
                     .show();
         }
-    }
+    }*/
 
 
 
@@ -258,8 +319,13 @@ public class TeacherProfileFragment extends Fragment {
             }
         }
 
-        changeProfilePicture.setOnClickListener(v -> checkPermissionAndOpenGallery());
-
+        //changeProfilePicture.setOnClickListener(v -> checkPermissionAndOpenGallery());
+        changeProfilePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                galleryLauncher.launch("image/*");
+            }
+        });
 
 
         classes.setOnClickListener(new View.OnClickListener() {
@@ -281,7 +347,7 @@ public class TeacherProfileFragment extends Fragment {
      * Checks if the app has the necessary permission to read external storage and opens the gallery if permission is granted.
      * If the permission is not granted, a permission request will be initiated.
      */
-    public void checkPermissionAndOpenGallery() {
+    /*public void checkPermissionAndOpenGallery() {
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             // Permission granted, proceed with changing the profile picture
             openGallery();
@@ -289,16 +355,16 @@ public class TeacherProfileFragment extends Fragment {
             // Request permission
             requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
         }
-    }
+    }*/
 
     /**
      * Opens the gallery for the user to select a profile picture.
      * Initiates the image picker activity using an explicit intent for picking images from external storage.
      */
-    private void openGallery() {
+    /*private void openGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         imagePickerLauncher.launch(intent);
-    }
+    }*/
 
     /**
      * Called immediately after onCreateView() has returned, but before any saved state has been restored

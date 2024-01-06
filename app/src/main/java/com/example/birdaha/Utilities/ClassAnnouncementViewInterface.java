@@ -14,4 +14,5 @@ public interface ClassAnnouncementViewInterface {
      * @param view     The View representing the clicked item.
      */
     void onClassAnnouncementItemClick(ClassAnnouncementModel clickedItem, View view);
+    void onClassAnnouncementEditClick(ClassAnnouncementModel clickedItem, View view);
 }

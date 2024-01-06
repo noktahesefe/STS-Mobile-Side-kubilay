@@ -8,10 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +27,7 @@ import com.example.birdaha.General.UpdateRespond;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Teacher;
 import com.example.birdaha.Utilities.ClassAnnouncementViewInterface;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -39,16 +44,19 @@ import retrofit2.http.Path;
 
 public class ClassRoomAnnouncementScreen extends AppCompatActivity implements ClassAnnouncementViewInterface {
 
-    interface MakeAnnouncement{
+    public interface MakeAnnouncement{
 
         @GET("api/v1/teacher/announcements/{classroomId}")
         Call<AnnouncementsTeacher> getAnnouncements(@Path("classroomId") int classroomId);
 
         @POST("/api/v1/announcement/add")
-        Call<ClassAnnouncementModel> makeAnnouncement(@Body ClassAnnouncementModel classAnnouncementModel);
+        Call<UpdateRespond> makeAnnouncement(@Body ClassAnnouncementModel classAnnouncementModel);
 
         @POST("api/v1/announcements/update")
         Call<UpdateRespond> updateAnnouncement(@Body ClassAnnouncementModel classAnnouncementModel);
+
+        @GET("api/v1/announcements/{announcementId}")
+        Call<UpdateRespond> deleteHomework(@Path("announcementId") int announcementId);
     }
 
     SearchView search;
@@ -73,7 +81,6 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
         Intent intent = getIntent();
         if(intent != null){
             classroom = (Classroom) intent.getSerializableExtra("classroom");
-            classAnnouncementModels = (ArrayList<ClassAnnouncementModel>) intent.getSerializableExtra("announcements");
         }
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -87,12 +94,13 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
                 @Override
                 public void onResponse(Call<AnnouncementsTeacher> call, Response<AnnouncementsTeacher> response) {
                     if(response.isSuccessful() && response.body() != null){
+                        Toast.makeText(ClassRoomAnnouncementScreen.this, "Duyurular Listeleniyor", Toast.LENGTH_SHORT).show();
                         AnnouncementsTeacher models = response.body();
                         classAnnouncementModels = (ArrayList<ClassAnnouncementModel>) models.getClassroomAnnouncements();
 
-                        classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassRoomAnnouncementScreen.this, classAnnouncementModels, ClassRoomAnnouncementScreen.this);
+                        Teacher teacher = (Teacher) getIntent().getSerializableExtra("teacher");
+                        classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassRoomAnnouncementScreen.this, classAnnouncementModels, ClassRoomAnnouncementScreen.this,teacher);
                         recyclerView.setAdapter(classAnnouncementAdapter);
-                        Toast.makeText(ClassRoomAnnouncementScreen.this, "Duyurlar Listeleniyor", Toast.LENGTH_SHORT).show();
                     }
                     else{
                         Toast.makeText(ClassRoomAnnouncementScreen.this, "Response Unsuccessful", Toast.LENGTH_SHORT).show();
@@ -125,111 +133,37 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
         addingAnnouncementButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAddAnnouncementDialog();
+                showAnnouncementDialog();
             }
         });
 
     }
+    public void showAnnouncementDialog()
+    {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        AnnouncementDialogFragment newFragment = new AnnouncementDialogFragment();
 
-    /**
-     * This method initializes the list of class announcements.
-     * It retrieves the announcement titles from the resources and creates a ClassAnnouncementModel for each title.
-     */
-    private void setClassAnnouncementModels(){
-        String[] titles = getResources().getStringArray(R.array.ClassroomAnnouncements);
-        for (int i = 0; i < titles.length; i++) {
-            classAnnouncementModels.add(new ClassAnnouncementModel(titles[i]));
-        }
-    }
+        Bundle args = new Bundle();
+        args.putSerializable("teacher", getIntent().getSerializableExtra("teacher"));
+        args.putSerializable("classroom", getIntent().getSerializableExtra("classroom"));
+        newFragment.setArguments(args);
 
-    private void showAddAnnouncementDialog() {
-        // Create a new AlertDialog builder
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Duyuru Yapma");
-
-        // Inflate the layout for the add announcement form
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_add_announcement, null);
-        builder.setView(dialogView);
-
-        // Get the form controls from the dialog view
-        EditText assignmentTitleEditText = dialogView.findViewById(R.id.lectureNameEditText);
-        EditText teacherName2 = dialogView.findViewById(R.id.add_announcement_teacher_name);
-        EditText contentEditText = dialogView.findViewById(R.id.add_announcement_content);
-        Button saveButton = dialogView.findViewById(R.id.saveButton);
-
-        // Create the dialog
-        final AlertDialog dialog = builder.create();
-
-        // Set the onClickListener for the save button
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Get the title and description from the form
-                String title = assignmentTitleEditText.getText().toString();
-                String teacherName = teacherName2.getText().toString();
-                String content = contentEditText.getText().toString();
-
-                Intent intent = getIntent();
-                if(intent != null){
-                    Classroom currentClassroom = (Classroom) intent.getSerializableExtra("classroom");
-                    Teacher teacher = (Teacher) intent.getSerializableExtra("teacher");
-                    ClassAnnouncementModel classAnnouncement = new ClassAnnouncementModel(title, content, currentClassroom.getClassroom_id(),teacher.getTeacher_id());
-                    classAnnouncement.setTeacher(teacher);
-                    Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl("http://sinifdoktoruadmin.online/")
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .build();
-                    MakeAnnouncement postAnnouncement = retrofit.create(MakeAnnouncement.class);
-
-                    postAnnouncement.makeAnnouncement(classAnnouncement).enqueue(new Callback<ClassAnnouncementModel>() {
-                        @Override
-                        public void onResponse(Call<ClassAnnouncementModel> call, Response<ClassAnnouncementModel> response) {
-                            if(response.isSuccessful() && response.body() != null){
-                                classAnnouncementModels.add(classAnnouncement);
-                                classAnnouncementAdapter.notifyDataSetChanged();
-                                Toast.makeText(ClassRoomAnnouncementScreen.this, "Duyuru başarıyla yapıldı", Toast.LENGTH_SHORT).show();
-                                Log.d("Response",new Gson().toJson(response.body()));
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ClassAnnouncementModel> call, Throwable t) {
-                            Log.d("Error",t.getMessage());
-                        }
-                    });
-                }
-
-                dialog.dismiss();
-            }
-        });
-
-        // Show the dialog
-        dialog.show();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        transaction.replace(android.R.id.content, newFragment).addToBackStack(null).commit();
     }
 
     public void onClassAnnouncementItemClick(ClassAnnouncementModel clickedItem, View view) {
-        //ClassAnnouncementModel classAnnouncementModel = classAnnouncementModels.get(position);
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
 
-        View overlayView = inflater.inflate(R.layout.overlay_class_announcement_layout, null);
+        View overlayView = inflater.inflate(R.layout.dialog_ann_detail, null);
 
 
         EditText title = overlayView.findViewById(R.id.announcement_detail_name);
         EditText details = overlayView.findViewById(R.id.announcement_detail_content);
         EditText teacherName = overlayView.findViewById(R.id.announcement_detail_teacher);
-        Button editButton = overlayView.findViewById(R.id.edit_button);
-        Button saveButton = overlayView.findViewById(R.id.save_button);
 
-        Intent intent = getIntent();
-        if(intent != null){
-            Teacher currentTeacher = (Teacher) intent.getSerializableExtra("teacher");
-            if(currentTeacher.getTeacher_id() != clickedItem.getTeacher_id()){
-                editButton.setEnabled(false);
-                saveButton.setEnabled(false);
-            }
-        }
 
         title.setText(clickedItem.getTitle());
         details.setText(clickedItem.getDetails());
@@ -237,57 +171,70 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
 
         title.setEnabled(false);
         details.setEnabled(false);
-        teacherName.setEnabled(false);
 
-        editButton.setOnClickListener(v -> {
-            // Enable EditTexts to make them editable
-            title.setEnabled(true);
-            details.setEnabled(true);
-            title.requestFocus();
-        });
-
-        saveButton.setOnClickListener(v -> {
-            // Save the edited text
-            String updatedTitle = title.getText().toString();
-            String updatedDetails = details.getText().toString();
-
-            clickedItem.setTitle(updatedTitle);
-            clickedItem.setDetails(updatedDetails);
-
-            System.out.println(clickedItem.getAnnouncement_id());
-
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://sinifdoktoruadmin.online/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-
-            MakeAnnouncement updateAnnouncement = retrofit.create(MakeAnnouncement.class);
-            updateAnnouncement.updateAnnouncement(clickedItem).enqueue(new Callback<UpdateRespond>() {
-                @Override
-                public void onResponse(Call<UpdateRespond> call, Response<UpdateRespond> response) {
-                    if(response.isSuccessful() && response.body() != null){
-                        Toast.makeText(ClassRoomAnnouncementScreen.this, "Duyuru Güncellendi", Toast.LENGTH_SHORT).show();
-                        Log.d("ResponseUpdate",new Gson().toJson(response.body()));
-                    }
-                    else{
-                        Log.d("ResponseUpdate",new Gson().toJson(response.body()));
-                        Log.d("ResponseUpdateCode",String.valueOf(response.code()));
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<UpdateRespond> call, Throwable t) {
-                    Log.d("Error",t.getMessage());
-                }
-            });
-
-            // Disable EditTexts after saving
-            title.setEnabled(false);
-            details.setEnabled(false);
-        });
 
         builder.setView(overlayView);
         androidx.appcompat.app.AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    @Override
+    public void onClassAnnouncementEditClick(ClassAnnouncementModel clickedItem, View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = LayoutInflater.from(view.getContext());
+
+        View overlayView = inflater.inflate(R.layout.full_screen_announcement_adding_dialog,null);
+        TextInputEditText title = overlayView.findViewById(R.id.lectureNameEditText);
+        TextInputEditText details = overlayView.findViewById(R.id.add_announcement_content);
+
+        title.setText(clickedItem.getTitle());
+        details.setText(clickedItem.getDetails());
+
+        builder.setView(overlayView);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        ImageButton closeButton = overlayView.findViewById(R.id.fullscreen_dialog_close);
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        TextView actionButton = overlayView.findViewById(R.id.fullscreen_dialog_action);
+        actionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String updatedTitle = title.getText().toString();
+                String updatedDetails = details.getText().toString();
+                clickedItem.setTitle(updatedTitle);
+                clickedItem.setDetails(updatedDetails);
+
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("http://sinifdoktoruadmin.online/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+                MakeAnnouncement updateAnnouncement = retrofit.create(MakeAnnouncement.class);
+                updateAnnouncement.updateAnnouncement(clickedItem).enqueue(new Callback<UpdateRespond>() {
+                    @Override
+                    public void onResponse(Call<UpdateRespond> call, Response<UpdateRespond> response) {
+                        if(response.isSuccessful() && response.body() != null){
+                            Toast.makeText(ClassRoomAnnouncementScreen.this, "Duyuru başarıyla güncellendi", Toast.LENGTH_SHORT).show();
+
+                        }
+                        else{
+                            Toast.makeText(ClassRoomAnnouncementScreen.this, "Hata oluştu!" + response.code(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UpdateRespond> call, Throwable t) {
+                        Toast.makeText(ClassRoomAnnouncementScreen.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                dialog.dismiss();
+            }
+        });
     }
 }

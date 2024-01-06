@@ -3,7 +3,6 @@ package com.example.birdaha.Activities;
 import android.app.AlertDialog;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,7 +15,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,12 +37,7 @@ import com.example.birdaha.Users.Student;
 import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 import com.google.gson.Gson;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -68,20 +61,9 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
     }
 
     SearchView search;
-
-    ArrayList<HwModel> hwModels = new ArrayList<>();
-    private RecyclerView recyclerView;
+    List<HwModel> hwModels = new ArrayList<>();
 
     private StudentHomeworkAdapter homeworkAdapter;
-
-    private Context context;
-    private ClassroomHomeworkViewInterface homeworkViewInterface;
-
-    private ArrayList<HwModel> expiredHws;
-    private ArrayList<HwModel> ongoingHws;
-
-    private AlertDialog filterDialog = null;
-
 
 
     @Override
@@ -91,12 +73,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
 
         search = findViewById(R.id.searchView_homework);
 
-        recyclerView = findViewById(R.id.hwRecyclerView);
-        expiredHws = new ArrayList<>();
-        ongoingHws = new ArrayList<>();
-
-        context = this;
-        homeworkViewInterface = this;
+        RecyclerView recyclerView = findViewById(R.id.hwRecyclerView);
 
         Student student = null;
         Classroom classroom = null;
@@ -105,7 +82,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         if (intent != null) {
             student = (Student) intent.getSerializableExtra("student");
             classroom = (Classroom) intent.getSerializableExtra("classroom");
-            //hwModels = (ArrayList<HwModel>) intent.getSerializableExtra("homeworks");
         }
 
         Log.d("classid",String.valueOf(classroom.getClassroom_id()));
@@ -120,26 +96,12 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
             @Override
             public void onResponse(Call<HomeworksStudent> call, Response<HomeworksStudent> response) {
                 if(response.isSuccessful() && response.body() != null){
-                    Toast.makeText(HomeWorkScreen.this, "Ödevler Listeleniyor", Toast.LENGTH_SHORT).show();
                     HomeworksStudent models = response.body();
                     Log.d("Response",new Gson().toJson(response.body()));
                     hwModels = models.getHomeworks();
-
-                    for(HwModel o : hwModels)
-                    {
-                        LocalDate today = LocalDate.now();
-                        LocalDate localDate = LocalDate.parse(o.getDue_date());
-
-                        if(localDate.isBefore(today))
-                            expiredHws.add(o);
-                        else
-                            ongoingHws.add(o);
-                    }
-
-                    sortListByDate(hwModels);
-                    homeworkAdapter = new StudentHomeworkAdapter(context, (ArrayList<HwModel>) hwModels, homeworkViewInterface);
+                    homeworkAdapter = new StudentHomeworkAdapter(HomeWorkScreen.this, (ArrayList<HwModel>) hwModels, HomeWorkScreen.this);
                     recyclerView.setAdapter(homeworkAdapter);
-
+                    Toast.makeText(HomeWorkScreen.this, "Ödevler Listeleniyor", Toast.LENGTH_SHORT).show();
                 }
                 else{
                     Toast.makeText(HomeWorkScreen.this, "Response Unsuccessful", Toast.LENGTH_SHORT).show();
@@ -177,82 +139,28 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
 
     // This method is called when the user clicks on the filter icon
     private void showOverlay() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View overlayView = inflater.inflate(R.layout.filter_overlay, null);
+        builder.setView(overlayView);
 
-        if(filterDialog == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            LayoutInflater inflater = LayoutInflater.from(this);
-            View overlayView = inflater.inflate(R.layout.filter_overlay, null);
-            builder.setView(overlayView);
+        AlertDialog dialog = builder.create();
 
-            filterDialog = builder.create();
+        // Set the dialog window attributes to make it a small overlay
+        WindowManager.LayoutParams layoutParams = dialog.getWindow().getAttributes();
 
-            // Set the dialog window attributes to make it a small overlay
-            WindowManager.LayoutParams layoutParams = filterDialog.getWindow().getAttributes();
+        layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        layoutParams.gravity = Gravity.TOP | Gravity.CENTER;
+        dialog.getWindow().setAttributes(layoutParams);
 
-            layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
-            layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-            layoutParams.gravity = Gravity.TOP | Gravity.CENTER;
-            filterDialog.getWindow().setAttributes(layoutParams);
+        // Find the checkboxes in the overlay layout
+        CheckBox checkBox1 = overlayView.findViewById(R.id.checkBox);
+        CheckBox checkBox2 = overlayView.findViewById(R.id.checkBox2);
 
-            // Find the checkboxes in the overlay layout
-            CheckBox checkBox1 = overlayView.findViewById(R.id.checkBox);
-            CheckBox checkBox2 = overlayView.findViewById(R.id.checkBox2);
+        // Add any additional customization or logic to the checkboxes here
 
-
-            checkBox1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    hwModels.clear();
-
-                    if(checkBox2.isChecked())
-                        hwModels.addAll(expiredHws);
-
-                    if(isChecked)
-                        hwModels.addAll(ongoingHws);
-
-
-                    if(!isChecked && !checkBox2.isChecked())
-                    {
-                        hwModels.addAll(expiredHws);
-                        hwModels.addAll(ongoingHws);
-                    }
-
-
-                    sortListByDate(hwModels);
-                    homeworkAdapter = new StudentHomeworkAdapter(context, hwModels, homeworkViewInterface);
-                    recyclerView.setAdapter(homeworkAdapter);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                }
-            });
-
-            checkBox2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    hwModels.clear();
-
-                    if(checkBox1.isChecked())
-                        hwModels.addAll(ongoingHws);
-
-                    if(isChecked)
-                        hwModels.addAll(expiredHws);
-
-
-                    if(!isChecked && !checkBox1.isChecked())
-                    {
-                        hwModels.addAll(expiredHws);
-                        hwModels.addAll(ongoingHws);
-                    }
-
-                    sortListByDate(hwModels);
-                    homeworkAdapter = new StudentHomeworkAdapter(context, hwModels, homeworkViewInterface);
-                    recyclerView.setAdapter(homeworkAdapter);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                }
-            });
-
-            // Add any additional customization or logic to the checkboxes here
-        }
-            filterDialog.show();
+        dialog.show();
     }
 
     @Override
@@ -265,13 +173,11 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
 
         // Inflate the overlay_layout.xml file into a View object
 
-        View overlayView = inflater.inflate(R.layout.overlay_homework_layout, null);
+        View overlayView = inflater.inflate(R.layout.dialog_hw_detail, null);
         EditText courseName = overlayView.findViewById(R.id.homework_detail_course_name);
         EditText title = overlayView.findViewById(R.id.homework_detail_title);
         EditText dueDate = overlayView.findViewById(R.id.homework_detail_duedate);
         EditText content = overlayView.findViewById(R.id.homework_detail_content);
-        Button editButton = overlayView.findViewById(R.id.editButton);
-        Button saveButton = overlayView.findViewById(R.id.saveButton);
         ImageView imageView = overlayView.findViewById(R.id.homework_detail_image);
 
         courseName.setEnabled(false);
@@ -312,8 +218,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
             });
         }
 
-        editButton.setVisibility(View.INVISIBLE);
-        saveButton.setVisibility(View.INVISIBLE);
         // Set the inflated view as the custom view for the AlertDialog
         builder.setView(overlayView);
 
@@ -324,32 +228,8 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         dialog.show();
     }
 
-    private void sortListByDate(ArrayList<HwModel> list){
-        ZoneId turkeyZone = ZoneId.of("Europe/Istanbul");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate today = LocalDate.now(turkeyZone);
+    @Override
+    public void onClassroomHomeworkEditClick(HwModel clickedItem, View view) {
 
-        Comparator<HwModel> dateComparator = (date1, date2) -> {
-            LocalDate localDate1 = LocalDate.parse(date1.getDue_date(), formatter);
-            LocalDate localDate2 = LocalDate.parse(date2.getDue_date(), formatter);
-
-            if (localDate1.isEqual(today)) {
-                return -1; // Bugünkü tarihleri en önce sırala
-            } else if (localDate2.isEqual(today)) {
-                return 1; // Bugünkü tarihleri en önce sırala
-            } else if (localDate1.isBefore(today) && localDate2.isBefore(today)) {
-                return localDate2.compareTo(localDate1); // Geçmiş tarihleri büyükten küçüğe sırala
-            } else if (localDate1.isAfter(today) && localDate2.isAfter(today)) {
-                return localDate1.compareTo(localDate2); // Gelecek tarihleri küçükten büyüğe sırala
-            } else if (localDate1.isBefore(today) && localDate2.isAfter(today)) {
-                return 1; // Geçmiş tarihleri gelecek tarihlerden sonra sırala
-            } else {
-                return -1; // Gelecek tarihleri geçmiş tarihlerden önce sırala
-            }
-        };
-
-        Collections.sort(list, dateComparator);
     }
-
-
 }

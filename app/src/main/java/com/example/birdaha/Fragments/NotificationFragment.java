@@ -29,8 +29,6 @@ public class NotificationFragment extends Fragment {
         // Required empty public constructor
     }
 
-    private static NotificationFragment instance = null;
-
     /**
      * Creates a new instance of the NotificationFragment.
      *
@@ -38,15 +36,11 @@ public class NotificationFragment extends Fragment {
      * @return A new instance of NotificationFragment.
      */
     public static NotificationFragment newInstance(String param1) {
-        if(instance == null)
-        {
-            instance = new NotificationFragment();
-            Bundle args = new Bundle();
-            args.putString(KEY_TITLE, param1);
-            instance.setArguments(args);
-        }
-
-        return instance;
+        NotificationFragment fragment = new NotificationFragment();
+        Bundle args = new Bundle();
+        args.putString(KEY_TITLE, param1);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     /**

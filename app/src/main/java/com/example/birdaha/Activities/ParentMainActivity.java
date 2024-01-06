@@ -1,19 +1,13 @@
 package com.example.birdaha.Activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -28,7 +22,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.bumptech.glide.Glide;
 import com.example.birdaha.Adapters.CustomExpandableListAdapter;
 import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.Fragments.HomePageFragment;
@@ -265,7 +258,7 @@ public class ParentMainActivity extends AppCompatActivity {
                 if(intent != null){
                     Student student = lstChild.get(my_students_title).get(childPosition);
                     System.out.println(student.getClassroom().getName());
-                    StudentProfileFragment studentProfileFragment = StudentProfileFragment.newInstance(student);
+                    StudentProfileFragment studentProfileFragment = StudentProfileFragment.newInstance(student,false);
                     navigationManager.showFragment(studentProfileFragment, false);
                     drawerLayout.closeDrawer(GravityCompat.START);
                 }
@@ -292,12 +285,9 @@ public class ParentMainActivity extends AppCompatActivity {
      * Initializes lstChild as a LinkedHashMap with the title and child items.
      */
     private void getData() {
-        //ImageView imageView = expandableListView.findViewById(R.id.student_image);
 
         String title = "Öğrencilerim";
         List<Student> childItem = currentParent.getStudents();
-
-        SharedPreferences preferences = getSharedPreferences("ParentPrefs", Context.MODE_PRIVATE);
 
         for(Student stu : childItem)
         {
