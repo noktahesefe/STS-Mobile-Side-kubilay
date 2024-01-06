@@ -4,7 +4,11 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,22 +17,27 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.DialogFragment;
 
+import com.bumptech.glide.Glide;
 import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.General.HwModel;
-import com.example.birdaha.General.StudentModel;
 import com.example.birdaha.General.UpdateRespond;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Teacher;
 import com.google.gson.Gson;
 
-import java.io.Serializable;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,10 +50,32 @@ public class HomeworkDialogFragment extends DialogFragment {
 
 
     private EditText hw_title, hw_due_date, hw_content, hw_course_name;
-
     private Teacher teacher;
     private Classroom classroom;
     private String image;
+    private Button hw_adding_image;
+    private ImageView homeworkImage;
+
+    private ActivityResultLauncher<String> galleryLauncher = registerForActivityResult(
+            new ActivityResultContracts.GetContent(),
+            result -> {
+                if(result != null){
+                    Uri imageUri = result;
+                    try{
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(),imageUri);
+                        Glide.with(requireContext())
+                                .load(bitmap)
+                                .into(homeworkImage);
+                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG,20,bos);
+                        byte[] byteArray = bos.toByteArray();
+                        image = Base64.encodeToString(byteArray,Base64.DEFAULT);
+                    } catch(IOException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+    );
     
 
     @Override
@@ -55,6 +86,8 @@ public class HomeworkDialogFragment extends DialogFragment {
         hw_title = view.findViewById(R.id.hw_title);
         hw_content = view.findViewById(R.id.hw_content);
         hw_due_date = view.findViewById(R.id.dateEditText);
+        hw_adding_image = view.findViewById(R.id.hw_adding_image);
+        homeworkImage = view.findViewById(R.id.homework_image);
 
         // Set up the date picker dialog
         hw_due_date.setOnClickListener(v -> {
@@ -71,6 +104,13 @@ public class HomeworkDialogFragment extends DialogFragment {
                         hw_due_date.setText(date);
                     }, year, month, day);
             datePickerDialog.show();
+        });
+
+        hw_adding_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                galleryLauncher.launch("image/*");
+            }
         });
 
         // Initialize the close button
@@ -111,12 +151,10 @@ public class HomeworkDialogFragment extends DialogFragment {
                     Log.d("Error", t.getMessage());
                 }
             });
-
-
             dismiss(); // Dismiss the dialog after action
         });
 
-        TextView dialog_title = view.findViewById(R.id.hw_title);
+        //TextView dialog_title = view.findViewById(R.id.hw_title);
 
         return view;
     }

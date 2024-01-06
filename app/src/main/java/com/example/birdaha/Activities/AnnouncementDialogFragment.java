@@ -56,32 +56,31 @@ public class AnnouncementDialogFragment extends DialogFragment {
             String title = announcement_title.getText().toString();
             String content = announcement_content.getText().toString();
 
-            ClassAnnouncementModel announcement = new ClassAnnouncementModel(title, content, teacher.getTeacher_id(), classroom.getClassroom_id());
+            ClassAnnouncementModel announcement = new ClassAnnouncementModel(title, content, classroom.getClassroom_id(), teacher.getTeacher_id());
             announcement.setTeacher(teacher);
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("http://sinifdoktoruadmin.online/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
             ClassRoomAnnouncementScreen.MakeAnnouncement postAnnouncement = retrofit.create(ClassRoomAnnouncementScreen.MakeAnnouncement.class);
-            postAnnouncement.makeAnnouncement(announcement).enqueue(new Callback<ClassAnnouncementModel>() {
+            postAnnouncement.makeAnnouncement(announcement).enqueue(new Callback<UpdateRespond>() {
                 @Override
-                public void onResponse(Call<ClassAnnouncementModel> call, Response<ClassAnnouncementModel> response) {
+                public void onResponse(Call<UpdateRespond> call, Response<UpdateRespond> response) {
                     if(response.isSuccessful() && response.body() != null){
-
                         Toast.makeText(getActivity(), "Duyuru başarıyla yapıldı", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        Toast.makeText(requireContext(), "Hata oluştu!" + response.code(), Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<ClassAnnouncementModel> call, Throwable t) {
+                public void onFailure(Call<UpdateRespond> call, Throwable t) {
                     Log.d("Error",t.getMessage());
                 }
             });
-
             dismiss();
-
         });
-
         return view;
     }
 

@@ -20,6 +20,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
 import com.example.birdaha.Fragments.HomePageFragment;
@@ -82,11 +84,11 @@ public class StudentMainActivity extends AppCompatActivity {
         if(intent != null){
             Student student = (Student) intent.getSerializableExtra("user");
             nameSurname.setText(student.getName());
-            SharedPreferences preferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+            SharedPreferences preferences = getSharedPreferences("StudentPrefs", Context.MODE_PRIVATE);
             String key = "profile_data_" + student.getStudent_id();
             String combinedData = preferences.getString(key,"");
             String[] dataParts = combinedData.split("\\|");
-            System.out.println(Arrays.toString(dataParts));
+            //System.out.println(Arrays.toString(dataParts));
             if(dataParts.length == 2){
                 int studentId = Integer.parseInt(dataParts[0]);
                 String encodedImage = dataParts[1];
@@ -118,8 +120,13 @@ public class StudentMainActivity extends AppCompatActivity {
                 Intent intent = getIntent();
                 if(intent != null){
                     Student student = (Student) intent.getSerializableExtra("user");
-                    StudentProfileFragment studentProfileFragment = StudentProfileFragment.newInstance(student);
-                    navigationManager.showFragment(studentProfileFragment, false);
+
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    Fragment f = fragmentManager.findFragmentById(R.id.FrameLayout_container);
+
+                    if(!(f instanceof StudentProfileFragment))
+                        navigationManager.showFragment(StudentProfileFragment.newInstance(student,true), false);
+
                     drawerLayout.closeDrawer(GravityCompat.START);
                 }
             }
@@ -129,7 +136,12 @@ public class StudentMainActivity extends AppCompatActivity {
         TextView_home_page.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigationManager.showFragment(HomePageFragment.newInstance("userId"), false);
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                Fragment f = fragmentManager.findFragmentById(R.id.FrameLayout_container);
+
+                if(!(f instanceof HomePageFragment))
+                    navigationManager.showFragment(HomePageFragment.newInstance("userId"), false);
+
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
@@ -138,7 +150,12 @@ public class StudentMainActivity extends AppCompatActivity {
         TextView_notifications.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigationManager.showFragment(NotificationFragment.newInstance("userId"), false);
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                Fragment f = fragmentManager.findFragmentById(R.id.FrameLayout_container);
+
+                if(!(f instanceof NotificationFragment))
+                    navigationManager.showFragment(NotificationFragment.newInstance("userId"), false);
+
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
         });

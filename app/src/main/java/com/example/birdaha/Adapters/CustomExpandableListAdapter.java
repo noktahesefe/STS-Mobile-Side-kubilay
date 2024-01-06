@@ -1,13 +1,19 @@
 package com.example.birdaha.Adapters;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Student;
 
@@ -83,6 +89,33 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
             convertView = LayoutInflater.from(context).inflate(R.layout.list_item, null);
 
         TextView txtChild = (TextView) convertView.findViewById(R.id.TextView_expandableListItem);
+        ImageView imageView = convertView.findViewById(R.id.student_image);
+        SharedPreferences preferences = context.getSharedPreferences("ParentPrefs",Context.MODE_PRIVATE);
+        Student student = (Student) getChild(groupPosition,childPosition);
+        String key = "parent_student_data_" + student.getStudent_id();
+        String combinedData = preferences.getString(key,"");
+        String[] dataParts = combinedData.split("\\|");
+        if(dataParts[1].equals("null")){
+            System.out.println("null");
+            Glide.with(context)
+                    .load(R.drawable.ic_account_circle_white_24)
+                    .into(imageView);
+        }
+        else{
+            System.out.println("not null");
+            if(dataParts.length == 2) {
+                int studentId = Integer.parseInt(dataParts[0]);
+                String encodedImage = dataParts[1];
+                if (student.getStudent_id() == studentId) {
+                    byte[] byteArray = Base64.decode(encodedImage, Base64.DEFAULT);
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                    Glide.with(context)
+                            .load(bitmap)
+                            .circleCrop()
+                            .into(imageView);
+                }
+            }
+        }
         //txtChild.setTypeface(null, Typeface.BOLD);
         txtChild.setText(title);
         return convertView;

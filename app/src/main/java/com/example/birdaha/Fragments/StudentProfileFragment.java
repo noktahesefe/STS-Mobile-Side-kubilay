@@ -67,6 +67,7 @@ import retrofit2.http.Path;
  * and handles any necessary view setup.
  */
 public class StudentProfileFragment extends Fragment {
+    private static StudentProfileFragment instance = null;
 
     interface AddProfilePicture{
         @POST("api/v1/student/add/image")
@@ -79,14 +80,69 @@ public class StudentProfileFragment extends Fragment {
     Button homeworksButton;
     Button announcementsButton;
     ImageView profilePicture;
-    boolean isGranted = false;
-
     private String image;
+
+    private final ActivityResultLauncher<String> galleryLauncher = registerForActivityResult(
+            new ActivityResultContracts.GetContent(),
+            result -> {
+                if(result != null){
+                    Uri imageUri = result;
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), imageUri);
+                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, byteArrayOutputStream);
+                        byte[] byteArray = byteArrayOutputStream.toByteArray();
+                        image = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                        Bundle bundle = getArguments();
+                        if (bundle != null) {
+                            Student student = (Student) bundle.getSerializable("student");
+                            Log.d("studentid", String.valueOf(student.getStudent_id()));
+                            SendProfilePictureStudent sendPP = new SendProfilePictureStudent(image, student.getStudent_id());
+                            Retrofit retrofit = new Retrofit.Builder()
+                                    .baseUrl("http://sinifdoktoruadmin.online/")
+                                    .addConverterFactory(GsonConverterFactory.create())
+                                    .build();
+                            AddProfilePicture sendProfilePicture = retrofit.create(AddProfilePicture.class);
+                            sendProfilePicture.addProfilePicture(sendPP).enqueue(new Callback<ProfilePictureRespond>() {
+                                @Override
+                                public void onResponse(Call<ProfilePictureRespond> call, Response<ProfilePictureRespond> response) {
+                                    if (response.isSuccessful() && response.body() != null) {
+                                        ProfilePictureRespond respond = response.body();
+                                        String combinedData = student.getStudent_id() + "|" + image;
+                                        SharedPreferences preferences = requireActivity().getSharedPreferences("StudentPrefs", Context.MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = preferences.edit();
+                                        String key = "profile_data_" + student.getStudent_id();
+                                        editor.putString(key, combinedData);
+                                        editor.apply();
+                                        Glide.with(requireContext())
+                                                .load(bitmap)
+                                                .circleCrop()
+                                                .into(profilePicture);
+                                        Toast.makeText(requireActivity(), "Profil Fotoğrafı Güncellendi", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(requireActivity(), "Response Unsuccessful" + " " + response.code(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<ProfilePictureRespond> call, Throwable t) {
+                                    Toast.makeText(requireActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+    );
 
 
     // Activity result launcher for requesting gallery access permission
-    private final ActivityResultLauncher<String> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), this::handlePermissionResult);
+    /*private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                handlePermissionResult();
+            });
 
     // Activity result launcher for launching the image picker
     private final ActivityResultLauncher<Intent> imagePickerLauncher =
@@ -96,64 +152,72 @@ public class StudentProfileFragment extends Fragment {
                     Intent data = result.getData();
                     if (data != null) {
                         Uri selectedImage = data.getData();
-                        try {
-                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(),selectedImage);
-                            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 10, byteArrayOutputStream);
-                            byte[] byteArray = byteArrayOutputStream.toByteArray();
-                            image = Base64.encodeToString(byteArray,Base64.DEFAULT);
-                            Bundle bundle = getArguments();
-                            if(bundle != null){
-                                Student student = (Student) bundle.getSerializable("student");
-                                Log.d("studentid",String.valueOf(student.getStudent_id()));
-                                Log.d("image",image);
-                                SendProfilePictureStudent sendPP = new SendProfilePictureStudent(image, student.getStudent_id());
-                                Retrofit retrofit = new Retrofit.Builder()
-                                        .baseUrl("http://sinifdoktoruadmin.online/")
-                                        .addConverterFactory(GsonConverterFactory.create())
-                                        .build();
-                                AddProfilePicture sendProfilePicture = retrofit.create(AddProfilePicture.class);
-                                sendProfilePicture.addProfilePicture(sendPP).enqueue(new Callback<ProfilePictureRespond>() {
-                                    @Override
-                                    public void onResponse(Call<ProfilePictureRespond> call, Response<ProfilePictureRespond> response) {
-                                        if(response.isSuccessful() && response.body() != null){
-                                            ProfilePictureRespond respond = response.body();
-                                            Toast.makeText(requireActivity(), respond.getSuccess() + response.code(), Toast.LENGTH_SHORT).show();
-                                            Log.d("Respond",respond.getSuccess());
-                                            String combinedData = student.getStudent_id() + "|" + image;
-                                            SharedPreferences preferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-                                            SharedPreferences.Editor editor = preferences.edit();
-                                            String key = "profile_data_" + student.getStudent_id();
-                                            editor.putString(key,combinedData);
-                                            editor.apply();
+                        if (selectedImage != null) {
+                            Log.d("No null","No null");
+                            try {
+                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), selectedImage);
+                                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, byteArrayOutputStream);
+                                byte[] byteArray = byteArrayOutputStream.toByteArray();
+                                image = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                                Bundle bundle = getArguments();
+                                if (bundle != null) {
+                                    Student student = (Student) bundle.getSerializable("student");
+                                    Log.d("studentid", String.valueOf(student.getStudent_id()));
+                                    //Log.d("image",image);
+                                    SendProfilePictureStudent sendPP = new SendProfilePictureStudent(image, student.getStudent_id());
+                                    Retrofit retrofit = new Retrofit.Builder()
+                                            .baseUrl("http://sinifdoktoruadmin.online/")
+                                            .addConverterFactory(GsonConverterFactory.create())
+                                            .build();
+                                    AddProfilePicture sendProfilePicture = retrofit.create(AddProfilePicture.class);
+                                    sendProfilePicture.addProfilePicture(sendPP).enqueue(new Callback<ProfilePictureRespond>() {
+                                        @Override
+                                        public void onResponse(Call<ProfilePictureRespond> call, Response<ProfilePictureRespond> response) {
+                                            if (response.isSuccessful() && response.body() != null) {
+                                                ProfilePictureRespond respond = response.body();
+                                                Toast.makeText(requireActivity(), respond.getSuccess() + response.code(), Toast.LENGTH_SHORT).show();
+                                                Log.d("Respond", respond.getSuccess());
+                                                String combinedData = student.getStudent_id() + "|" + image;
+                                                SharedPreferences preferences = requireActivity().getSharedPreferences("StudentPrefs", Context.MODE_PRIVATE);
+                                                SharedPreferences.Editor editor = preferences.edit();
+                                                String key = "profile_data_" + student.getStudent_id();
+                                                editor.putString(key, combinedData);
+                                                editor.apply();
+                                            } else {
+                                                Toast.makeText(requireActivity(), "Response Unsuccessful" + " " + response.code(), Toast.LENGTH_SHORT).show();
+                                            }
                                         }
-                                        else{
-                                            Toast.makeText(requireActivity(), "Response Unsuccessful" + " " + response.code(), Toast.LENGTH_SHORT).show();
+
+                                        @Override
+                                        public void onFailure(Call<ProfilePictureRespond> call, Throwable t) {
+                                            Toast.makeText(requireActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
                                         }
-                                    }
-                                    @Override
-                                    public void onFailure(Call<ProfilePictureRespond> call, Throwable t) {
-                                        Toast.makeText(requireActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                                    });
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
-                        } catch (IOException e){
-                            e.printStackTrace();
+                            Glide.with(this)
+                                    .load(selectedImage)
+                                    .circleCrop()
+                                    .into(profilePicture);
                         }
-                        Glide.with(this)
-                                .load(selectedImage)
-                                .circleCrop()
-                                .into(profilePicture);
+                        else{
+                            Log.d("No image", "No image");
+                        }
                     }
                 }
-            });
+            });*/
 
     /**
      * Handles the result of the permission request for gallery access.
      *
      * @param isGranted True if the permission is granted, false otherwise.
      */
-    private void handlePermissionResult(boolean isGranted) {
+    /*private void handlePermissionResult() {
+        SharedPreferences preferences = getContext().getSharedPreferences("MyPrefs",Context.MODE_PRIVATE);
+        boolean isGranted = preferences.getBoolean("isGranted",false);
         if (isGranted) {
             openGallery();
         } else {
@@ -164,7 +228,10 @@ public class StudentProfileFragment extends Fragment {
                     .setPositiveButton("İzin ver", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            StudentProfileFragment.this.isGranted = true;
+                            SharedPreferences preferences = getContext().getSharedPreferences("MyPrefs",Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putBoolean("isGranted",true);
+                            editor.apply();
                             openGallery();
                         }
                     })
@@ -177,7 +244,7 @@ public class StudentProfileFragment extends Fragment {
                     .setCancelable(false)
                     .show();
         }
-    }
+    }*/
 
     /**
      * Key to retrieve the title content.
@@ -197,13 +264,16 @@ public class StudentProfileFragment extends Fragment {
      * @param student Title content to be displayed.
      * @return A new instance of StudentProfileFragment.
      */
-    public static StudentProfileFragment newInstance(Student student) {
-        StudentProfileFragment fragment = new StudentProfileFragment();
-        Bundle args = new Bundle();
-        args.putSerializable("student",student);
-        //args.putString(KEY_TITLE, param1);
-        fragment.setArguments(args);
-        return fragment;
+    public static StudentProfileFragment newInstance(Student student, boolean isUserStudent) {
+        if(instance == null){
+            instance = new StudentProfileFragment();
+            Bundle args = new Bundle();
+            args.putSerializable("student",student);
+            args.putBoolean("isUserStudent",isUserStudent);
+            //args.putString(KEY_TITLE, param1);
+            instance.setArguments(args);
+        }
+        return instance;
     }
 
     /**
@@ -243,6 +313,7 @@ public class StudentProfileFragment extends Fragment {
             Classroom classroom1 = student.getClassroom();
             classroom.setText(String.valueOf(classroom1.getName()));
             schoolNumber.setText(String.valueOf(student.getSchool_no()));
+            changeProfilePicture = (Button) view.findViewById(R.id.student_gallery);
 
             homeworksButton = view.findViewById(R.id.student_homeworks);
             homeworksButton.setOnClickListener(new View.OnClickListener() {
@@ -264,28 +335,55 @@ public class StudentProfileFragment extends Fragment {
             });
 
             profilePicture = (ImageView) view.findViewById(R.id.student_profilePicture);
-            SharedPreferences preferences = getActivity().getSharedPreferences("MyPrefs",Context.MODE_PRIVATE);
-            String key = "profile_data_" + student.getStudent_id();
-            String combinedData = preferences.getString(key,"");
-            String[] dataParts = combinedData.split("\\|");
-            System.out.println(Arrays.toString(dataParts));
-            if(dataParts.length == 2){
-                int studentId = Integer.parseInt(dataParts[0]);
-                String encodedImage = dataParts[1];
-                if(student.getStudent_id() == studentId){
-                    byte[] byteArray = Base64.decode(encodedImage,Base64.DEFAULT);
-                    Bitmap decodedImage = BitmapFactory.decodeByteArray(byteArray,0, byteArray.length);
-                    Glide.with(requireActivity())
-                            .load(decodedImage)
-                            .circleCrop()
-                            .into(profilePicture);
+            boolean isUserStudent = bundle.getBoolean("isUserStudent");
+            if(isUserStudent){
+                SharedPreferences preferences = getActivity().getSharedPreferences("StudentPrefs",Context.MODE_PRIVATE);
+                String key = "profile_data_" + student.getStudent_id();
+                String combinedData = preferences.getString(key,"");
+                String[] dataParts = combinedData.split("\\|");
+                //System.out.println(Arrays.toString(dataParts));
+                if(dataParts.length == 2){
+                    int studentId = Integer.parseInt(dataParts[0]);
+                    String encodedImage = dataParts[1];
+                    if(student.getStudent_id() == studentId){
+                        byte[] byteArray = Base64.decode(encodedImage,Base64.DEFAULT);
+                        Bitmap decodedImage = BitmapFactory.decodeByteArray(byteArray,0, byteArray.length);
+                        Glide.with(requireActivity())
+                                .load(decodedImage)
+                                .circleCrop()
+                                .into(profilePicture);
+                    }
                 }
+                changeProfilePicture.setEnabled(true);
+            }
+            else{
+                SharedPreferences preferences1 = getActivity().getSharedPreferences("ParentPrefs",Context.MODE_PRIVATE);
+                String key1 = "parent_student_data_" + student.getStudent_id();
+                String combinedData1 = preferences1.getString(key1,"");
+                String[] dataParts1 = combinedData1.split("\\|");
+                if(dataParts1.length == 2){
+                    int studentId = Integer.parseInt(dataParts1[0]);
+                    String encodedImage = dataParts1[1];
+                    if(student.getStudent_id() == studentId){
+                        byte[] byteArray = Base64.decode(encodedImage,Base64.DEFAULT);
+                        Bitmap decodedImage = BitmapFactory.decodeByteArray(byteArray,0, byteArray.length);
+                        Glide.with(requireActivity())
+                                .load(decodedImage)
+                                .circleCrop()
+                                .into(profilePicture);
+                    }
+                }
+                changeProfilePicture.setEnabled(false);
             }
         }
 
-        changeProfilePicture = (Button) view.findViewById(R.id.student_gallery);
-
-        changeProfilePicture.setOnClickListener(v -> checkPermissionAndOpenGallery());
+        //changeProfilePicture.setOnClickListener(v -> checkPermissionAndOpenGallery());
+        changeProfilePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                galleryLauncher.launch("image/*");
+            }
+        });
         return view;
     }
 
@@ -293,7 +391,7 @@ public class StudentProfileFragment extends Fragment {
      * Checks if the app has the necessary permission to read external storage and opens the gallery if permission is granted.
      * If the permission is not granted, a permission request will be initiated.
      */
-    public void checkPermissionAndOpenGallery() {
+    /*public void checkPermissionAndOpenGallery() {
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             // Permission granted, proceed with changing the profile picture
             openGallery();
@@ -301,16 +399,16 @@ public class StudentProfileFragment extends Fragment {
             // Request permission
             requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
         }
-    }
+    }*/
 
     /**
      * Opens the gallery for the user to select a profile picture.
      * Initiates the image picker activity using an explicit intent for picking images from external storage.
      */
-    private void openGallery() {
+    /*private void openGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         imagePickerLauncher.launch(intent);
-    }
+    }*/
 
     /**
      * Called immediately after onCreateView() has returned, but before any saved state has been restored
@@ -327,7 +425,12 @@ public class StudentProfileFragment extends Fragment {
 
         /*String title = getArguments().getString(KEY_TITLE);
         ((TextView)view.findViewById(R.id.title)).setText(title);*/
+    }
 
-
+    @Override
+    public void onDetach(){
+        super.onDetach();
+        System.out.println("Deadge");
+        instance = null;
     }
 }

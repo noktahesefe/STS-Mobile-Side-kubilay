@@ -68,7 +68,7 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
                 if(response.isSuccessful() && response.body() != null){
                     AnnouncementsStudent models = response.body();
                     classAnnouncementModels = models.getClassAnnouncements();
-                    classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassAnnouncementScreen.this, (ArrayList<ClassAnnouncementModel>) classAnnouncementModels, ClassAnnouncementScreen.this);
+                    classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassAnnouncementScreen.this, (ArrayList<ClassAnnouncementModel>) classAnnouncementModels, ClassAnnouncementScreen.this,null);
                     recyclerView.setAdapter(classAnnouncementAdapter);
                     Toast.makeText(ClassAnnouncementScreen.this, "Duyurular Listeleniyor", Toast.LENGTH_SHORT).show();
                 }
@@ -129,5 +129,10 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
         builder.setView(overlayView);
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    @Override
+    public void onClassAnnouncementEditClick(ClassAnnouncementModel clickedItem, View view) {
+
     }
 }

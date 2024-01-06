@@ -1,6 +1,8 @@
 package com.example.birdaha.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +20,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
 import com.example.birdaha.Fragments.HomePageFragment;
@@ -28,6 +32,8 @@ import com.example.birdaha.Helper.LocalDataManager;
 import com.example.birdaha.Interface.NavigationManager;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Teacher;
+
+import java.util.Arrays;
 
 
 /**
@@ -73,16 +79,26 @@ public class TeacherMainActivity extends AppCompatActivity {
         TextView nameSurname = drawerLayout.findViewById(R.id.TextView_teacher_name_surname);
         ImageView teacherPhoto = drawerLayout.findViewById(R.id.ImageView_person_photo);
         Intent intent = getIntent();
-        if(intent != null){
+        if (intent != null) {
             Teacher teacher = (Teacher) intent.getSerializableExtra("user");
             nameSurname.setText(teacher.getName());
-            /*if(teacher.getTeacher_image() != null){
-                byte[] imageBytes = Base64.decode(teacher.getTeacher_image(), Base64.DEFAULT);
-                Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes,0, imageBytes.length);
-                Glide.with(this)
-                        .load(decodedImage)
-                        .into(teacherPhoto);
-            }*/
+            SharedPreferences preferences = getSharedPreferences("TeacherPrefs", Context.MODE_PRIVATE);
+            String key = "teacher_profile_data_" + teacher.getTeacher_id();
+            String combinedData = preferences.getString(key,"");
+            String[] dataParts = combinedData.split("\\|");
+            System.out.println(Arrays.toString(dataParts));
+            if(dataParts.length == 2){
+                int teacherId = Integer.parseInt(dataParts[0]);
+                String encodedImage = dataParts[1];
+                if(teacher.getTeacher_id() == teacherId){
+                    byte[] byteArray = Base64.decode(encodedImage,Base64.DEFAULT);
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray,0, byteArray.length);
+                    Glide.with(this)
+                            .load(bitmap)
+                            .circleCrop()
+                            .into(teacherPhoto);
+                }
+            }
         }
 
         navigationManager = FragmentNavigationManager.getmInstance(this);
@@ -101,10 +117,15 @@ public class TeacherMainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = getIntent();
-                if(intent != null){
+                if (intent != null) {
                     Teacher teacher = (Teacher) intent.getSerializableExtra("user");
-                    TeacherProfileFragment teacherProfileFragment = TeacherProfileFragment.newInstance(teacher);
-                    navigationManager.showFragment(teacherProfileFragment,false);
+
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    Fragment f = fragmentManager.findFragmentById(R.id.FrameLayout_container);
+
+                    if (!(f instanceof TeacherProfileFragment))
+                        navigationManager.showFragment(TeacherProfileFragment.newInstance(teacher), false);
+
                     drawerLayout.closeDrawer(GravityCompat.START);
                 }
 
@@ -117,7 +138,11 @@ public class TeacherMainActivity extends AppCompatActivity {
         TextView_home_page.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigationManager.showFragment(HomePageFragment.newInstance("userId"), false);
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                Fragment f = fragmentManager.findFragmentById(R.id.FrameLayout_container);
+
+                if (!(f instanceof HomePageFragment))
+                    navigationManager.showFragment(HomePageFragment.newInstance("userId"), false);
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
@@ -126,7 +151,12 @@ public class TeacherMainActivity extends AppCompatActivity {
         TextView_notifications.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigationManager.showFragment(NotificationFragment.newInstance("userId"), false);
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                Fragment f = fragmentManager.findFragmentById(R.id.FrameLayout_container);
+
+                if (!(f instanceof NotificationFragment))
+                    navigationManager.showFragment(NotificationFragment.newInstance("userId"), false);
+
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
         });

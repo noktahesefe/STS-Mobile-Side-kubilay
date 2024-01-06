@@ -56,7 +56,6 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="15dp"
                 android:hint="Homework Name"
-                android:textColorHint="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -65,8 +64,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/homework_detail_title"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"/>
+                    android:layout_height="wrap_content" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -77,7 +75,6 @@
                 android:hint="Course Name"
                 android:layout_margin="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:textColorHint="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/hw_titleTextLayout"
                 app:startIconDrawable="@drawable/baseline_class_24">
@@ -85,8 +82,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/homework_detail_course_name"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"/>
+                    android:layout_height="wrap_content" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -98,7 +94,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="15dp"
-                android:textColorHint="@color/black"
                 android:layout_marginEnd="15dp"
                 android:hint="Homework Content"
                 app:layout_constraintTop_toBottomOf="@+id/dateTextInputLayout"
@@ -107,8 +102,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/homework_detail_content"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"/>
+                    android:layout_height="wrap_content" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -121,7 +115,6 @@
                 android:layout_marginEnd="15dp"
                 android:hint="Due Date"
                 app:layout_constraintStart_toStartOf="parent"
-                android:textColorHint="@color/black"
                 app:startIconDrawable="@drawable/baseline_calendar_today_24"
                 app:layout_constraintTop_toBottomOf="@+id/hw_courseTextLayout">
 
@@ -130,8 +123,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:focusable="false"
-                    android:hint=""
-                    android:textColor="@color/black"/>
+                    android:hint="" />
 
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -156,7 +148,7 @@
                 android:id="@+id/give_grade_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="12dp"
                 android:text="Puanla"
                 app:layout_constraintEnd_toEndOf="@+id/homework_detail_image"
                 app:layout_constraintStart_toStartOf="@+id/homework_detail_image"

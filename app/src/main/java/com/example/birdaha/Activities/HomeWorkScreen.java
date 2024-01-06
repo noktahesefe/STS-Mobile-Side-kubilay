@@ -82,7 +82,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         if (intent != null) {
             student = (Student) intent.getSerializableExtra("student");
             classroom = (Classroom) intent.getSerializableExtra("classroom");
-            //hwModels = (ArrayList<HwModel>) intent.getSerializableExtra("homeworks");
         }
 
         Log.d("classid",String.valueOf(classroom.getClassroom_id()));
@@ -100,7 +99,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
                     HomeworksStudent models = response.body();
                     Log.d("Response",new Gson().toJson(response.body()));
                     hwModels = models.getHomeworks();
-                     homeworkAdapter = new StudentHomeworkAdapter(HomeWorkScreen.this, (ArrayList<HwModel>) hwModels, HomeWorkScreen.this);
+                    homeworkAdapter = new StudentHomeworkAdapter(HomeWorkScreen.this, (ArrayList<HwModel>) hwModels, HomeWorkScreen.this);
                     recyclerView.setAdapter(homeworkAdapter);
                     Toast.makeText(HomeWorkScreen.this, "Ödevler Listeleniyor", Toast.LENGTH_SHORT).show();
                 }
@@ -182,7 +181,8 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         ImageView imageView = overlayView.findViewById(R.id.homework_detail_image);
         Button gradeButton = overlayView.findViewById(R.id.give_grade_button);
 
-        gradeButton.setVisibility(view.INVISIBLE);
+        gradeButton.setVisibility(View.GONE);
+
         courseName.setEnabled(false);
         title.setEnabled(false);
         dueDate.setEnabled(false);
@@ -229,5 +229,10 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
 
         // Show the AlertDialog
         dialog.show();
+    }
+
+    @Override
+    public void onClassroomHomeworkEditClick(HwModel clickedItem, View view) {
+
     }
 }

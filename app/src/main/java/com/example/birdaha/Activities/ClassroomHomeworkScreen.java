@@ -1,6 +1,7 @@
 package com.example.birdaha.Activities;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 
 import android.content.Intent;
@@ -17,8 +18,10 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -39,7 +42,6 @@ import com.example.birdaha.General.HwModel;
 import com.example.birdaha.General.StudentModel;
 import com.example.birdaha.General.UpdateRespond;
 import com.example.birdaha.R;
-import com.example.birdaha.Users.Student;
 import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 
 import com.example.birdaha.Users.Teacher;
@@ -50,6 +52,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -60,6 +63,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 
@@ -67,14 +71,15 @@ import retrofit2.http.Path;
 
 public class ClassroomHomeworkScreen extends AppCompatActivity implements ClassroomHomeworkViewInterface {
 
-    interface AddHomework{
+    public interface AddHomework{
         @GET("/api/v1/teacher/homeworks/{classroomId}")
         Call<HomeworksTeacher> getHomeworks(@Path("classroomId") int classroomId);
         @POST("/api/v1/homework/add")
         Call<UpdateRespond> addHomework(@Body HwModel hwmodel);
-
         @POST("/api/v1/homework/update")
         Call<UpdateRespond> updateHomework(@Body HwModel hwModel);
+        @GET("api/v1/homework/{homeworkId}")
+        Call<UpdateRespond> deleteHomework(@Path("homeworkId") int homeworkId);
     }
     SearchView search;
 
@@ -88,8 +93,6 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
 
     private HomeworkAdapter homeworkAdapter;
 
-    private Intent intent;
-
 
     private ActivityResultLauncher<String> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
@@ -100,7 +103,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
                         homeworkImage.setImageBitmap(bitmap);
                         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, byteArrayOutputStream);
                         byte[] byteArray = byteArrayOutputStream.toByteArray();
                         image = Base64.encodeToString(byteArray,Base64.DEFAULT);
                     } catch(IOException e){
@@ -118,11 +121,11 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         RecyclerView recyclerView = findViewById(R.id.hwRecyclerView_classroom);
         search = findViewById(R.id.searchView_homework);
         addingHomeworkButton = findViewById(R.id.adding_hw_btn);
-
+        //gradeButton = findViewById(R.id.grade_btn);
 
         Classroom classroom = null;
 
-        intent = getIntent();
+        Intent intent = getIntent();
         if(intent != null){
             classroom = (Classroom) intent.getSerializableExtra("classroom");
             //hwModels = (ArrayList<HwModel>) intent.getSerializableExtra("homeworks");
@@ -138,18 +141,23 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                 @Override
                 public void onResponse(Call<HomeworksTeacher> call, Response<HomeworksTeacher> response) {
                     if(response.isSuccessful() && response.body() != null){
+                        Toast.makeText(ClassroomHomeworkScreen.this, "Ödevler Listeleniyor", Toast.LENGTH_SHORT).show();
                         HomeworksTeacher models = response.body();
                         hwModels = models.getHomeworks();
-                        hwModels.sort(new Comparator<HwModel>() {
+                        /*hwModels.sort(new Comparator<HwModel>() {
                             @Override
                             public int compare(HwModel o1, HwModel o2) {
                                 return o1.compareTo(o2);
                             }
-                        });
+                        });*/
 
-                        homeworkAdapter = new HomeworkAdapter(ClassroomHomeworkScreen.this,(ArrayList<HwModel>) hwModels, ClassroomHomeworkScreen.this);
+                        for(HwModel model : hwModels){
+                            System.out.println(model.getTeacher_id());
+                        }
+
+                        Teacher teacher1 = (Teacher) getIntent().getSerializableExtra("teacher");
+                        homeworkAdapter = new HomeworkAdapter(ClassroomHomeworkScreen.this,(ArrayList<HwModel>) hwModels, ClassroomHomeworkScreen.this, teacher1);
                         recyclerView.setAdapter(homeworkAdapter);
-                        Toast.makeText(ClassroomHomeworkScreen.this, "Ödevler Listeleniyor", Toast.LENGTH_SHORT).show();
                     }
                     else{
                         Toast.makeText(ClassroomHomeworkScreen.this, "Response Unsuccessful", Toast.LENGTH_SHORT).show();
@@ -216,7 +224,21 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             }
         });
 
+        /*gradeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int homeworkId = 2280;
+                Classroom classroom = (Classroom) intent.getSerializableExtra("classroom");
+                ArrayList<StudentModel> students = (ArrayList<StudentModel>) intent.getSerializableExtra("students");
+                Intent homeworkGradeIntent = new Intent(ClassroomHomeworkScreen.this, HomeworkStudentsScreen.class);
 
+                homeworkGradeIntent.putExtra("students", (Serializable) students);
+                homeworkGradeIntent.putExtra("classroom", classroom);
+                homeworkGradeIntent.putExtra("homeworkId", homeworkId);
+                startActivity(homeworkGradeIntent);
+
+            }
+        });*/
 
 
         // Set a listener for the SearchView to handle query text changes
@@ -293,24 +315,6 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         EditText dueDate = overlayView.findViewById(R.id.homework_detail_duedate);
         EditText content = overlayView.findViewById(R.id.homework_detail_content);
         ImageView imageView = overlayView.findViewById(R.id.homework_detail_image);
-        Button gradeButton = overlayView.findViewById(R.id.give_grade_button);
-
-        gradeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int homeworkId = 2280;
-                Classroom classroom = (Classroom) intent.getSerializableExtra("classroom");
-                Student students = (Student) intent.getSerializableExtra("students");
-                Intent homeworkGradeIntent = new Intent(ClassroomHomeworkScreen.this, HomeworkStudentsScreen.class);
-
-                homeworkGradeIntent.putExtra("students", (Serializable) students);
-                homeworkGradeIntent.putExtra("classroom", classroom);
-                homeworkGradeIntent.putExtra("homeworkId", homeworkId);
-                startActivity(homeworkGradeIntent);
-
-            }
-        });
-
 
         courseName.setEnabled(false);
         title.setEnabled(false);
@@ -352,5 +356,121 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         builder.setView(overlayView);
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    @Override
+    public void onClassroomHomeworkEditClick(HwModel clickedItem, View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+        LayoutInflater inflater = LayoutInflater.from(view.getContext());
+
+        View overlayView = inflater.inflate(R.layout.full_screen_hw_adding_dialog, null);
+        EditText hw_title = overlayView.findViewById(R.id.hw_title);
+        EditText hw_content = overlayView.findViewById(R.id.hw_content);
+        EditText hw_due_date = overlayView.findViewById(R.id.dateEditText);
+        homeworkImage = overlayView.findViewById(R.id.homework_image);
+        Button hw_adding_image = overlayView.findViewById(R.id.hw_adding_image);
+        TextView hw_dialog_title = overlayView.findViewById(R.id.fullscreen_hw_title);
+
+        hw_dialog_title.setText("Edit Homework");
+
+        hw_adding_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                galleryLauncher.launch("image/*");
+            }
+        });
+
+
+        hw_title.setText(clickedItem.getTitle());
+        hw_content.setText(clickedItem.getInfo());
+        hw_due_date.setText(clickedItem.getDue_date());
+        if(clickedItem.getGetImage() != null) {
+            byte[] imageBytes = Base64.decode(clickedItem.getGetImage(), Base64.DEFAULT);
+            Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            Glide.with(ClassroomHomeworkScreen.this)
+                    .load(decodedImage)
+                    .into(homeworkImage);
+        }
+        hw_due_date.setOnClickListener(v -> {
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                    this, // Use getActivity() as the context
+                    (view1, year1, monthOfYear, dayOfMonth) -> {
+                        // Format the date in your preferred format (yyyy-MM-dd)
+                        String date = year1 + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+                        hw_due_date.setText(date);
+                    }, year, month, day);
+            datePickerDialog.show();
+        });
+
+        builder.setView(overlayView);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        ImageButton closeButton = overlayView.findViewById(R.id.fullscreen_dialog_close);
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        //Classroom classroom = (Classroom) getIntent().getSerializableExtra("classroom");
+        //Teacher teacher = (Teacher) getIntent().getSerializableExtra("teacher");
+
+        TextView actionButton = overlayView.findViewById(R.id.fullscreen_dialog_action);
+        actionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String title = hw_title.getText().toString();
+                String content = hw_content.getText().toString();
+                String due_date = hw_due_date.getText().toString();
+                clickedItem.setTitle(title);
+                clickedItem.setInfo(content);
+                clickedItem.setDue_date(due_date);
+                clickedItem.setImage(image);
+                clickedItem.setGetImage(image);
+
+                System.out.println("hw id:" + clickedItem.getHomework_id());
+                System.out.println("teacher id:" + clickedItem.getTeacher_id());
+                System.out.println("classroom id:" + clickedItem.getClassroom_id());
+                System.out.println("teacher course name:" + clickedItem.getCourse_name());
+                System.out.println("Title:" + clickedItem.getTitle());
+                System.out.println("Content:" + clickedItem.getInfo());
+                System.out.println("Due Date:" + clickedItem.getDue_date());
+                System.out.println("Image :" + clickedItem.getGetImage());
+
+                //HwModel hwModel = new HwModel(classroom.getClassroom_id(), teacher.getTeacher_id(), teacher.getCourse().getName(), due_date, title, content, image);
+                //hwModel.setGetImage(image);
+                // Retrofit call
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("http://sinifdoktoruadmin.online/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+                AddHomework updateHomework = retrofit.create(AddHomework.class);
+                updateHomework.updateHomework(clickedItem).enqueue(new Callback<UpdateRespond>() {
+                    @Override
+                    public void onResponse(Call<UpdateRespond> call, Response<UpdateRespond> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            // Handle successful response
+                            Toast.makeText(ClassroomHomeworkScreen.this, "Ödev başarıyla güncellendi", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Handle unsuccessful response
+                            Log.d("ResponseError", new Gson().toJson(response.body()) + response.code());
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<UpdateRespond> call, Throwable t) {
+                        // Handle failure
+                        Log.d("Error", t.getMessage());
+                    }
+                });
+                dialog.dismiss();
+            }
+            });
     }
 }

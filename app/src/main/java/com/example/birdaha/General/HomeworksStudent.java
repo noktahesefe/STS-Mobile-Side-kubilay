@@ -1,15 +1,15 @@
 package com.example.birdaha.General;
-
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeworksStudent {
-    private List<HwModel> homeworks;
+    private ArrayList<HwModel> homeworks;
 
-    public List<HwModel> getHomeworks() {
+    public ArrayList<HwModel> getHomeworks() {
         return homeworks;
     }
 
-    public void setHomeworks(List<HwModel> homeworks) {
+    public void setHomeworks(ArrayList<HwModel> homeworks) {
         this.homeworks = homeworks;
     }
 }

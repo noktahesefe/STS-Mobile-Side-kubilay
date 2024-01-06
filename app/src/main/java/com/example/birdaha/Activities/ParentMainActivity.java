@@ -105,6 +105,8 @@ public class ParentMainActivity extends AppCompatActivity {
         drawerLayout = (DrawerLayout) findViewById(R.id.DrawerLayout_window_field);
         Animation fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in);
 
+        TextView nameSurname = findViewById(R.id.TextView_name_surname);
+        nameSurname.setText(currentParent.getName());
 
         expandableListView = (ExpandableListView) findViewById(R.id.ExpandableList_my_students);    //expandable list for students
         navigationManager = FragmentNavigationManager.getmInstance(this); //get singleton instance
@@ -256,7 +258,7 @@ public class ParentMainActivity extends AppCompatActivity {
                 if(intent != null){
                     Student student = lstChild.get(my_students_title).get(childPosition);
                     System.out.println(student.getClassroom().getName());
-                    StudentProfileFragment studentProfileFragment = StudentProfileFragment.newInstance(student);
+                    StudentProfileFragment studentProfileFragment = StudentProfileFragment.newInstance(student,false);
                     navigationManager.showFragment(studentProfileFragment, false);
                     drawerLayout.closeDrawer(GravityCompat.START);
                 }

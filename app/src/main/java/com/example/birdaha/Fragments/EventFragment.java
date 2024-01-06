@@ -71,8 +71,8 @@ public class EventFragment extends Fragment implements EventRecyclerViewInterfac
         eventRecyclerView = view.findViewById(R.id.event_recyclerView);
         eventRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL,false));
 
-        events.add(new Event("Etkinlik 1",R.drawable.img,"Etkinlik 1 içeriği"));
-        events.add(new Event("Etkinlik 2", R.drawable.img_1,"Etkinlik 2 içeriği"));
+        /*events.add(new Event("Etkinlik 1",R.drawable.img,"Etkinlik 1 içeriği"));
+        events.add(new Event("Etkinlik 2", R.drawable.img_1,"Etkinlik 2 içeriği"));*/
 
         EventAdapter adapter = new EventAdapter(getActivity(),events,this);
         eventRecyclerView.setAdapter(adapter);
