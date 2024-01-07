@@ -30,6 +30,15 @@ public class HwModel implements Serializable, Comparable<HwModel> {
         this.image = image;
     }
 
+    public HwModel(int classroom_id, int teacher_id, String title, String info, String course_name,String due_date){
+        this.classroom_id = classroom_id;
+        this.teacher_id = teacher_id;
+        this.title = title;
+        this.info = info;
+        this.course_name = course_name;
+        this.due_date = due_date;
+
+    }
     public int getHomework_id() {
         return homework_id;
     }

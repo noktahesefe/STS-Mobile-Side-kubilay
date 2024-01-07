@@ -14,8 +14,4 @@ public interface NavigationManager {
      * @param addToBackStack True if the fragment transaction should be added to the back stack, otherwise false.
      */
     void showFragment(Fragment fragment, boolean b);
-
-
-
-
 }

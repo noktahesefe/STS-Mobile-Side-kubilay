@@ -14,13 +14,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.birdaha.General.ProfilePictureRespond;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Student;
 
 import org.w3c.dom.Text;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 

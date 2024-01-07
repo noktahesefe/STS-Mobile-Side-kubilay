@@ -28,8 +28,7 @@
             android:paddingLeft="16dp"
             android:text="Announcement name"
             android:textSize="17sp"
-            android:textColor="@color/white"
-            app:drawableRightCompat="@drawable/baseline_event_24" />
+            android:textColor="@color/white" />
 
         <ImageButton
             android:id="@+id/edit_icon_button"

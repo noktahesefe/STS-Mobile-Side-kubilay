@@ -68,7 +68,7 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
                 if(response.isSuccessful() && response.body() != null){
                     AnnouncementsStudent models = response.body();
                     classAnnouncementModels = models.getClassAnnouncements();
-                    classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassAnnouncementScreen.this, (ArrayList<ClassAnnouncementModel>) classAnnouncementModels, ClassAnnouncementScreen.this);
+                    classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassAnnouncementScreen.this, (ArrayList<ClassAnnouncementModel>) classAnnouncementModels, ClassAnnouncementScreen.this,null);
                     recyclerView.setAdapter(classAnnouncementAdapter);
                     Toast.makeText(ClassAnnouncementScreen.this, "Duyurular Listeleniyor", Toast.LENGTH_SHORT).show();
                 }
@@ -108,34 +108,19 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
         });
     }
 
-    /**
-     * This method initializes the list of class announcements.
-     * It retrieves the announcement titles from the resources and creates a ClassAnnouncementModel for each title.
-     */
-    private void setClassAnnouncementModels(){
-        String[] titles = getResources().getStringArray(R.array.Announcements);
-        for (int i = 0; i < titles.length; i++) {
-            classAnnouncementModels.add(new ClassAnnouncementModel(titles[i]));
-        }
-    }
     public void onClassAnnouncementItemClick(ClassAnnouncementModel clickedItem, View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
-        View overlayView = inflater.inflate(R.layout.overlay_class_announcement_layout, null);
+        View overlayView = inflater.inflate(R.layout.dialog_ann_detail, null);
 
         EditText title = overlayView.findViewById(R.id.announcement_detail_name);
         EditText details = overlayView.findViewById(R.id.announcement_detail_content);
         EditText teacherName = overlayView.findViewById(R.id.announcement_detail_teacher);
-        Button editButton = overlayView.findViewById(R.id.edit_button);
-        Button saveButton = overlayView.findViewById(R.id.save_button);
 
         title.setEnabled(false);
         details.setEnabled(false);
         teacherName.setEnabled(false);
 
-        // Set edit button and save button invisible for students/parents
-        editButton.setVisibility(View.INVISIBLE);
-        saveButton.setVisibility(View.INVISIBLE);
 
         title.setText(clickedItem.getTitle());
         details.setText(clickedItem.getDetails());
@@ -144,5 +129,10 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
         builder.setView(overlayView);
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    @Override
+    public void onClassAnnouncementEditClick(ClassAnnouncementModel clickedItem, View view) {
+
     }
 }

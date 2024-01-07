@@ -66,12 +66,8 @@ import retrofit2.http.POST;
 public class MainActivity extends AppCompatActivity {
 
     interface RequestUser {
-        /*@GET("/api/v1/login")
-        Call<User> getUser();*/
-
         @POST("api/v1/login")
         Call<UserRespond> postUser(@Body LoginRequest loginRequest);
-
     }
 
     EditText username;
@@ -156,11 +152,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<UserRespond> call, Response<UserRespond> response) {
                 if (response.isSuccessful() && response.body() != null) {
-
-
                     LocalDataManager.setSharedPreference(getApplicationContext(), "username", username);
                     LocalDataManager.setSharedPreference(getApplicationContext(), "password", password);
-
 
                     UserRespond respond = response.body();
                     User user = respond.getUser();
@@ -174,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                             Teacher teacher = new Teacher(user.getName(), user.getTeacher_id(), course, classrooms);
                             Intent intent = new Intent(MainActivity.this, TeacherMainActivity.class);
                             intent.putExtra("user", teacher);
-                            Toast.makeText(MainActivity.this, "Teacher logged in", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Öğretmen giriş yaptı", Toast.LENGTH_SHORT).show();
                             startActivity(intent);
                             finish();
                             break;
@@ -184,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
                             Student student = new Student(user.getName(), user.getStudent_id(), classroom, user.getSchool_no());
                             Intent intent2 = new Intent(MainActivity.this, StudentMainActivity.class);
                             intent2.putExtra("user", student);
-                            Toast.makeText(MainActivity.this, "Student logged in", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Öğrenci giriş yaptı", Toast.LENGTH_SHORT).show();
                             startActivity(intent2);
                             finish();
                             break;
@@ -200,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                             Intent intent3 = new Intent(MainActivity.this, ParentMainActivity.class);
                             intent3.putExtra("user", parent);
-                            Toast.makeText(MainActivity.this, "Parent logged in", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Veli giriş yaptı", Toast.LENGTH_SHORT).show();
                             startActivity(intent3);
                             finish();
                             break;

@@ -15,7 +15,6 @@ public class ClassroomScreen extends AppCompatActivity {
 
     Button classroomAnnouncementsButton;
     Button classroomHomeworksButton;
-
     TextView classroomName;
 
     @Override
@@ -48,7 +47,6 @@ public class ClassroomScreen extends AppCompatActivity {
                         Intent intent = new Intent(ClassroomScreen.this, ClassroomHomeworkScreen.class);
                         intent.putExtra("teacher",teacher);
                         intent.putExtra("classroom",classroom);
-                        //intent.putExtra("students", (Serializable) students);
                         startActivity(intent);
                     }
                 });

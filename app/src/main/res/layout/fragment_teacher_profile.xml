@@ -20,16 +20,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/logo" />
 
-    <ImageView
-        android:id="@+id/teacher_profilePicture"
-        android:layout_width="170dp"
-        android:layout_height="170dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="46dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/teacher_profilePicture_holder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background="@drawable/circle_background"
+        android:padding="2dp"
+        android:layout_marginTop="46dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/teacher_profilePicture"
+            android:layout_width="172dp"
+            android:layout_height="172dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteY="2dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
         android:id="@+id/teacher_gallery"
@@ -41,9 +51,9 @@
         android:text="Resim Ekle"
         android:textAllCaps="false"
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="@+id/teacher_profilePicture"
-        app:layout_constraintStart_toStartOf="@+id/teacher_profilePicture"
-        app:layout_constraintTop_toBottomOf="@+id/teacher_profilePicture" />
+        app:layout_constraintEnd_toEndOf="@+id/teacher_profilePicture_holder"
+        app:layout_constraintStart_toStartOf="@+id/teacher_profilePicture_holder"
+        app:layout_constraintTop_toBottomOf="@+id/teacher_profilePicture_holder" />
 
     <TextView
         android:id="@+id/teacher_name_surname"
