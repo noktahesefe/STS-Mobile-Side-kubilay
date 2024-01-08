@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -95,8 +96,14 @@ public class EventFragment extends Fragment implements EventRecyclerViewInterfac
         View overlayView = inflater.inflate(R.layout.event_detail_overlay, null);
         ImageView imageView = overlayView.findViewById(R.id.event_detail_image);
         TextView detail = overlayView.findViewById(R.id.event_detail_detail);
+        EditText title = overlayView.findViewById(R.id.event_detail_title);
         imageView.setImageResource(currentEvent.getImageResource());
         detail.setText(currentEvent.getDetails());
+        title.setText(currentEvent.getTitle());
+
+        title.setEnabled(false);
+        detail.setEnabled(false);
+
 
         builder.setView(overlayView);
 
