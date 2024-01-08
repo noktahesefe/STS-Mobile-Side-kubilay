@@ -187,6 +187,10 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
         TextInputEditText title = overlayView.findViewById(R.id.lectureNameEditText);
         TextInputEditText details = overlayView.findViewById(R.id.add_announcement_content);
 
+        TextView hw_dialog_title = overlayView.findViewById(R.id.fullscreen_ann_title);
+
+        hw_dialog_title.setText("Edit Announcement");
+
         title.setText(clickedItem.getTitle());
         details.setText(clickedItem.getDetails());
 

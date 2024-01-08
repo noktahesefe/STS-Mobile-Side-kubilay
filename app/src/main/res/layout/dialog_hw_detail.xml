@@ -144,6 +144,16 @@
                 app:layout_constraintTop_toBottomOf="@+id/hw_adding_content"
                 app:layout_constraintVertical_bias="0.0" />
 
+            <Button
+                android:id="@+id/give_grade_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Puanla"
+                app:layout_constraintEnd_toEndOf="@+id/homework_detail_image"
+                app:layout_constraintStart_toStartOf="@+id/homework_detail_image"
+                app:layout_constraintTop_toBottomOf="@+id/homework_detail_image" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>

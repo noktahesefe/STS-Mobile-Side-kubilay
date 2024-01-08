@@ -369,6 +369,10 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         EditText hw_due_date = overlayView.findViewById(R.id.dateEditText);
         homeworkImage = overlayView.findViewById(R.id.homework_image);
         Button hw_adding_image = overlayView.findViewById(R.id.hw_adding_image);
+        TextView hw_dialog_title = overlayView.findViewById(R.id.fullscreen_hw_title);
+
+        hw_dialog_title.setText("Edit Homework");
+
         hw_adding_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
