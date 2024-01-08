@@ -35,8 +35,8 @@ public class NotificationJobService extends JobService {
     public boolean onStartJob(JobParameters params) {
         // Sunucuya istek gönderme işlemini burada gerçekleştirin
         System.out.println("hi hw");
-
-        String studentsArrayJson = LocalDataManager.getSharedPreference(getApplicationContext(), "studentsArray", NotificationDataModel.getDefaultJson());
+        Notification.builder(getApplicationContext(), TITLE, "", "NOTIFICATION", 24);
+        /*String studentsArrayJson = LocalDataManager.getSharedPreference(getApplicationContext(), "studentsArray", NotificationDataModel.getDefaultJson());
         NotificationDataModel notificationDataModel = NotificationDataModel.fromJson(studentsArrayJson);
 
         new Thread( () -> {
@@ -57,7 +57,7 @@ public class NotificationJobService extends JobService {
                 });
 
             }
-        }).start();
+        }).start();*/
 
 
 
