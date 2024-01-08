@@ -2,6 +2,7 @@ package com.example.birdaha.Fragments;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,12 +13,14 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,15 +29,18 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.birdaha.General.ProfilePictureRespond;
 import com.example.birdaha.General.SendProfilePictureTeacher;
+import com.example.birdaha.Helper.ProfilePictureChangeEvent;
 import com.example.birdaha.R;
+import com.example.birdaha.Users.Student;
 import com.example.birdaha.Users.Teacher;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -57,12 +63,16 @@ public class TeacherProfileFragment extends Fragment {
     interface AddProfilePicture{
         @POST("api/v1/teacher/add/image")
         Call<ProfilePictureRespond> addProfilePicture(@Body SendProfilePictureTeacher teacher);
+
+        @POST("api/v1/teacher/add/image")
+        Call<ProfilePictureRespond> deleteProfilePicture(@Body SendProfilePictureTeacher teacher);
     }
 
     TextView nameSurname;
     TextView lectures;
     Button changeProfilePicture;
     Button classes;
+    ImageButton deleteProfilePictureButton;
     ImageView profilePicture;
     View teacherClassroomsContainer;
     private String image;
@@ -104,6 +114,9 @@ public class TeacherProfileFragment extends Fragment {
                                                 .circleCrop()
                                                 .into(profilePicture);
                                         Toast.makeText(requireActivity(), "Profil Fotoğrafı Güncellendi", Toast.LENGTH_SHORT).show();
+                                        deleteProfilePictureButton.setVisibility(View.VISIBLE);
+                                        ProfilePictureChangeEvent event = new ProfilePictureChangeEvent(true,false);
+                                        EventBus.getDefault().post(event);
                                     } else {
                                         Toast.makeText(requireActivity(), "Response Unsuccessful" + response.code(), Toast.LENGTH_SHORT).show();
                                     }
@@ -288,6 +301,7 @@ public class TeacherProfileFragment extends Fragment {
             lectures = view.findViewById(R.id.teacher_lectures_info);
             changeProfilePicture = view.findViewById(R.id.teacher_gallery);
             classes = view.findViewById(R.id.teacher_classes);
+            deleteProfilePictureButton = view.findViewById(R.id.deleteProfilePictureButton);
 
 
             nameSurname.setText(teacher.getName());
@@ -305,6 +319,9 @@ public class TeacherProfileFragment extends Fragment {
             String key = "teacher_profile_data_" + teacher.getTeacher_id();
             String combinedData = preferences.getString(key,"");
             String[] dataParts = combinedData.split("\\|");
+            if(TextUtils.isEmpty(combinedData)){
+                deleteProfilePictureButton.setVisibility(View.INVISIBLE);
+            }
             if(dataParts.length == 2){
                 int teacherId = Integer.parseInt(dataParts[0]);
                 String encodedImage = dataParts[1];
@@ -337,6 +354,60 @@ public class TeacherProfileFragment extends Fragment {
                 else{
                     teacherClassroomsContainer.setVisibility(View.INVISIBLE);
                 }
+            }
+        });
+
+        deleteProfilePictureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                android.app.AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialogTheme);
+                builder.setTitle("Profil Fotoğrafını Sil");
+                builder.setMessage("Profil fotoğrafını silmek istediğinize emin misiniz?");
+                builder.setPositiveButton("Sil", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Teacher teacher  = (Teacher) bundle.getSerializable("teacher");
+                        Retrofit retrofit = new Retrofit.Builder()
+                                .baseUrl("http://sinifdoktoruadmin.online/")
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .build();
+                        SendProfilePictureTeacher teacherDelete = new SendProfilePictureTeacher(null,teacher.getTeacher_id());
+                        AddProfilePicture deleteProfilePicture = retrofit.create(AddProfilePicture.class);
+                        deleteProfilePicture.deleteProfilePicture(teacherDelete).enqueue(new Callback<ProfilePictureRespond>() {
+                            @Override
+                            public void onResponse(Call<ProfilePictureRespond> call, Response<ProfilePictureRespond> response) {
+                                if(response.isSuccessful() && response.body() != null){
+                                    Toast.makeText(requireActivity(), "Profil fotoğrafı başarıyla silindi", Toast.LENGTH_SHORT).show();
+                                    SharedPreferences preferences = getContext().getSharedPreferences("TeacherPrefs",Context.MODE_PRIVATE);
+                                    String key = "teacher_profile_data_" + teacher.getTeacher_id();
+                                    SharedPreferences.Editor editor = preferences.edit();
+                                    editor.remove(key);
+                                    editor.apply();
+                                    Glide.with(requireActivity())
+                                            .clear(profilePicture);
+                                    deleteProfilePictureButton.setVisibility(View.INVISIBLE);
+                                    ProfilePictureChangeEvent event = new ProfilePictureChangeEvent(false,true);
+                                    EventBus.getDefault().post(event);
+                                }
+                                else{
+                                    Toast.makeText(requireActivity(), "Hata oluştu" + response.code(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ProfilePictureRespond> call, Throwable t) {
+                                Toast.makeText(requireActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                });
+                builder.setNegativeButton("Vazgeç", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
             }
         });
 

@@ -1,23 +1,23 @@
 package com.example.birdaha.Fragments;
 
-import android.Manifest;
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,8 +26,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -36,20 +34,16 @@ import com.example.birdaha.Activities.ClassAnnouncementScreen;
 import com.example.birdaha.Activities.HomeWorkScreen;
 
 import com.example.birdaha.Classrooms.Classroom;
-import com.example.birdaha.General.ClassAnnouncementModel;
-import com.example.birdaha.General.HomeworksStudent;
-import com.example.birdaha.General.HwModel;
 import com.example.birdaha.General.ProfilePictureRespond;
 import com.example.birdaha.General.SendProfilePictureStudent;
+import com.example.birdaha.Helper.ProfilePictureChangeEvent;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Student;
-import com.google.gson.Gson;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -57,9 +51,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
-import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
 
 /**
  * The StudentProfileFragment class represents a fragment displaying a student's profile.
@@ -72,6 +64,9 @@ public class StudentProfileFragment extends Fragment {
     interface AddProfilePicture{
         @POST("api/v1/student/add/image")
         Call<ProfilePictureRespond> addProfilePicture(@Body SendProfilePictureStudent student);
+
+        @POST("api/v1/student/add/image")
+        Call<ProfilePictureRespond> deleteProfilePicture(@Body SendProfilePictureStudent student);
     }
 
     // UI elements
@@ -79,6 +74,7 @@ public class StudentProfileFragment extends Fragment {
     Button changeProfilePicture;
     Button homeworksButton;
     Button announcementsButton;
+    ImageButton deleteProfilePictureButton;
     ImageView profilePicture;
     private String image;
 
@@ -119,6 +115,9 @@ public class StudentProfileFragment extends Fragment {
                                                 .circleCrop()
                                                 .into(profilePicture);
                                         Toast.makeText(requireActivity(), "Profil Fotoğrafı Güncellendi", Toast.LENGTH_SHORT).show();
+                                        deleteProfilePictureButton.setVisibility(View.VISIBLE);
+                                        ProfilePictureChangeEvent event = new ProfilePictureChangeEvent(true,false);
+                                        EventBus.getDefault().post(event);
                                     } else {
                                         Toast.makeText(requireActivity(), "Response Unsuccessful" + " " + response.code(), Toast.LENGTH_SHORT).show();
                                     }
@@ -314,6 +313,7 @@ public class StudentProfileFragment extends Fragment {
             classroom.setText(String.valueOf(classroom1.getName()));
             schoolNumber.setText(String.valueOf(student.getSchool_no()));
             changeProfilePicture = (Button) view.findViewById(R.id.student_gallery);
+            deleteProfilePictureButton = view.findViewById(R.id.deleteProfilePictureButton);
 
             homeworksButton = view.findViewById(R.id.student_homeworks);
             homeworksButton.setOnClickListener(new View.OnClickListener() {
@@ -341,6 +341,9 @@ public class StudentProfileFragment extends Fragment {
                 String key = "profile_data_" + student.getStudent_id();
                 String combinedData = preferences.getString(key,"");
                 String[] dataParts = combinedData.split("\\|");
+                if(TextUtils.isEmpty(combinedData)){
+                    deleteProfilePictureButton.setVisibility(View.INVISIBLE);
+                }
                 //System.out.println(Arrays.toString(dataParts));
                 if(dataParts.length == 2){
                     int studentId = Integer.parseInt(dataParts[0]);
@@ -355,6 +358,7 @@ public class StudentProfileFragment extends Fragment {
                     }
                 }
                 changeProfilePicture.setEnabled(true);
+                deleteProfilePictureButton.setEnabled(true);
             }
             else{
                 SharedPreferences preferences1 = getActivity().getSharedPreferences("ParentPrefs",Context.MODE_PRIVATE);
@@ -374,6 +378,9 @@ public class StudentProfileFragment extends Fragment {
                     }
                 }
                 changeProfilePicture.setEnabled(false);
+                changeProfilePicture.setVisibility(View.INVISIBLE);
+                deleteProfilePictureButton.setEnabled(false);
+                deleteProfilePictureButton.setVisibility(View.INVISIBLE);
             }
         }
 
@@ -384,6 +391,61 @@ public class StudentProfileFragment extends Fragment {
                 galleryLauncher.launch("image/*");
             }
         });
+
+        deleteProfilePictureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialogTheme);
+                builder.setTitle("Profil Fotoğrafını Sil");
+                builder.setMessage("Profil fotoğrafını silmek istediğinize emin misiniz?");
+                builder.setPositiveButton("Sil", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Student student = (Student) bundle.getSerializable("student");
+                        Retrofit retrofit = new Retrofit.Builder()
+                                .baseUrl("http://sinifdoktoruadmin.online/")
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .build();
+                        SendProfilePictureStudent studentDelete = new SendProfilePictureStudent(null,student.getStudent_id());
+                        AddProfilePicture deleteProfilePicture = retrofit.create(AddProfilePicture.class);
+                        deleteProfilePicture.deleteProfilePicture(studentDelete).enqueue(new Callback<ProfilePictureRespond>() {
+                            @Override
+                            public void onResponse(Call<ProfilePictureRespond> call, Response<ProfilePictureRespond> response) {
+                                if(response.isSuccessful() && response.body() != null){
+                                    Toast.makeText(requireActivity(), "Profil fotoğrafı başarıyla silindi", Toast.LENGTH_SHORT).show();
+                                    SharedPreferences preferences = requireContext().getSharedPreferences("StudentPrefs",Context.MODE_PRIVATE);
+                                    String key = "profile_data_" + student.getStudent_id();
+                                    SharedPreferences.Editor editor = preferences.edit();
+                                    editor.remove(key);
+                                    editor.apply();
+                                    Glide.with(requireActivity())
+                                            .clear(profilePicture);
+                                    deleteProfilePictureButton.setVisibility(View.INVISIBLE);
+                                    ProfilePictureChangeEvent event = new ProfilePictureChangeEvent(false,true);
+                                    EventBus.getDefault().post(event);
+                                }
+                                else{
+                                    Toast.makeText(requireActivity(), "Hata oluştu " + response.code(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ProfilePictureRespond> call, Throwable t) {
+                                Toast.makeText(requireActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                });
+                builder.setNegativeButton("Vazgeç", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+            }
+        });
+
         return view;
     }
 

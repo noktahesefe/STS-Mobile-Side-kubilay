@@ -55,7 +55,7 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
         @POST("api/v1/announcements/update")
         Call<UpdateRespond> updateAnnouncement(@Body ClassAnnouncementModel classAnnouncementModel);
 
-        @GET("api/v1/announcements/{announcementId}")
+        @GET("api/v1/announcement/delete/{announcementId}")
         Call<UpdateRespond> deleteHomework(@Path("announcementId") int announcementId);
     }
 
