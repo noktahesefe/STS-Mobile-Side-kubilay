@@ -76,17 +76,17 @@ import retrofit2.http.Path;
 
 public class ClassroomHomeworkScreen extends AppCompatActivity implements ClassroomHomeworkViewInterface {
 
-    public interface AddHomework {
+
+    public interface AddHomework{
         @GET("/api/v1/teacher/homeworks/{classroomId}")
         Call<HomeworksTeacher> getHomeworks(@Path("classroomId") int classroomId);
 
         @POST("/api/v1/homework/add")
         Call<UpdateRespond> addHomework(@Body HwModel hwmodel);
-
         @POST("/api/v1/homework/update")
         Call<UpdateRespond> updateHomework(@Body HwModel hwModel);
 
-        @GET("api/v1/homework/{homeworkId}")
+        @GET("api/v1/homework/delete/{homeworkId}")
         Call<UpdateRespond> deleteHomework(@Path("homeworkId") int homeworkId);
     }
 
@@ -108,6 +108,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
     private String image;
 
     private HomeworkAdapter homeworkAdapter;
+
     private AlertDialog filterDialog = null;
 
     private Teacher teacher1 = null;
@@ -221,6 +222,8 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         });
 
 
+
+
         // Set a listener for the SearchView to handle query text changes
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -291,7 +294,9 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
 
     }
 
-    public void showHwDialog() {
+
+    public void showHwDialog()
+    {
         FragmentManager fragmentManager = getSupportFragmentManager();
         HomeworkDialogFragment newFragment = new HomeworkDialogFragment();
 

@@ -34,7 +34,6 @@ public class NotificationFragment extends Fragment {
 
     private static NotificationFragment instance = null;
 
-
     /**
      * Creates a new instance of the NotificationFragment.
      *

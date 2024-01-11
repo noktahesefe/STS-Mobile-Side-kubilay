@@ -13,10 +13,13 @@
         android:id="@+id/profilePicture_holder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="117dp"
+        android:layout_marginTop="46dp"
+        android:layout_marginEnd="2dp"
         android:background="@drawable/circle_background"
         android:padding="2dp"
-        android:layout_marginTop="46dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/deleteProfilePictureButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -27,6 +30,7 @@
             android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
             tools:layout_editor_absoluteY="2dp" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -122,15 +126,15 @@
     <Button
         android:id="@+id/student_announcements"
         android:layout_width="200dp"
-        android:layout_height="52dp"
-        android:layout_marginTop="3dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="217dp"
         android:drawableLeft="@drawable/baseline_event"
         android:text="Duyurular"
         android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/student_homeworks"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/student_homeworks"
-        app:layout_constraintTop_toBottomOf="@+id/student_school_number_info" />
+        app:layout_constraintStart_toStartOf="@+id/student_homeworks" />
 
     <Button
         android:id="@+id/student_homeworks"
@@ -156,6 +160,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/student_homeworks"
         app:srcCompat="@drawable/logo" />
+
+    <ImageButton
+        android:id="@+id/deleteProfilePictureButton"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="92dp"
+        android:background="@drawable/background"
+        android:src="@drawable/baseline_close_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/profilePicture_holder"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

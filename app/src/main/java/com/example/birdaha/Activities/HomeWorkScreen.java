@@ -107,6 +107,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
 
             classroom = (Classroom) intent.getSerializableExtra("classroom");
 
+
             NotificationModel notificationModel = NotificationJobService.fetchNotification(student.getStudent_id());
 
 
@@ -122,6 +123,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
             notificationDataModel.addOrUpdateStudents(studentSharedPref);
 
             LocalDataManager.setSharedPreference(context, "studentsArray", notificationDataModel.toJson());
+
 
         }
 
@@ -143,7 +145,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
                     ZoneId turkeyZone = ZoneId.of("Europe/Istanbul");
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                     hwModels = models.getHomeworks();
-
                     for(HwModel o : hwModels)
                     {
                         System.out.println("HWID - " + o.getHomework_id());
@@ -195,15 +196,19 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         });
     }
 
+
+
+    
     // This method is called when the user clicks on the filter icon
     private void showOverlay() {
-        if(filterDialog == null) {
+        if (filterDialog == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             LayoutInflater inflater = LayoutInflater.from(this);
             View overlayView = inflater.inflate(R.layout.filter_overlay, null);
             builder.setView(overlayView);
 
             filterDialog = builder.create();
+
 
             // Set the dialog window attributes to make it a small overlay
             WindowManager.LayoutParams layoutParams = filterDialog.getWindow().getAttributes();
@@ -217,21 +222,22 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
             CheckBox checkBox1 = overlayView.findViewById(R.id.checkBox);
             CheckBox checkBox2 = overlayView.findViewById(R.id.checkBox2);
 
+            // Add any additional customization or logic to the checkboxes here
+
 
             checkBox1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     hwModels.clear();
 
-                    if(checkBox2.isChecked())
+                    if (checkBox2.isChecked())
                         hwModels.addAll(expiredHws);
 
-                    if(isChecked)
+                    if (isChecked)
                         hwModels.addAll(ongoingHws);
 
 
-                    if(!isChecked && !checkBox2.isChecked())
-                    {
+                    if (!isChecked && !checkBox2.isChecked()) {
                         hwModels.addAll(expiredHws);
                         hwModels.addAll(ongoingHws);
                     }
@@ -249,15 +255,14 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     hwModels.clear();
 
-                    if(checkBox1.isChecked())
+                    if (checkBox1.isChecked())
                         hwModels.addAll(ongoingHws);
 
-                    if(isChecked)
+                    if (isChecked)
                         hwModels.addAll(expiredHws);
 
 
-                    if(!isChecked && !checkBox1.isChecked())
-                    {
+                    if (!isChecked && !checkBox1.isChecked()) {
                         hwModels.addAll(expiredHws);
                         hwModels.addAll(ongoingHws);
                     }
@@ -273,6 +278,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         }
         filterDialog.show();
     }
+
 
     @Override
     public void onClassroomHomeworkItemClick(HwModel clickedItem, View view) {
@@ -342,6 +348,11 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         dialog.show();
     }
 
+    @Override
+    public void onClassroomHomeworkEditClick(HwModel clickedItem, View view) {
+
+    }
+
     private void sortListByDate(ArrayList<HwModel> list){
         ZoneId turkeyZone = ZoneId.of("Europe/Istanbul");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -369,8 +380,4 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         Collections.sort(list, dateComparator);
     }
 
-    @Override
-    public void onClassroomHomeworkEditClick(HwModel clickedItem, View view) {
-
-    }
 }
