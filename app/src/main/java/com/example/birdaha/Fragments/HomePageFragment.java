@@ -1,6 +1,7 @@
 package com.example.birdaha.Fragments;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -248,12 +249,30 @@ public class HomePageFragment extends Fragment {
                     Glide.with(requireActivity())
                             .load(decodedImage)
                             .into(imageView);
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            final Dialog dialog = new Dialog(requireContext(),android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+                            dialog.setContentView(R.layout.dialog_full_screen_image);
+
+                            ImageView fullscreenImage = dialog.findViewById(R.id.fullScreenImageView);
+                            fullscreenImage.setImageBitmap(decodedImage);
+                            fullscreenImage.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            dialog.show();
+                        }
+                    });
                 }
                 else{
                     Glide.with(requireActivity())
                             .load(R.drawable.img_1)
                             .into(imageView);
                 }
+
 
                 //imageView.setImageResource(currentEvent.getImagePath());
                 detail.setText(currentEvent.getDetails());

@@ -80,12 +80,10 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
     public interface AddHomework{
         @GET("/api/v1/teacher/homeworks/{classroomId}")
         Call<HomeworksTeacher> getHomeworks(@Path("classroomId") int classroomId);
-
         @POST("/api/v1/homework/add")
         Call<UpdateRespond> addHomework(@Body HwModel hwmodel);
         @POST("/api/v1/homework/update")
         Call<UpdateRespond> updateHomework(@Body HwModel hwModel);
-
         @GET("api/v1/homework/delete/{homeworkId}")
         Call<UpdateRespond> deleteHomework(@Path("homeworkId") int homeworkId);
     }
@@ -112,6 +110,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
     private AlertDialog filterDialog = null;
 
     private Teacher teacher1 = null;
+
 
 
     private ActivityResultLauncher<String> galleryLauncher = registerForActivityResult(
@@ -450,6 +449,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
     public void onClassroomHomeworkEditClick(HwModel clickedItem, View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
+        System.out.println(clickedItem.getGetImage());
 
         View overlayView = inflater.inflate(R.layout.full_screen_hw_adding_dialog, null);
         EditText hw_title = overlayView.findViewById(R.id.hw_title);
@@ -467,7 +467,6 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                 galleryLauncher.launch("image/*");
             }
         });
-
 
         hw_title.setText(clickedItem.getTitle());
         hw_content.setText(clickedItem.getInfo());
@@ -520,7 +519,6 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                 clickedItem.setTitle(title);
                 clickedItem.setInfo(content);
                 clickedItem.setDue_date(due_date);
-                clickedItem.setImage(image);
                 clickedItem.setGetImage(image);
 
                 System.out.println("hw id:" + clickedItem.getHomework_id());
@@ -530,7 +528,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                 System.out.println("Title:" + clickedItem.getTitle());
                 System.out.println("Content:" + clickedItem.getInfo());
                 System.out.println("Due Date:" + clickedItem.getDue_date());
-                System.out.println("Image :" + clickedItem.getGetImage());
+                System.out.println("Image :" + clickedItem.getImage());
 
                 //HwModel hwModel = new HwModel(classroom.getClassroom_id(), teacher.getTeacher_id(), teacher.getCourse().getName(), due_date, title, content, image);
                 //hwModel.setGetImage(image);
@@ -549,6 +547,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                         } else {
                             // Handle unsuccessful response
                             Log.d("ResponseError", new Gson().toJson(response.body()) + response.code());
+                            Toast.makeText(ClassroomHomeworkScreen.this, "Hata oluştu " + response.code(), Toast.LENGTH_SHORT).show();
                         }
                     }
 
