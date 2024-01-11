@@ -56,6 +56,7 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="15dp"
                 android:hint="Announcement Name"
+                android:textColorHint="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -64,6 +65,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/announcement_detail_name"
                     android:layout_width="match_parent"
+                    android:textColor="@color/black"
                     android:layout_height="wrap_content" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -74,6 +76,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Teacher Name"
                 android:layout_margin="15dp"
+                android:textColorHint="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/hw_titleTextLayout"
@@ -82,6 +85,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/announcement_detail_teacher"
                     android:layout_width="match_parent"
+                    android:textColor="@color/black"
                     android:layout_height="wrap_content" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -95,6 +99,7 @@
                 android:hint="Announcement Content"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:textColorHint="@color/black"
                 app:layout_constraintHorizontal_bias="0.482"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/hw_courseTextLayout"
@@ -104,6 +109,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/announcement_detail_content"
                     android:layout_width="match_parent"
+                    android:textColor="@color/black"
                     android:layout_height="wrap_content" />
 
             </com.google.android.material.textfield.TextInputLayout>

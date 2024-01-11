@@ -103,6 +103,9 @@ public class GeneralAnnouncementFragment extends Fragment implements GeneralAnno
         title.setText(current.getTitle());
         detail.setText(current.getDetails());
 
+        title.setEnabled(false);
+        detail.setEnabled(false);
+
         builder.setView(overlayView);
 
         AlertDialog dialog = builder.create();

@@ -137,6 +137,9 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         });
     }
 
+
+
+    
     // This method is called when the user clicks on the filter icon
     private void showOverlay() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -162,6 +165,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
 
         dialog.show();
     }
+
 
     @Override
     public void onClassroomHomeworkItemClick(HwModel clickedItem, View view) {

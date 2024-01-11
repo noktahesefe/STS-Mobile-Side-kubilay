@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -239,7 +240,8 @@ public class HomePageFragment extends Fragment {
                 LayoutInflater inflater = LayoutInflater.from(curView.getContext());
                 View overlayView = inflater.inflate(R.layout.event_detail_overlay, null);
                 ImageView imageView = overlayView.findViewById(R.id.event_detail_image);
-                TextView detail = overlayView.findViewById(R.id.event_detail_detail);
+                EditText detail = overlayView.findViewById(R.id.event_detail_detail);
+                EditText title = overlayView.findViewById(R.id.event_detail_title);
                 if(currentEvent.getImage() != null){
                     byte[] byteArray = Base64.decode(currentEvent.getImage(),Base64.DEFAULT);
                     Bitmap decodedImage = BitmapFactory.decodeByteArray(byteArray,0, byteArray.length);
@@ -255,6 +257,10 @@ public class HomePageFragment extends Fragment {
 
                 //imageView.setImageResource(currentEvent.getImagePath());
                 detail.setText(currentEvent.getDetails());
+                title.setText(currentEvent.getTitle());
+
+                title.setEnabled(false);
+                detail.setEnabled(false);
 
                 builder.setView(overlayView);
 
