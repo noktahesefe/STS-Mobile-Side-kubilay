@@ -3,27 +3,35 @@ package com.example.birdaha.Activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.text.InputType;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 
 import android.util.Log;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.Classrooms.Lecture;
 import com.example.birdaha.Helper.LocalDataManager;
 import com.example.birdaha.R;
+import com.example.birdaha.Users.ChangePasswordParent;
+import com.example.birdaha.Users.ChangePasswordStudent;
+import com.example.birdaha.Users.ChangePasswordTeacher;
 import com.example.birdaha.Users.LoginRequest;
 import com.example.birdaha.Users.Parent;
 import com.example.birdaha.Users.Student;
@@ -31,6 +39,8 @@ import com.example.birdaha.Users.Teacher;
 import com.example.birdaha.Users.User;
 import com.example.birdaha.Users.UserRespond;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.json.JSONObject;
@@ -68,6 +78,15 @@ public class MainActivity extends AppCompatActivity {
     interface RequestUser {
         @POST("api/v1/login")
         Call<UserRespond> postUser(@Body LoginRequest loginRequest);
+
+        @POST("api/v1/teacher/password")
+        Call<UserRespond> changePasswordTeacher(@Body ChangePasswordTeacher teacher);
+
+        @POST("api/v1/student/password")
+        Call<UserRespond> changePasswordStudent(@Body ChangePasswordStudent student);
+
+        @POST("api/v1/parent/password")
+        Call<UserRespond> changePasswordParent(@Body ChangePasswordParent parent);
     }
 
     EditText username;
@@ -165,21 +184,159 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("Course", course.getName());
                             Log.d("Course", String.valueOf(course.getCourse_id()));
                             Teacher teacher = new Teacher(user.getName(), user.getTeacher_id(), course, classrooms);
-                            Intent intent = new Intent(MainActivity.this, TeacherMainActivity.class);
-                            intent.putExtra("user", teacher);
-                            Toast.makeText(MainActivity.this, "Öğretmen giriş yaptı", Toast.LENGTH_SHORT).show();
-                            startActivity(intent);
-                            finish();
+                            if((username + "123").equals(password)){
+                                Dialog dialog = new Dialog(MainActivity.this);
+                                dialog.setContentView(R.layout.change_password);
+                                TextInputEditText newPassword = dialog.findViewById(R.id.newPassword);
+                                TextInputEditText confirmPassword = dialog.findViewById(R.id.confirmPassword);
+                                ImageView closeDialog = dialog.findViewById(R.id.closeChangePassword);
+                                closeDialog.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        dialog.dismiss();
+                                        Intent intent = new Intent(MainActivity.this, TeacherMainActivity.class);
+                                        intent.putExtra("user", teacher);
+                                        Toast.makeText(MainActivity.this, "Öğretmen giriş yaptı", Toast.LENGTH_SHORT).show();
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                });
+                                Button button = dialog.findViewById(R.id.set_new_password_btn);
+                                button.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        if(TextUtils.isEmpty(newPassword.getText()) || TextUtils.isEmpty(confirmPassword.getText())){
+                                            Toast.makeText(MainActivity.this, "Lütfen gerekli yerleri doldurun", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                        if(!newPassword.getText().toString().equals(confirmPassword.getText().toString())){
+                                            Toast.makeText(MainActivity.this, "Şifreler uyuşmuyor", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                        if(newPassword.getText().toString().equals(password)){
+                                            Toast.makeText(MainActivity.this, "Yeni şifreniz eskisi ile aynı olamaz", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+
+                                        Retrofit retrofit = new Retrofit.Builder()
+                                                .baseUrl("http://sinifdoktoruadmin.online/")
+                                                .addConverterFactory(GsonConverterFactory.create())
+                                                .build();
+                                        ChangePasswordTeacher teacherChange = new ChangePasswordTeacher(user.getTeacher_id(),newPassword.getText().toString());
+                                        RequestUser changePassword = retrofit.create(RequestUser.class);
+                                        changePassword.changePasswordTeacher(teacherChange).enqueue(new Callback<UserRespond>() {
+                                            @Override
+                                            public void onResponse(Call<UserRespond> call, Response<UserRespond> response) {
+                                                if(response.isSuccessful() && response.body() != null){
+                                                    Toast.makeText(MainActivity.this, "Şifreniz başarıyla değiştirildi", Toast.LENGTH_SHORT).show();
+                                                    LocalDataManager.setSharedPreference(getApplicationContext(), "password", newPassword.getText().toString());
+                                                    dialog.dismiss();
+                                                    Intent intent = new Intent(MainActivity.this, TeacherMainActivity.class);
+                                                    intent.putExtra("user", teacher);
+                                                    Toast.makeText(MainActivity.this, "Öğretmen giriş yaptı", Toast.LENGTH_SHORT).show();
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                                else{
+                                                    Toast.makeText(MainActivity.this, "Hata oluştu " + response.code(), Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<UserRespond> call, Throwable t) {
+                                                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+                                });
+                                dialog.show();
+                            }
+                            else{
+                                Intent intent = new Intent(MainActivity.this, TeacherMainActivity.class);
+                                intent.putExtra("user", teacher);
+                                Toast.makeText(MainActivity.this, "Öğretmen giriş yaptı", Toast.LENGTH_SHORT).show();
+                                startActivity(intent);
+                                finish();
+                            }
                             break;
                         case 202:
                             Classroom classroom = respond.getUser().getClassroom();
                             Log.d("Classroom", classroom.getName());
                             Student student = new Student(user.getName(), user.getStudent_id(), classroom, user.getSchool_no());
-                            Intent intent2 = new Intent(MainActivity.this, StudentMainActivity.class);
-                            intent2.putExtra("user", student);
-                            Toast.makeText(MainActivity.this, "Öğrenci giriş yaptı", Toast.LENGTH_SHORT).show();
-                            startActivity(intent2);
-                            finish();
+                            if((username + "123").equals(password)){
+                                Dialog dialog = new Dialog(MainActivity.this);
+                                dialog.setContentView(R.layout.change_password);
+                                TextInputEditText newPassword = dialog.findViewById(R.id.newPassword);
+                                TextInputEditText confirmPassword = dialog.findViewById(R.id.confirmPassword);
+                                ImageView closeDialog = dialog.findViewById(R.id.closeChangePassword);
+                                closeDialog.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        dialog.dismiss();
+                                        Intent intent = new Intent(MainActivity.this, StudentMainActivity.class);
+                                        intent.putExtra("user", student);
+                                        Toast.makeText(MainActivity.this, "Öğrenci giriş yaptı", Toast.LENGTH_SHORT).show();
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                });
+                                Button button = dialog.findViewById(R.id.set_new_password_btn);
+                                button.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        if(TextUtils.isEmpty(newPassword.getText()) || TextUtils.isEmpty(confirmPassword.getText())){
+                                            Toast.makeText(MainActivity.this, "Lütfen gerekli yerleri doldurun", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                        if(!newPassword.getText().toString().equals(confirmPassword.getText().toString())){
+                                            Toast.makeText(MainActivity.this, "Şifreler uyuşmuyor", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                        if(newPassword.getText().toString().equals(password)){
+                                            Toast.makeText(MainActivity.this, "Yeni şifreniz eskisi ile aynı olamaz", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+
+                                        Retrofit retrofit = new Retrofit.Builder()
+                                                .baseUrl("http://sinifdoktoruadmin.online/")
+                                                .addConverterFactory(GsonConverterFactory.create())
+                                                .build();
+                                        ChangePasswordStudent studentChange = new ChangePasswordStudent(user.getStudent_id(),newPassword.getText().toString());
+                                        RequestUser changePassword = retrofit.create(RequestUser.class);
+                                        changePassword.changePasswordStudent(studentChange).enqueue(new Callback<UserRespond>() {
+                                            @Override
+                                            public void onResponse(Call<UserRespond> call, Response<UserRespond> response) {
+                                                if(response.isSuccessful() && response.body() != null){
+                                                    Toast.makeText(MainActivity.this, "Şifreniz başarıyla değiştirildi", Toast.LENGTH_SHORT).show();
+                                                    LocalDataManager.setSharedPreference(getApplicationContext(), "password", newPassword.getText().toString());
+                                                    dialog.dismiss();
+                                                    Intent intent = new Intent(MainActivity.this, StudentMainActivity.class);
+                                                    intent.putExtra("user", student);
+                                                    Toast.makeText(MainActivity.this, "Öğrenci giriş yaptı", Toast.LENGTH_SHORT).show();
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                                else{
+                                                    Toast.makeText(MainActivity.this, "Hata oluştu " + response.code(), Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<UserRespond> call, Throwable t) {
+                                                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+                                });
+                                dialog.show();
+                            }
+                            else{
+                                Intent intent = new Intent(MainActivity.this, StudentMainActivity.class);
+                                intent.putExtra("user", student);
+                                Toast.makeText(MainActivity.this, "Öğrenci giriş yaptı", Toast.LENGTH_SHORT).show();
+                                startActivity(intent);
+                                finish();
+                            }
                             break;
                         case 203:
                             Parent parent = new Parent(user.getName(), user.getParent_id(), user.getStudents());
@@ -191,11 +348,80 @@ public class MainActivity extends AppCompatActivity {
                                 editor.putString(key,combinedData);
                                 editor.apply();
                             }
-                            Intent intent3 = new Intent(MainActivity.this, ParentMainActivity.class);
-                            intent3.putExtra("user", parent);
-                            Toast.makeText(MainActivity.this, "Veli giriş yaptı", Toast.LENGTH_SHORT).show();
-                            startActivity(intent3);
-                            finish();
+                            if((username + "123").equals(password)){
+                                Dialog dialog = new Dialog(MainActivity.this);
+                                dialog.setContentView(R.layout.change_password);
+                                TextInputEditText newPassword = dialog.findViewById(R.id.newPassword);
+                                TextInputEditText confirmPassword = dialog.findViewById(R.id.confirmPassword);
+                                ImageView closeDialog = dialog.findViewById(R.id.closeChangePassword);
+                                closeDialog.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        dialog.dismiss();
+                                        Intent intent = new Intent(MainActivity.this, ParentMainActivity.class);
+                                        intent.putExtra("user", parent);
+                                        Toast.makeText(MainActivity.this, "Veli giriş yaptı", Toast.LENGTH_SHORT).show();
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                });
+                                Button button = dialog.findViewById(R.id.set_new_password_btn);
+                                button.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        if(TextUtils.isEmpty(newPassword.getText()) || TextUtils.isEmpty(confirmPassword.getText())){
+                                            Toast.makeText(MainActivity.this, "Lütfen gerekli yerleri doldurun", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                        if(!newPassword.getText().toString().equals(confirmPassword.getText().toString())){
+                                            Toast.makeText(MainActivity.this, "Şifreler uyuşmuyor", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                        if(newPassword.getText().toString().equals(password)){
+                                            Toast.makeText(MainActivity.this, "Yeni şifreniz eskisi ile aynı olamaz", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+
+                                        Retrofit retrofit = new Retrofit.Builder()
+                                                .baseUrl("http://sinifdoktoruadmin.online/")
+                                                .addConverterFactory(GsonConverterFactory.create())
+                                                .build();
+                                        ChangePasswordParent parentChange = new ChangePasswordParent(user.getParent_id(),newPassword.getText().toString());
+                                        RequestUser changePassword = retrofit.create(RequestUser.class);
+                                        changePassword.changePasswordParent(parentChange).enqueue(new Callback<UserRespond>() {
+                                            @Override
+                                            public void onResponse(Call<UserRespond> call, Response<UserRespond> response) {
+                                                if(response.isSuccessful() && response.body() != null){
+                                                    Toast.makeText(MainActivity.this, "Şifreniz başarıyla değiştirildi", Toast.LENGTH_SHORT).show();
+                                                    LocalDataManager.setSharedPreference(getApplicationContext(), "password", newPassword.getText().toString());
+                                                    dialog.dismiss();
+                                                    Intent intent = new Intent(MainActivity.this, ParentMainActivity.class);
+                                                    intent.putExtra("user", parent);
+                                                    Toast.makeText(MainActivity.this, "Veli giriş yaptı", Toast.LENGTH_SHORT).show();
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                                else{
+                                                    Toast.makeText(MainActivity.this, "Hata oluştu " + response.code(), Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<UserRespond> call, Throwable t) {
+                                                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+                                });
+                                dialog.show();
+                            }
+                            else{
+                                Intent intent = new Intent(MainActivity.this, ParentMainActivity.class);
+                                intent.putExtra("user", parent);
+                                Toast.makeText(MainActivity.this, "Veli giriş yaptı", Toast.LENGTH_SHORT).show();
+                                startActivity(intent);
+                                finish();
+                            }
                             break;
                     }
                 } else {
@@ -207,8 +433,6 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(Call<UserRespond> call, Throwable t) {
                 Log.d("ERROR", t.getMessage());
             }
-
         });
     }
-
 }
