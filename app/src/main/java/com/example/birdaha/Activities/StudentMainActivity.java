@@ -33,6 +33,9 @@ import com.example.birdaha.Helper.ProfilePictureChangeEvent;
 import com.example.birdaha.Interface.NavigationManager;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Student;
+import com.example.birdaha.Users.Teacher;
+import com.example.birdaha.Utilities.NotificationService.NotificationJobService;
+import com.example.birdaha.Utilities.NotificationService.Service;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -64,7 +67,6 @@ public class StudentMainActivity extends AppCompatActivity {
 
     private ImageView studentPhoto;
 
-
     /**
      * Called when the activity is created.
      *
@@ -81,6 +83,9 @@ public class StudentMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_main);
         EventBus.getDefault().register(this);
+
+        Service.start(NotificationJobService.class, this, 102, "notification");
+
 
         drawerLayout = (DrawerLayout) findViewById(R.id.DrawerLayout_window_field);
         TextView nameSurname = drawerLayout.findViewById(R.id.TextView_student_name_surname);

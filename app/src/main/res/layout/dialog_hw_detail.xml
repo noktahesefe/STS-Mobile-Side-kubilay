@@ -60,7 +60,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:textColorHint="@color/black"
-
                 app:startIconDrawable="@drawable/baseline_assignment_24">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -80,7 +79,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:textColorHint="@color/black"
-
                 app:layout_constraintTop_toBottomOf="@+id/hw_titleTextLayout"
                 app:startIconDrawable="@drawable/baseline_class_24">
 
@@ -102,7 +100,6 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="15dp"
                 android:textColorHint="@color/black"
-
                 android:hint="Homework Content"
                 app:layout_constraintTop_toBottomOf="@+id/dateTextInputLayout"
                 app:startIconDrawable="@drawable/baseline_topic_24">
@@ -175,10 +172,6 @@
 
             </LinearLayout>
 
-
-
-
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/dateTextInputLayout"
                 android:layout_width="match_parent"
@@ -186,7 +179,6 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="15dp"
                 android:textColorHint="@color/black"
-
                 android:layout_marginEnd="15dp"
                 android:hint="Due Date"
                 app:layout_constraintStart_toStartOf="parent"

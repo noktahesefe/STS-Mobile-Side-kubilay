@@ -18,8 +18,14 @@ import com.example.birdaha.Adapters.ClassAnnouncementAdapter;
 import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.General.AnnouncementsStudent;
 import com.example.birdaha.General.ClassAnnouncementModel;
+import com.example.birdaha.General.NotificationDataModel;
+import com.example.birdaha.General.NotificationModel;
+import com.example.birdaha.General.StudentSharedPrefModel;
+import com.example.birdaha.Helper.LocalDataManager;
 import com.example.birdaha.R;
+import com.example.birdaha.Users.Student;
 import com.example.birdaha.Utilities.ClassAnnouncementViewInterface;
+import com.example.birdaha.Utilities.NotificationService.NotificationJobService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,11 +56,25 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
         search = findViewById(R.id.searchView_Announcement);
 
         Classroom classroom = null;
+        Student student = null;
 
         Intent intent = getIntent();
         if(intent != null){
             classroom = (Classroom) intent.getSerializableExtra("classroom");
-            //classAnnouncementModels = (ArrayList<ClassAnnouncementModel>) intent.getSerializableExtra("classAnnouncements");
+            student = (Student) intent.getSerializableExtra("student");
+
+            NotificationModel notificationModel = NotificationJobService.fetchNotification(student.getStudent_id());
+            String studentsArrayJson = LocalDataManager.getSharedPreference(getApplicationContext(), "studentsArray", NotificationDataModel.getDefaultJson());
+            NotificationDataModel notificationDataModel = NotificationDataModel.fromJson(studentsArrayJson);
+            StudentSharedPrefModel studentSharedPref = notificationDataModel.getOrDefault(student.getStudent_id(), student.getClassroom().getName());
+
+            System.out.println(notificationModel.getAnnouncementId());
+            studentSharedPref.setLastAnnouncementId(notificationModel.getAnnouncementId());
+            System.out.println(studentSharedPref.toString());
+
+            notificationDataModel.addOrUpdateStudents(studentSharedPref);
+            LocalDataManager.setSharedPreference(getApplicationContext(), "studentsArray", notificationDataModel.toJson());
+
         }
 
         Retrofit retrofit = new Retrofit.Builder()

@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.example.birdaha"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.example.birdaha">
 
-    xmlns:tools="http://schemas.android.com/tools">
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <!-- Uygulamanın adı ve ikonu -->
     <application
@@ -20,38 +16,64 @@
             android:name=".Activities.StudentMainActivity"
             android:exported="false"
             android:theme="@style/TransparentActionBar"
+            android:screenOrientation="portrait"
             />
         <activity
             android:name=".Activities.ClassAnnouncementScreen"
-            android:exported="false"/>
+            android:exported="false"
+            android:theme="@style/TransparentActionBar"
+            android:screenOrientation="portrait"
+            />
+
         <activity
             android:name=".Activities.ClassRoomAnnouncementScreen"
-            android:exported="false"/>
+            android:exported="false"
+            android:theme="@style/TransparentActionBar"
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".Activities.ClassroomHomeworkScreen"
-            android:exported="false"/>
+            android:exported="false"
+            android:theme="@style/TransparentActionBar"
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".Activities.HomeworkStudentsScreen"
-            android:exported="false"/>
+            android:exported="false"
+            android:theme="@style/TransparentActionBar"
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".Activities.HomeWorkScreen"
-            android:exported="false"/>
+            android:exported="false"
+            android:theme="@style/TransparentActionBar"
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".Activities.ClassroomScreen"
             android:exported="false"
-            android:theme="@style/TransparentActionBar"/>
+            android:theme="@style/TransparentActionBar"
+            android:screenOrientation="portrait"
+            />
 
         <activity
             android:name=".Activities.TeacherMainActivity"
             android:exported="false"
-            android:theme="@style/TransparentActionBar"/>
+            android:theme="@style/TransparentActionBar"
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".Activities.ParentMainActivity"
             android:exported="false"
-            android:theme="@style/TransparentActionBar"/>
+            android:theme="@style/TransparentActionBar"
+            android:screenOrientation="portrait"
+            />
+
         <activity android:name="com.example.birdaha.Activities.MainActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
             >
+
             <!-- Ana aktivite -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -59,11 +81,31 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".Utilities.NotificationService.NotificationJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <receiver
+            android:name=".Utilities.NotificationService.BootReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
         <!-- Diğer aktiviteler, servisler, alıcılar (receivers) burada tanımlanabilir -->
     </application>
 
     <!-- İzinler -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <!-- Diğer izinler burada tanımlanabilir -->
 
     <!-- Gereksinimler -->

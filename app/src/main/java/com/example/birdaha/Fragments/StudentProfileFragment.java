@@ -257,6 +257,9 @@ public class StudentProfileFragment extends Fragment {
         // Required empty public constructor
     }
 
+
+    private static Student currStudent = null;
+
     /**
      * Creates a new instance of the StudentProfileFragment.
      *
@@ -264,8 +267,10 @@ public class StudentProfileFragment extends Fragment {
      * @return A new instance of StudentProfileFragment.
      */
     public static StudentProfileFragment newInstance(Student student, boolean isUserStudent) {
-        if(instance == null){
+
+        if(instance == null || (currStudent != null && currStudent.getSchool_no() != student.getSchool_no())){
             instance = new StudentProfileFragment();
+            currStudent = student;
             Bundle args = new Bundle();
             args.putSerializable("student",student);
             args.putBoolean("isUserStudent",isUserStudent);
@@ -274,6 +279,11 @@ public class StudentProfileFragment extends Fragment {
         }
         return instance;
     }
+
+    public static Student getCurrStudent() {
+        return currStudent;
+    }
+
 
     /**
      * Called when the fragment is created.
@@ -391,7 +401,6 @@ public class StudentProfileFragment extends Fragment {
                 galleryLauncher.launch("image/*");
             }
         });
-
         deleteProfilePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -445,7 +454,6 @@ public class StudentProfileFragment extends Fragment {
                 builder.show();
             }
         });
-
         return view;
     }
 

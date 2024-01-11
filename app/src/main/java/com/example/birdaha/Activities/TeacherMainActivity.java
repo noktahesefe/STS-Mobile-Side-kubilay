@@ -33,6 +33,10 @@ import com.example.birdaha.Helper.ProfilePictureChangeEvent;
 import com.example.birdaha.Interface.NavigationManager;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Teacher;
+import com.example.birdaha.Utilities.NotificationService.NotificationJobService;
+import com.example.birdaha.Utilities.NotificationService.Service;
+
+import java.util.Arrays;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -80,6 +84,8 @@ public class TeacherMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teacher_main);
         EventBus.getDefault().register(this);
+
+        Service.start(NotificationJobService.class, this, 102, "notification");
 
         drawerLayout = (DrawerLayout) findViewById(R.id.DrawerLayout_window_field);
         TextView nameSurname = drawerLayout.findViewById(R.id.TextView_teacher_name_surname);

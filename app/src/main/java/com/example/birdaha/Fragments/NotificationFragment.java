@@ -1,14 +1,17 @@
 package com.example.birdaha.Fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.birdaha.Helper.LocalDataManager;
 import com.example.birdaha.R;
 
 /**
@@ -29,6 +32,8 @@ public class NotificationFragment extends Fragment {
         // Required empty public constructor
     }
 
+    private static NotificationFragment instance = null;
+
     /**
      * Creates a new instance of the NotificationFragment.
      *
@@ -36,11 +41,15 @@ public class NotificationFragment extends Fragment {
      * @return A new instance of NotificationFragment.
      */
     public static NotificationFragment newInstance(String param1) {
-        NotificationFragment fragment = new NotificationFragment();
-        Bundle args = new Bundle();
-        args.putString(KEY_TITLE, param1);
-        fragment.setArguments(args);
-        return fragment;
+        if(instance == null)
+        {
+            instance = new NotificationFragment();
+            Bundle args = new Bundle();
+            args.putString(KEY_TITLE, param1);
+            instance.setArguments(args);
+        }
+
+        return instance;
     }
 
     /**
@@ -68,7 +77,31 @@ public class NotificationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_notifications, container, false);
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_notifications, container, false);
+        Context context = requireContext();
+
+        Switch notification = view.findViewById(R.id.Switch_show_notifications);
+        Switch sound = view.findViewById(R.id.Switch_voice);
+        Switch vibration = view.findViewById(R.id.Switch_vibration);
+
+        notification.setChecked(LocalDataManager.getSharedPreference(context, "notification", "notifications", true));
+        sound.setChecked(LocalDataManager.getSharedPreference(context, "sound", "notifications", true));
+        vibration.setChecked(LocalDataManager.getSharedPreference(context, "vibration", "notifications", true));
+
+        notification.setOnCheckedChangeListener((switchView, isChecked) -> {
+            LocalDataManager.setSharedPreference(context, "notification",  isChecked, "notifications");
+        });
+
+        sound.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            LocalDataManager.setSharedPreference(context, "sound",  isChecked, "notifications");
+        });
+
+        vibration.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            LocalDataManager.setSharedPreference(context, "vibration",  isChecked, "notifications");
+        });
+
+        return view;
     }
 
     /**
