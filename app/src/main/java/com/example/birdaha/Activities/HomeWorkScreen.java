@@ -45,7 +45,6 @@ import com.example.birdaha.Utilities.NotificationService.NotificationJobService;
 import com.google.gson.Gson;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -73,12 +72,9 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
     }
 
     SearchView search;
-
     ArrayList<HwModel> hwModels = new ArrayList<>();
     private RecyclerView recyclerView;
-
     private StudentHomeworkAdapter homeworkAdapter;
-
     private Context context;
     private ClassroomHomeworkViewInterface homeworkViewInterface;
 
@@ -86,8 +82,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
     private ArrayList<HwModel> ongoingHws;
 
     private AlertDialog filterDialog = null;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +111,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
 
 
 
-
             String studentsArrayJson = LocalDataManager.getSharedPreference(context, "studentsArray", NotificationDataModel.getDefaultJson());
             NotificationDataModel notificationDataModel = NotificationDataModel.fromJson(studentsArrayJson);
             StudentSharedPrefModel studentSharedPref = notificationDataModel.getOrDefault(student.getStudent_id(), student.getClassroom().getName());
@@ -130,14 +123,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
 
             LocalDataManager.setSharedPreference(context, "studentsArray", notificationDataModel.toJson());
 
-
-
-            //NotificationDataModel.
-
-
-
-
-            //hwModels = (ArrayList<HwModel>) intent.getSerializableExtra("homeworks");
         }
 
         Log.d("classid",String.valueOf(classroom.getClassroom_id()));
@@ -152,9 +137,9 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
             @Override
             public void onResponse(Call<HomeworksStudent> call, Response<HomeworksStudent> response) {
                 if(response.isSuccessful() && response.body() != null){
-                    Toast.makeText(HomeWorkScreen.this, "Ödevler Listeleniyor", Toast.LENGTH_SHORT).show();
                     HomeworksStudent models = response.body();
                     Log.d("Response",new Gson().toJson(response.body()));
+
                     ZoneId turkeyZone = ZoneId.of("Europe/Istanbul");
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                     hwModels = models.getHomeworks();
@@ -174,7 +159,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
                     sortListByDate(hwModels);
                     homeworkAdapter = new StudentHomeworkAdapter(context, (ArrayList<HwModel>) hwModels, homeworkViewInterface);
                     recyclerView.setAdapter(homeworkAdapter);
-
+                    Toast.makeText(HomeWorkScreen.this, "Ödevler Listeleniyor", Toast.LENGTH_SHORT).show();
                 }
                 else{
                     Toast.makeText(HomeWorkScreen.this, "Response Unsuccessful", Toast.LENGTH_SHORT).show();
@@ -212,7 +197,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
 
     // This method is called when the user clicks on the filter icon
     private void showOverlay() {
-
         if(filterDialog == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             LayoutInflater inflater = LayoutInflater.from(this);
@@ -287,7 +271,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
 
             // Add any additional customization or logic to the checkboxes here
         }
-            filterDialog.show();
+        filterDialog.show();
     }
 
     @Override
@@ -300,14 +284,15 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
 
         // Inflate the overlay_layout.xml file into a View object
 
-        View overlayView = inflater.inflate(R.layout.overlay_homework_layout, null);
+        View overlayView = inflater.inflate(R.layout.dialog_hw_detail, null);
         EditText courseName = overlayView.findViewById(R.id.homework_detail_course_name);
         EditText title = overlayView.findViewById(R.id.homework_detail_title);
         EditText dueDate = overlayView.findViewById(R.id.homework_detail_duedate);
         EditText content = overlayView.findViewById(R.id.homework_detail_content);
-        Button editButton = overlayView.findViewById(R.id.editButton);
-        Button saveButton = overlayView.findViewById(R.id.saveButton);
         ImageView imageView = overlayView.findViewById(R.id.homework_detail_image);
+        Button gradeButton = overlayView.findViewById(R.id.give_grade_button);
+
+        gradeButton.setVisibility(View.GONE);
 
         courseName.setEnabled(false);
         title.setEnabled(false);
@@ -347,8 +332,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
             });
         }
 
-        editButton.setVisibility(View.INVISIBLE);
-        saveButton.setVisibility(View.INVISIBLE);
         // Set the inflated view as the custom view for the AlertDialog
         builder.setView(overlayView);
 
@@ -386,5 +369,8 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         Collections.sort(list, dateComparator);
     }
 
+    @Override
+    public void onClassroomHomeworkEditClick(HwModel clickedItem, View view) {
 
+    }
 }

@@ -2,15 +2,9 @@ package com.example.birdaha.Utilities.NotificationService;
 
 import android.app.job.JobParameters;
 import android.app.job.JobService;
-import android.widget.Toast;
 
-import com.example.birdaha.General.NotificationDataModel;
 import com.example.birdaha.General.NotificationModel;
 import com.example.birdaha.General.StudentSharedPrefModel;
-import com.example.birdaha.Helper.LocalDataManager;
-
-import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
 
 import retrofit2.Call;
 import retrofit2.Callback;

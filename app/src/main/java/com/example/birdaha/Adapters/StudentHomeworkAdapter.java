@@ -9,16 +9,13 @@ import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.birdaha.General.HwModel;
 import com.example.birdaha.R;
 import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -56,11 +53,7 @@ public class StudentHomeworkAdapter extends RecyclerView.Adapter<StudentHomework
         holder.textViewname.setText(current.getTitle());
         holder.textViewname.setBackground((current.getDue_date().compareTo(formattedDateTime) < 0) ? context.getDrawable(R.drawable.darkgray_round_background) : context.getDrawable(R.drawable.blue_round_background));
 
-
         holder.textViewname.setOnClickListener(new View.OnClickListener() {
-            {
-                System.out.println("hi");
-            }
             @Override
             public void onClick(View v) {
                 if (homeworkViewInterface != null) {

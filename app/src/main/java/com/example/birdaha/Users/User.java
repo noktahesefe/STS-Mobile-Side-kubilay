@@ -10,24 +10,19 @@ import java.io.Serializable;
 import java.util.List;
 
 public class User implements Serializable {
-    //@SerializedName("username")
     protected String username;
-    //@SerializedName("password")
     protected String password;
 
-    //@SerializedName("name")
     protected String name;
-    //protected String surname;
     //@SerializedName("phone")
     protected String phone;
-    //protected Bitmap profilePicture;
     private int parent_id;
     protected int teacher_id;
     protected int course_id;
     protected int student_id;
     private int classroom_id;
     @SerializedName("student_no")
-    protected int school_no;
+    protected long school_no;
     protected Classroom classroom;
     protected List<Classroom> classrooms;
     protected Lecture course;
@@ -107,11 +102,11 @@ public class User implements Serializable {
         this.classroom_id = classroom_id;
     }
 
-    public int getSchool_no() {
+    public long getSchool_no() {
         return school_no;
     }
 
-    public void setSchool_no(int school_no) {
+    public void setSchool_no(long school_no) {
         this.school_no = school_no;
     }
 
@@ -148,22 +143,6 @@ public class User implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
-    /*public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }*/
-
-    /*public Bitmap getProfilePicture() {
-        return profilePicture;
-    }
-
-    public void setProfilePicture(Bitmap profilePicture) {
-        this.profilePicture = profilePicture;
-    }*/
 
     public String getPhone() {
         return phone;

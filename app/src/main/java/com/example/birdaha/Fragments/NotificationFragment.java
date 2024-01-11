@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.Switch;
 
 import androidx.annotation.NonNull;
@@ -34,6 +33,7 @@ public class NotificationFragment extends Fragment {
     }
 
     private static NotificationFragment instance = null;
+
 
     /**
      * Creates a new instance of the NotificationFragment.
@@ -78,6 +78,7 @@ public class NotificationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_notifications, container, false);
         Context context = requireContext();
 
@@ -90,7 +91,7 @@ public class NotificationFragment extends Fragment {
         vibration.setChecked(LocalDataManager.getSharedPreference(context, "vibration", "notifications", true));
 
         notification.setOnCheckedChangeListener((switchView, isChecked) -> {
-                    LocalDataManager.setSharedPreference(context, "notification",  isChecked, "notifications");
+            LocalDataManager.setSharedPreference(context, "notification",  isChecked, "notifications");
         });
 
         sound.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -119,8 +120,6 @@ public class NotificationFragment extends Fragment {
 
         /*String title = getArguments().getString(KEY_TITLE);
         ((TextView)view.findViewById(R.id.title)).setText(title);*/
-
-
 
 
     }

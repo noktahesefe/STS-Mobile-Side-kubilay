@@ -116,7 +116,7 @@ public class HomeworkStudentsScreen extends AppCompatActivity implements Homewor
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                //studentAdapter.getFilter().filter(newText);
+                studentAdapter.getFilter().filter(newText);
                 return true;
             }
         });

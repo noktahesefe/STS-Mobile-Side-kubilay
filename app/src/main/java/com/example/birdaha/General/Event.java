@@ -21,7 +21,6 @@ public class Event {
     private int imageResource;// The resource ID of the event's image
     @SerializedName("event_content")
     private String details;        // Details or description of the event
-    // private List<Bitmap> photos; // Potential list of event photos (commented out for simplicity)
 
     /**
      * Constructor for the Event class.
@@ -113,23 +112,4 @@ public class Event {
     public void setImage(String image) {
         this.image = image;
     }
-
-    public ScaleTypes getScaleTypes() {
-        return scaleTypes;
-    }
-
-    public void setScaleTypes(ScaleTypes scaleTypes) {
-        this.scaleTypes = scaleTypes;
-    }
-
-    /*
-    // Uncomment the following methods if you want to work with event photos
-    public List<Bitmap> getPhotos() {
-        return photos;
-    }
-
-    public void setPhotos(List<Bitmap> photos) {
-        this.photos = photos;
-    }
-    */
 }

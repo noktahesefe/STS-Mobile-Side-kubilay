@@ -1,19 +1,13 @@
 package com.example.birdaha.Activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -30,7 +24,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.bumptech.glide.Glide;
 import com.example.birdaha.Adapters.CustomExpandableListAdapter;
 import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.Fragments.HomePageFragment;
@@ -285,10 +278,9 @@ public class ParentMainActivity extends AppCompatActivity {
                     Fragment f = fragmentManager.findFragmentById(R.id.FrameLayout_container);
                     System.out.println(student.getClassroom().getName());
                     if(!(f instanceof StudentProfileFragment) || StudentProfileFragment.getCurrStudent().getSchool_no() != student.getSchool_no()) {
-                        navigationManager.showFragment(StudentProfileFragment.newInstance(student), false);
+                        navigationManager.showFragment(StudentProfileFragment.newInstance(student, false), false);
                     }
 
-                    drawerLayout.closeDrawer(GravityCompat.START);
                 }
 
 
@@ -313,16 +305,13 @@ public class ParentMainActivity extends AppCompatActivity {
      * Initializes lstChild as a LinkedHashMap with the title and child items.
      */
     private void getData() {
-        //ImageView imageView = expandableListView.findViewById(R.id.student_image);
 
         String title = "Öğrencilerim";
         List<Student> childItem = currentParent.getStudents();
 
-        SharedPreferences preferences = getSharedPreferences("ParentPrefs", Context.MODE_PRIVATE);
-
         for(Student stu : childItem)
         {
-            Classroom classroom = new Classroom("getData() ", stu.getClassroom_id());
+            Classroom classroom = new Classroom(""+stu.getClassroom().getName(), stu.getClassroom_id());
             stu.setClassroom(classroom);
         }
 
