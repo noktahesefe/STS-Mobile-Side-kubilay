@@ -78,7 +78,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         Call<UpdateRespond> addHomework(@Body HwModel hwmodel);
         @POST("/api/v1/homework/update")
         Call<UpdateRespond> updateHomework(@Body HwModel hwModel);
-        @GET("api/v1/homework/{homeworkId}")
+        @GET("api/v1/homework/delete/{homeworkId}")
         Call<UpdateRespond> deleteHomework(@Path("homeworkId") int homeworkId);
     }
     SearchView search;
