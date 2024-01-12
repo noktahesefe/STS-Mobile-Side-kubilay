@@ -1,11 +1,13 @@
 package com.example.birdaha.Activities;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -88,7 +90,7 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
                 if(response.isSuccessful() && response.body() != null){
                     AnnouncementsStudent models = response.body();
                     classAnnouncementModels = models.getClassAnnouncements();
-                    classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassAnnouncementScreen.this, (ArrayList<ClassAnnouncementModel>) classAnnouncementModels, ClassAnnouncementScreen.this,null);
+                    classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassAnnouncementScreen.this, (ArrayList<ClassAnnouncementModel>) classAnnouncementModels, ClassAnnouncementScreen.this,null, false);
                     recyclerView.setAdapter(classAnnouncementAdapter);
                     Toast.makeText(ClassAnnouncementScreen.this, "Duyurular Listeleniyor", Toast.LENGTH_SHORT).show();
                 }
@@ -104,6 +106,12 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
         });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        /*
+        ImageButton editButton = recyclerView.findViewById(R.id.edit_icon_button);
+        editButton.setVisibility(View.GONE);
+        ImageButton deleteButton = recyclerView.findViewById(R.id.delete_icon_button);
+        deleteButton.setVisibility(View.GONE);*/
 
         // Set up the search functionality
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
