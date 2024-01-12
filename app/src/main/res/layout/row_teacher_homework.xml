@@ -46,7 +46,7 @@
             android:textColor="@color/white" />
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/delete_icon_button"
             android:layout_width="41dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"

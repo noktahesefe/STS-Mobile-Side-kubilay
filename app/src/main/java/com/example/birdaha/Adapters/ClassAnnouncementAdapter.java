@@ -14,13 +14,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.birdaha.Activities.ClassRoomAnnouncementScreen;
-import com.example.birdaha.Activities.ClassroomHomeworkScreen;
 import com.example.birdaha.General.ClassAnnouncementModel;
-import com.example.birdaha.General.HwModel;
 import com.example.birdaha.General.UpdateRespond;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Teacher;
@@ -28,7 +25,6 @@ import com.example.birdaha.Utilities.ClassAnnouncementViewInterface;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -44,12 +40,15 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
     ArrayList<ClassAnnouncementModel> classAnnouncementModelsFiltered;
     private Teacher teacher;
 
-    public ClassAnnouncementAdapter(Context context, ArrayList<ClassAnnouncementModel> classAnnouncementModels,ClassAnnouncementViewInterface classAnnouncementViewInterface, Teacher teacher){
+    private boolean isTeacher;
+
+    public ClassAnnouncementAdapter(Context context, ArrayList<ClassAnnouncementModel> classAnnouncementModels, ClassAnnouncementViewInterface classAnnouncementViewInterface, Teacher teacher, boolean isTeacher) {
         this.context = context;
         this.classAnnouncementModels = classAnnouncementModels;
         this.classAnnouncementModelsFiltered = classAnnouncementModels;
         this.classAnnouncementViewInterface = classAnnouncementViewInterface;
         this.teacher = teacher;
+        this.isTeacher = isTeacher;
     }
 
     /**
@@ -79,25 +78,26 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
     public void onBindViewHolder(@NonNull ClassAnnouncementViewHolder holder, int position) {
         ClassAnnouncementModel current = classAnnouncementModels.get(position);
         holder.textViewName.setText(current.getTitle());
+        holder.bind(current, isTeacher);
         holder.textViewName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(classAnnouncementViewInterface != null){
+                if (classAnnouncementViewInterface != null) {
                     int pos = classAnnouncementModels.indexOf(current);
-                    classAnnouncementViewInterface.onClassAnnouncementItemClick(classAnnouncementModels.get(pos),v);
+                    classAnnouncementViewInterface.onClassAnnouncementItemClick(classAnnouncementModels.get(pos), v);
                 }
             }
         });
 
-        if(teacher != null){
-            if(current.getTeacher_id() == teacher.getTeacher_id()){
+        if (teacher != null) {
+            if (current.getTeacher_id() == teacher.getTeacher_id()) {
                 holder.editButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(classAnnouncementViewInterface != null){
+                        if (classAnnouncementViewInterface != null) {
                             int pos = classAnnouncementModels.indexOf(current);
-                            if(pos != -1){
-                                classAnnouncementViewInterface.onClassAnnouncementEditClick(classAnnouncementModels.get(pos),v);
+                            if (pos != -1) {
+                                classAnnouncementViewInterface.onClassAnnouncementEditClick(classAnnouncementModels.get(pos), v);
                             }
                         }
                     }
@@ -105,8 +105,8 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
             }
         }
 
-        if(teacher != null){
-            if(current.getTeacher_id() == teacher.getTeacher_id()){
+        if (teacher != null) {
+            if (current.getTeacher_id() == teacher.getTeacher_id()) {
                 holder.deleteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -125,18 +125,18 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
                                 deleteHomework.deleteHomework(current.getAnnouncement_id()).enqueue(new Callback<UpdateRespond>() {
                                     @Override
                                     public void onResponse(Call<UpdateRespond> call, Response<UpdateRespond> response) {
-                                        if(response.isSuccessful() && response.body() != null){
+                                        if (response.isSuccessful() && response.body() != null) {
                                             Toast.makeText(context, "Duyuru başarıyla silindi!", Toast.LENGTH_SHORT).show();
                                             classAnnouncementModels.remove(current);
                                             notifyDataSetChanged();
-                                        }
-                                        else{
+                                        } else {
                                             Toast.makeText(context, "Hata oluştu!" + response.code(), Toast.LENGTH_SHORT).show();
                                         }
                                     }
+
                                     @Override
                                     public void onFailure(Call<UpdateRespond> call, Throwable t) {
-                                        Log.d("Error",t.getMessage());
+                                        Log.d("Error", t.getMessage());
                                     }
                                 });
                             }
@@ -212,8 +212,21 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
             // Initialize the textViewTitle variable with the view from the layout with id textView
             textViewName = itemView.findViewById(R.id.announcement_title);
             editButton = itemView.findViewById(R.id.edit_icon_button);
-            deleteButton = itemView.findViewById(R.id.imageButton);
+            deleteButton = itemView.findViewById(R.id.delete_icon_button);
 
         }
+
+
+        void bind(ClassAnnouncementModel model, boolean isTeacher) {
+            if (isTeacher) {
+                editButton.setVisibility(View.VISIBLE);
+                deleteButton.setVisibility(View.VISIBLE);
+            } else {
+                editButton.setVisibility(View.GONE);
+                deleteButton.setVisibility(View.GONE);
+            }
+        }
+
+
     }
 }

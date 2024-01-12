@@ -99,7 +99,7 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
                         classAnnouncementModels = (ArrayList<ClassAnnouncementModel>) models.getClassroomAnnouncements();
 
                         Teacher teacher = (Teacher) getIntent().getSerializableExtra("teacher");
-                        classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassRoomAnnouncementScreen.this, classAnnouncementModels, ClassRoomAnnouncementScreen.this,teacher);
+                        classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassRoomAnnouncementScreen.this, classAnnouncementModels, ClassRoomAnnouncementScreen.this,teacher,true);
                         recyclerView.setAdapter(classAnnouncementAdapter);
                     }
                     else{
