@@ -170,6 +170,9 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                         Toast.makeText(ClassroomHomeworkScreen.this, "Ödevler Listeleniyor", Toast.LENGTH_SHORT).show();
                         HomeworksTeacher models = response.body();
                         hwModels = models.getHomeworks();
+                        if(hwModels.isEmpty()){
+                            Toast.makeText(context, "Ödev yok!", Toast.LENGTH_SHORT).show();
+                        }
                         students = models.getStudents();
                         for (HwModel o : hwModels) {
 
@@ -519,8 +522,10 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                 clickedItem.setTitle(title);
                 clickedItem.setInfo(content);
                 clickedItem.setDue_date(due_date);
-                clickedItem.setGetImage(image);
-
+                if(image != null){
+                    clickedItem.setImage(image);
+                    clickedItem.setGetImage(image);
+                }
                 System.out.println("hw id:" + clickedItem.getHomework_id());
                 System.out.println("teacher id:" + clickedItem.getTeacher_id());
                 System.out.println("classroom id:" + clickedItem.getClassroom_id());

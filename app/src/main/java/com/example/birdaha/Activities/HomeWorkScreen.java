@@ -145,6 +145,9 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
                     ZoneId turkeyZone = ZoneId.of("Europe/Istanbul");
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                     hwModels = models.getHomeworks();
+                    if(hwModels.isEmpty()){
+                        Toast.makeText(context, "Ödev yok!", Toast.LENGTH_SHORT).show();
+                    }
                     for(HwModel o : hwModels)
                     {
                         System.out.println("HWID - " + o.getHomework_id());

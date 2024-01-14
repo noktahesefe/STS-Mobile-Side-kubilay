@@ -90,6 +90,9 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
                 if(response.isSuccessful() && response.body() != null){
                     AnnouncementsStudent models = response.body();
                     classAnnouncementModels = models.getClassAnnouncements();
+                    if(classAnnouncementModels.isEmpty()){
+                        Toast.makeText(ClassAnnouncementScreen.this, "Duyuru yok!", Toast.LENGTH_SHORT).show();
+                    }
                     classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassAnnouncementScreen.this, (ArrayList<ClassAnnouncementModel>) classAnnouncementModels, ClassAnnouncementScreen.this,null, false);
                     recyclerView.setAdapter(classAnnouncementAdapter);
                     Toast.makeText(ClassAnnouncementScreen.this, "Duyurular Listeleniyor", Toast.LENGTH_SHORT).show();
