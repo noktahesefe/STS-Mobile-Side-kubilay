@@ -28,13 +28,11 @@
         <activity
             android:name=".Activities.ClassRoomAnnouncementScreen"
             android:exported="false"
-            android:theme="@style/TransparentActionBar"
             android:screenOrientation="portrait"
             />
         <activity
             android:name=".Activities.ClassroomHomeworkScreen"
             android:exported="false"
-            android:theme="@style/TransparentActionBar"
             android:screenOrientation="portrait"
             />
         <activity

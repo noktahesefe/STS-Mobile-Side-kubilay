@@ -97,6 +97,9 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
                         Toast.makeText(ClassRoomAnnouncementScreen.this, "Duyurular Listeleniyor", Toast.LENGTH_SHORT).show();
                         AnnouncementsTeacher models = response.body();
                         classAnnouncementModels = (ArrayList<ClassAnnouncementModel>) models.getClassroomAnnouncements();
+                        if(classAnnouncementModels.isEmpty()){
+                            Toast.makeText(ClassRoomAnnouncementScreen.this, "Duyuru yok", Toast.LENGTH_SHORT).show();
+                        }
 
                         Teacher teacher = (Teacher) getIntent().getSerializableExtra("teacher");
                         classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassRoomAnnouncementScreen.this, classAnnouncementModels, ClassRoomAnnouncementScreen.this,teacher,true);
@@ -158,6 +161,8 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
 
         View overlayView = inflater.inflate(R.layout.dialog_ann_detail, null);
+
+        System.out.println("Clicked item teacher name: "+ clickedItem.getTeacher().getName());
 
 
         EditText title = overlayView.findViewById(R.id.announcement_detail_name);
