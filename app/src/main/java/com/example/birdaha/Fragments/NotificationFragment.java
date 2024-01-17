@@ -1,5 +1,7 @@
 package com.example.birdaha.Fragments;
 
+import static androidx.fragment.app.DialogFragment.STYLE_NORMAL;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +9,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.example.birdaha.R;
@@ -68,7 +71,8 @@ public class NotificationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_notifications, container, false);
+        // Set the custom full-screen dialog theme
+        return inflater.inflate(R.layout.preferences, container, false);
     }
 
     /**

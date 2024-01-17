@@ -25,6 +25,7 @@
             android:layout_width="172dp"
             android:layout_height="172dp"
             android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:layout_editor_absoluteY="2dp" />
 
@@ -40,11 +41,12 @@
         android:text="Resim Yükle"
         android:textAllCaps="false"
         android:textSize="18sp"
+        style="@style/PurpleButton"
         app:layout_constraintBottom_toTopOf="@+id/student_name_surname_info"
-        app:layout_constraintEnd_toEndOf="@+id/profilePicture_holder"
-        app:layout_constraintHorizontal_bias="0.592"
-        app:layout_constraintStart_toStartOf="@+id/profilePicture_holder"
-        app:layout_constraintTop_toBottomOf="@+id/profilePicture_holder" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profilePicture_holder"
+        app:layout_constraintVertical_bias="0.522" />
 
     <TextView
         android:id="@+id/student_name_surname"
@@ -119,7 +121,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/student_classroom_info" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/student_announcements"
         android:layout_width="200dp"
         android:layout_height="52dp"
@@ -127,12 +129,14 @@
         android:drawableLeft="@drawable/baseline_event"
         android:text="Duyurular"
         android:textSize="18sp"
+        style="@style/PurpleButton"
+        app:cornerRadius="20dp"
         app:layout_constraintEnd_toEndOf="@+id/student_homeworks"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/student_homeworks"
         app:layout_constraintTop_toBottomOf="@+id/student_school_number_info" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/student_homeworks"
         android:layout_width="200dp"
         android:layout_height="52dp"
@@ -140,6 +144,9 @@
         android:drawableLeft="@drawable/baseline_homework"
         android:text="Ödevler"
         android:textSize="18sp"
+        android:backgroundTint="#6750A3"
+        android:textColor="@color/white"
+
         app:layout_constraintBottom_toBottomOf="@+id/student_logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"

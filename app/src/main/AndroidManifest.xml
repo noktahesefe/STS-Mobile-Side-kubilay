@@ -51,6 +51,7 @@
             android:theme="@style/TransparentActionBar"/>
         <activity android:name="com.example.birdaha.Activities.MainActivity"
             android:exported="true"
+            android:theme="@style/Theme.Dialog"
             >
             <!-- Ana aktivite -->
             <intent-filter>

@@ -100,9 +100,11 @@
                 android:layout_margin="15dp"
                 android:hint=""
                 android:textColorHint="@color/black"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/announcement_titleTextLayout"
+                app:layout_constraintVertical_bias="0.0"
                 app:startIconDrawable="@drawable/baseline_topic_24"
-                tools:layout_editor_absoluteX="15dp">
+                tools:layout_editor_absoluteX="29dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/add_announcement_content"

@@ -171,6 +171,7 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
 
         title.setEnabled(false);
         details.setEnabled(false);
+        teacherName.setEnabled(false);
 
 
         builder.setView(overlayView);
