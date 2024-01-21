@@ -140,13 +140,14 @@
             </com.google.android.material.textfield.TextInputLayout>
 
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/hw_adding_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="22dp"
-                android:background="@drawable/blue_round_background"
                 android:text="Resim ekle"
+                style="@style/PurpleButton"
+                app:cornerRadius="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/dateTextInputLayout"
                 app:layout_constraintTop_toBottomOf="@+id/hw_titleTextLayout" />

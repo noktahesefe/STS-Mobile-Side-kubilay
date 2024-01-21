@@ -164,8 +164,13 @@ public class StudentMainActivity extends AppCompatActivity {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 Fragment f = fragmentManager.findFragmentById(R.id.FrameLayout_container);
 
+                Student student = null;
+                if(getIntent() != null){
+                    student = (Student) getIntent().getSerializableExtra("user");
+                }
+
                 if(!(f instanceof NotificationFragment))
-                    navigationManager.showFragment(NotificationFragment.newInstance("userId"), false);
+                    navigationManager.showFragment(NotificationFragment.newInstance("userId",student.getName(), student.getStudent_id(),"student"), false);
 
                 drawerLayout.closeDrawer(GravityCompat.START);
             }

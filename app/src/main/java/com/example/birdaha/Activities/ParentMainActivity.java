@@ -150,9 +150,13 @@ public class ParentMainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 Fragment f = fragmentManager.findFragmentById(R.id.FrameLayout_container);
+                Parent parent = null;
+                if(getIntent() != null){
+                    parent = (Parent) getIntent().getSerializableExtra("user");
+                }
 
                 if(!(f instanceof NotificationFragment))
-                    navigationManager.showFragment(NotificationFragment.newInstance("userId"), false);
+                    navigationManager.showFragment(NotificationFragment.newInstance("userId",parent.getName(), parent.getParent_id(),"parent"), false);
 
                 drawerLayout.closeDrawer(GravityCompat.START);
             }

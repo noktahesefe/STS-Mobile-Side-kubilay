@@ -105,7 +105,7 @@
                 android:id="@+id/TextView_notifications"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Bildirimler"
+                android:text="Tercihler"
                 android:drawableLeft="@drawable/baseline_flag_24"
                 android:drawablePadding="5dp"
                 android:padding="10dp"
