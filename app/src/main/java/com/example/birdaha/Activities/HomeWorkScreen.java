@@ -261,7 +261,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
     
     // This method is called when the user clicks on the filter icon
     private void showOverlay() {
-
         if (filterDialog == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             LayoutInflater inflater = LayoutInflater.from(this);
