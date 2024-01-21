@@ -75,7 +75,7 @@ import retrofit2.http.POST;
  */
 public class MainActivity extends AppCompatActivity {
 
-    interface RequestUser {
+    public interface RequestUser {
         @POST("api/v1/login")
         Call<UserRespond> postUser(@Body LoginRequest loginRequest);
 

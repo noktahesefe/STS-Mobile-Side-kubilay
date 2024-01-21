@@ -40,10 +40,9 @@
         android:drawableLeft="@drawable/baseline_event"
         android:text="Duyurular"
         android:textSize="18sp"
+        style="@style/PurpleButton"
         app:layout_constraintBottom_toTopOf="@+id/classroom_homeworks"
         app:layout_constraintEnd_toEndOf="parent"
-        android:gravity="center_vertical"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
@@ -51,14 +50,15 @@
     <Button
         android:id="@+id/classroom_homeworks"
         android:layout_width="200dp"
-        android:layout_height="52dp"
+        android:layout_height="54dp"
         android:layout_marginBottom="340dp"
         android:drawableLeft="@drawable/baseline_homework"
         android:text="Ödevler"
+        style="@style/PurpleButton"
         android:textSize="18sp"
+        android:paddingEnd="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView

@@ -44,11 +44,12 @@
         android:text="Resim Yükle"
         android:textAllCaps="false"
         android:textSize="18sp"
+        style="@style/PurpleButton"
         app:layout_constraintBottom_toTopOf="@+id/student_name_surname_info"
-        app:layout_constraintEnd_toEndOf="@+id/profilePicture_holder"
-        app:layout_constraintHorizontal_bias="0.592"
-        app:layout_constraintStart_toStartOf="@+id/profilePicture_holder"
-        app:layout_constraintTop_toBottomOf="@+id/profilePicture_holder" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profilePicture_holder"
+        app:layout_constraintVertical_bias="0.522" />
 
     <TextView
         android:id="@+id/student_name_surname"
