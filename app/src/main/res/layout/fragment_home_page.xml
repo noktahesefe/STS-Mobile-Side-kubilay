@@ -26,7 +26,9 @@
             app:iss_delay="1000"
             app:iss_period="1000"
             app:iss_text_align="CENTER"
-            app:iss_title_background="@drawable/default_gradient" />
+            app:iss_title_background="@drawable/default_gradient">
+
+        </com.denzcoskun.imageslider.ImageSlider>
     </androidx.cardview.widget.CardView>
 
 
@@ -39,5 +41,24 @@
         app:layout_constraintHorizontal_bias="0.476"
         app:layout_constraintStart_toStartOf="@+id/cardView_imageSlider"
         app:layout_constraintTop_toBottomOf="@+id/cardView_imageSlider" />
+
+    <FrameLayout
+        android:id="@+id/responseLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#FFFFFF"
+        android:elevation="1000dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="181dp"
+            android:layout_height="184dp"
+            android:layout_gravity="center"
+            android:src="@drawable/logo" />
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -121,7 +121,10 @@ public class HomePageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_home_page, container, false);
+        View layout = inflater.inflate(R.layout.fragment_home_page, container, false);
+        if(isPulled)
+            layout.findViewById(R.id.responseLayout).setVisibility(View.GONE);
+        return layout;
     }
 
     @Override
@@ -191,6 +194,8 @@ public class HomePageFragment extends Fragment {
                     }
 
                     isPulled = true;
+                    curView.findViewById(R.id.responseLayout).setVisibility(View.GONE);
+
                 }
                 @Override
                 public void onFailure(Call<EventAndAnnouncements> call, Throwable t) {
