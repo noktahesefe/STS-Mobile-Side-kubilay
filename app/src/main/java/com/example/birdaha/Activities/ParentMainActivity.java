@@ -287,14 +287,6 @@ public class ParentMainActivity extends AppCompatActivity {
 
                 }
 
-
-                //String selectedItem = ((List) (lstChild.get(my_students_title))).get(childPosition).toString();
-                //Student selectedStudent = (Student) ((List) (lstChild.get(my_students_title))).get(childPosition);
-                //navigationManager.showFragment(StudentProfileFragment.newInstance(selectedStudent),false);
-                // Display the profile of the selected student
-                //navigationManager.showFragment(StudentProfileFragment.newInstance("stuId"), false);
-
-                // Close the Navigation Drawer after a child is clicked
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return false;
             }

@@ -65,80 +65,74 @@ import retrofit2.http.Path;
 
 /**
  * This activity displays a list of homework modules.
+ * The homework items can be filtered based on their status (expired, ongoing).
+ * The user can also search for specific homework items using the SearchView.
+ *
  */
 public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomeworkViewInterface {
 
+    // Retrofit interface for fetching homeworks
     interface GetHomework{
         @GET("api/v1/homeworks/{classroomId}/{studentId}")
         Call<HomeworksStudent> getHomeworks(@Path("classroomId") int classroomId,
                                             @Path("studentId") int studentId);
     }
 
+    // Retrofit interface for fetching homework results
     interface Result {
         @GET("/api/v1/homework/result/{homeworkId}/{studentId}")
         Call<HomeworkResultModel> getResult(@Path("homeworkId") int homeworkId, @Path("studentId") int studentId);
 
     }
 
-
-    SearchView search;
-    ArrayList<HwModel> hwModels = new ArrayList<>();
+    // UI components
+    private SearchView search;
+    private ArrayList<HwModel> hwModels = new ArrayList<>();
     private RecyclerView recyclerView;
     private StudentHomeworkAdapter homeworkAdapter;
     private Context context;
     private ClassroomHomeworkViewInterface homeworkViewInterface;
 
+    // Lists to store expired and ongoing homeworks
     private ArrayList<HwModel> expiredHws;
     private ArrayList<HwModel> ongoingHws;
 
+    // AlertDialog for filtering options
     private AlertDialog filterDialog = null;
+
+    // Current student
     private Student student = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_work_screen);
 
+        // Initialize UI components
         search = findViewById(R.id.searchView_homework);
-
         recyclerView = findViewById(R.id.hwRecyclerView);
         expiredHws = new ArrayList<>();
         ongoingHws = new ArrayList<>();
-
         context = this;
         homeworkViewInterface = this;
 
+        // Get classroom and student information from Intent
         Classroom classroom = null;
-
         Intent intent = getIntent();
         if (intent != null) {
             student = (Student) intent.getSerializableExtra("student");
-            System.out.println("hwsc " + student.getClassroom().getName());
-
             classroom = (Classroom) intent.getSerializableExtra("classroom");
 
-
+            // Update notification information for the student
             NotificationModel notificationModel = NotificationJobService.fetchNotification(student.getStudent_id());
-
-
-
             String studentsArrayJson = LocalDataManager.getSharedPreference(context, "studentsArray", NotificationDataModel.getDefaultJson());
             NotificationDataModel notificationDataModel = NotificationDataModel.fromJson(studentsArrayJson);
             StudentSharedPrefModel studentSharedPref = notificationDataModel.getOrDefault(student.getStudent_id(), student.getClassroom().getName());
-
-            System.out.println(notificationModel.getHomeworkId());
             studentSharedPref.setLastHomeworkId(notificationModel.getHomeworkId());
-            System.out.println(studentSharedPref.toString());
-
             notificationDataModel.addOrUpdateStudents(studentSharedPref);
-
             LocalDataManager.setSharedPreference(context, "studentsArray", notificationDataModel.toJson());
-
-
         }
 
-        Log.d("classid",String.valueOf(classroom.getClassroom_id()));
-        Log.d("studentid",String.valueOf(student.getStudent_id()));
-
+        // Fetch homeworks using Retrofit
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://sinifdoktoruadmin.online/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -159,49 +153,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
                     }
                     for(HwModel o : hwModels)
                     {
-//                        HomeworkResult newResult = new HomeworkResult();
-//                        int homeworkId = o.getHomework_id();
-//
-//                        newResult.setHomework_id(homeworkId);
-//                        newResult.setStudent_id(student.getStudent_id());
-//
-//                        Retrofit retrofit2 = new Retrofit.Builder()
-//                                .baseUrl("http://sinifdoktoruadmin.online/")
-//                                .addConverterFactory(GsonConverterFactory.create())
-//                                .build();
-//
-//                        HomeworkStudentsScreen.Result resultRequest = retrofit2.create(HomeworkStudentsScreen.Result.class);
-//
-//                        System.out.println(homeworkId);
-//                        System.out.println(student.getStudent_id());
-//                        resultRequest.getResult(homeworkId, student.getStudent_id()).enqueue(new Callback<HomeworkResultModel>(){
-//
-//                            @Override
-//                            public void onResponse(Call<HomeworkResultModel> call, Response<HomeworkResultModel> response) {
-//                                if(response.isSuccessful() && response.body() != null)
-//                                {
-//                                    HomeworkResultModel model = response.body();
-//                                    HomeworkResult result = model.getResult();
-//                                    System.out.println(result);
-//                                    o.setResult(result);
-//                                    System.out.println(new Gson().toJson(model.getResult()));
-//                                    if(result != null)
-//                                    {
-//                                        newResult.setGradedBefore(true);
-//                                        newResult.setHomework_result_id(result.getHomework_result_id());
-//                                    }
-//                                }
-//                            }
-//
-//                            @Override
-//                            public void onFailure(Call<HomeworkResultModel> call, Throwable t) {
-//
-//                            }
-//                        });
-
-                        //System.out.println(o.getResult());
-
-
                         System.out.println("HWID - " + o.getHomework_id());
                         LocalDate today = LocalDate.now(turkeyZone);
                         LocalDate localDate = LocalDate.parse(o.getDue_date(), formatter);
@@ -229,11 +180,9 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
             }
         });
 
-
-
-
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        // Set up filter option click listener
         View baselineFilterView = findViewById(R.id.filterView);
         baselineFilterView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -242,6 +191,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
             }
         });
 
+        // Set up search view listener
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -257,8 +207,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
     }
 
 
-
-    
     // This method is called when the user clicks on the filter icon
     private void showOverlay() {
         if (filterDialog == null) {
@@ -266,13 +214,10 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
             LayoutInflater inflater = LayoutInflater.from(this);
             View overlayView = inflater.inflate(R.layout.filter_overlay, null);
             builder.setView(overlayView);
-
             filterDialog = builder.create();
-
 
             // Set the dialog window attributes to make it a small overlay
             WindowManager.LayoutParams layoutParams = filterDialog.getWindow().getAttributes();
-
             layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
             layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
             layoutParams.gravity = Gravity.TOP | Gravity.CENTER;
@@ -283,63 +228,40 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
             CheckBox checkBox2 = overlayView.findViewById(R.id.checkBox2);
 
             // Add any additional customization or logic to the checkboxes here
-
-
             checkBox1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    hwModels.clear();
-
-                    if (checkBox2.isChecked())
-                        hwModels.addAll(expiredHws);
-
-                    if (isChecked)
-                        hwModels.addAll(ongoingHws);
-
-
-                    if (!isChecked && !checkBox2.isChecked()) {
-                        hwModels.addAll(expiredHws);
-                        hwModels.addAll(ongoingHws);
-                    }
-
-
-                    sortListByDate(hwModels);
-                    homeworkAdapter = new StudentHomeworkAdapter(context, hwModels, homeworkViewInterface);
-                    recyclerView.setAdapter(homeworkAdapter);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                    updateHomeworkList(isChecked, checkBox2.isChecked());
                 }
             });
 
             checkBox2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    hwModels.clear();
-
-                    if (checkBox1.isChecked())
-                        hwModels.addAll(ongoingHws);
-
-                    if (isChecked)
-                        hwModels.addAll(expiredHws);
-
-
-                    if (!isChecked && !checkBox1.isChecked()) {
-                        hwModels.addAll(expiredHws);
-                        hwModels.addAll(ongoingHws);
-                    }
-
-                    sortListByDate(hwModels);
-                    homeworkAdapter = new StudentHomeworkAdapter(context, hwModels, homeworkViewInterface);
-                    recyclerView.setAdapter(homeworkAdapter);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                    updateHomeworkList(checkBox1.isChecked(), isChecked);
                 }
             });
 
-            // Add any additional customization or logic to the checkboxes here
         }
         filterDialog.show();
     }
 
+    // Helper method to update homework list based on filter options
+    private void updateHomeworkList(boolean includeOngoing, boolean includeExpired) {
+        ArrayList<HwModel> filteredList = new ArrayList<>();
 
+        if (includeOngoing) filteredList.addAll(ongoingHws);
+        else if (includeExpired) filteredList.addAll(expiredHws);
+        else filteredList.addAll(hwModels);
+
+        sortListByDate(filteredList);
+
+        homeworkAdapter = new StudentHomeworkAdapter(context, filteredList, homeworkViewInterface);
+        recyclerView.setAdapter(homeworkAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+    }
+
+    // This method is called when an item in the RecyclerView is clicked
     @Override
     public void onClassroomHomeworkItemClick(HwModel clickedItem, View view) {
         // Create an AlertDialog.Builder object with the context of the itemView
@@ -349,7 +271,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
 
         // Inflate the overlay_layout.xml file into a View object
-
         View overlayView = inflater.inflate(R.layout.dialog_hw_detail, null);
         EditText courseName = overlayView.findViewById(R.id.homework_detail_course_name);
         EditText title = overlayView.findViewById(R.id.homework_detail_title);
@@ -357,26 +278,24 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         EditText content = overlayView.findViewById(R.id.homework_detail_content);
         ImageView imageView = overlayView.findViewById(R.id.homework_detail_image);
         Button gradeButton = overlayView.findViewById(R.id.give_grade_button);
-
         EditText parentNote = overlayView.findViewById(R.id.hw_parent_note_edittext);
         EditText studentNote = overlayView.findViewById(R.id.hw_student_note_edittext);
 
-
+        // Set visibility of parent note based on user type
         if(LocalDataManager.getSharedPreference(getApplicationContext(), "USER", "unknown").equals("STUDENT"))
-        {
-            TextInputLayout pn =overlayView.findViewById(R.id.hw_parent_note);
-            pn.setVisibility(View.GONE);
-        }
+            overlayView.findViewById(R.id.hw_parent_note).setVisibility(View.GONE);
 
+
+
+        // Set content based on the clicked homework item
         if(clickedItem.getResult() != null)
         {
             parentNote.setText(clickedItem.getResult().getNote_for_parent());
-            studentNote.setText(""+clickedItem.getResult().getGrade());
+            studentNote.setText(String.valueOf(clickedItem.getResult().getGrade()));
         }
 
 
         gradeButton.setVisibility(View.GONE);
-
         courseName.setEnabled(false);
         title.setEnabled(false);
         dueDate.setEnabled(false);
@@ -388,10 +307,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         title.setText(clickedItem.getTitle());
         dueDate.setText(clickedItem.getDue_date());
         content.setText(clickedItem.getInfo());
-
-
-
-
 
         // If the clickedItem has no image, do not open the full screen view
         if(clickedItem.getGetImage() != null){
@@ -429,11 +344,13 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         dialog.show();
     }
 
+    // This method is called when the "Edit" option is clicked for a homework item
     @Override
     public void onClassroomHomeworkEditClick(HwModel clickedItem, View view) {
 
     }
 
+    // Helper method to sort the list of homework items by date
     private void sortListByDate(ArrayList<HwModel> list){
         ZoneId turkeyZone = ZoneId.of("Europe/Istanbul");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

@@ -59,12 +59,22 @@ import retrofit2.http.GET;
  * required for displaying the home page.
  */
 public class HomePageFragment extends Fragment {
+    // List to store events
     ArrayList<Event> events = new ArrayList<>();
+
+    // List to store slide models for image slider
     ArrayList<SlideModel> slideModels = new ArrayList<>();
+
+    // Singleton instance of HomePageFragment
     private static HomePageFragment instance = null;
+
+    // Flag to track whether data has been pulled from the server
     private boolean isPulled = false;
+
+    // View of the current instance
     private View curView;
 
+    // Retrofit interface for fetching events and announcements
     interface EventAndAnnouncement{
         @GET("api/v1/event/announcement")
         Call<EventAndAnnouncements> getEventAndAnnouncement();
@@ -76,6 +86,12 @@ public class HomePageFragment extends Fragment {
         // Required empty public constructor
     }
 
+    /**
+     * Creates a new instance of HomePageFragment.
+     *
+     * @param param1 Content parameter
+     * @return An instance of HomePageFragment
+     */
     public static HomePageFragment newInstance(String param1) {
 
         if(instance == null)
@@ -221,6 +237,12 @@ public class HomePageFragment extends Fragment {
         }
     }
 
+    /**
+     * Sets up the image slider with the provided slide models and events.
+     *
+     * @param slideModels List of slide models for the image slider
+     * @param events      List of events
+     */
     private void setImageSlider(ArrayList<SlideModel> slideModels, ArrayList<Event> events)
     {
 
@@ -240,7 +262,7 @@ public class HomePageFragment extends Fragment {
                     VibrationEffect effect = VibrationEffect.createOneShot(15, VibrationEffect.DEFAULT_AMPLITUDE);
                     vibrator.vibrate(effect);
                 }
-                //SlideModel currentEvent = slideModels.get(i);
+
                 Event currentEvent = events.get(i);
                 AlertDialog.Builder builder = new AlertDialog.Builder(curView.getContext());
                 LayoutInflater inflater = LayoutInflater.from(curView.getContext());

@@ -72,9 +72,12 @@ import retrofit2.http.POST;
 /**
  * This class represents the main login screen of the application.
  * It allows users to enter their username and password and login as either a Student, Teacher, or Parent.
+ * Provides functionality for user authentication and password change.
+ *
  */
 public class MainActivity extends AppCompatActivity {
 
+    // Retrofit interface for handling user-related requests
     public interface RequestUser {
         @POST("api/v1/login")
         Call<UserRespond> postUser(@Body LoginRequest loginRequest);
@@ -89,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         Call<UserRespond> changePasswordParent(@Body ChangePasswordParent parent);
     }
 
+    // UI elements
     EditText username;
     EditText password;
     CheckBox checkBox;
@@ -112,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
         checkBox = (CheckBox) findViewById(R.id.saveLoginCheckBox);
         loginButton = (MaterialButton) findViewById(R.id.loginButton);
 
+        // Set up remember me checkbox
         Boolean isRemember = LocalDataManager.getSharedPreference(getApplicationContext(), "isRemember", "noValue").equals("true");
         checkBox.setChecked(isRemember);
 
@@ -133,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        // Auto-login if remember me is checked
         if(isRemember)
         {
             String username = LocalDataManager.getSharedPreference(getApplicationContext(), "username", "noValue");
@@ -156,6 +161,12 @@ public class MainActivity extends AppCompatActivity {
         return !name.isEmpty() && !pass.isEmpty();
     }
 
+    /**
+     * Handles the user login process, makes a request to the server, and navigates to the respective user's main activity.
+     *
+     * @param username The entered username.
+     * @param password The entered password.
+     */
     private void login(String username, String password)
     {
         Retrofit retrofit = new Retrofit.Builder()
