@@ -30,6 +30,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.FragmentManager;
@@ -136,6 +137,13 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_classroom_homework_screen);
+
+        // Get the ActionBar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            // Set the title
+            actionBar.setTitle("");
+        }
 
         recyclerView = findViewById(R.id.hwRecyclerView_classroom);
 
@@ -300,7 +308,8 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
     public void showHwDialog()
     {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        HomeworkDialogFragment newFragment = new HomeworkDialogFragment();
+        HomeworkDialogFragment newFragment = new HomeworkDialogFragment(homeworkAdapter);
+
 
         Bundle args = new Bundle();
         args.putSerializable("teacher", getIntent().getSerializableExtra("teacher"));
@@ -404,7 +413,12 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         EditText title = overlayView.findViewById(R.id.homework_detail_title);
         EditText dueDate = overlayView.findViewById(R.id.homework_detail_duedate);
         EditText content = overlayView.findViewById(R.id.homework_detail_content);
+
+        if(teacher1 != null)
+            overlayView.findViewById(R.id.linearLayout2).setVisibility(View.INVISIBLE);
+
         ImageView imageView = overlayView.findViewById(R.id.homework_detail_image);
+        Button gradeButton = overlayView.findViewById(R.id.give_grade_button);
 
         courseName.setEnabled(false);
         title.setEnabled(false);
@@ -416,6 +430,20 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         dueDate.setText(clickedItem.getDue_date());
         content.setText(clickedItem.getInfo());
 
+
+
+        gradeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent homeworkGradeIntent = new Intent(ClassroomHomeworkScreen.this, HomeworkStudentsScreen.class);
+
+                homeworkGradeIntent.putExtra("students", (Serializable) students);
+                homeworkGradeIntent.putExtra("classroom", teacher1.getClassroom());
+                homeworkGradeIntent.putExtra("homeworkId", clickedItem.getHomework_id());
+                startActivity(homeworkGradeIntent);
+
+            }
+        });
 
         // If the clickedItem has no image, do not open the full screen view
         if (clickedItem.getGetImage() != null) {
@@ -462,7 +490,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         Button hw_adding_image = overlayView.findViewById(R.id.hw_adding_image);
         TextView hw_dialog_title = overlayView.findViewById(R.id.fullscreen_hw_title);
 
-        hw_dialog_title.setText("Edit Homework");
+        hw_dialog_title.setText("Ödevi Düzenle");
 
         hw_adding_image.setOnClickListener(new View.OnClickListener() {
             @Override

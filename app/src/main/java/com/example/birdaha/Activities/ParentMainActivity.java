@@ -17,6 +17,7 @@ import android.view.animation.AnimationUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -106,6 +107,13 @@ public class ParentMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parent_main);
 
+        // Get the ActionBar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            // Set the title
+            actionBar.setTitle("");
+        }
+
         Service.start(NotificationJobService.class, this, 102, "notification");
 
         drawerLayout = (DrawerLayout) findViewById(R.id.DrawerLayout_window_field);
@@ -156,12 +164,12 @@ public class ParentMainActivity extends AppCompatActivity {
                 }
 
                 if(!(f instanceof NotificationFragment))
-                    navigationManager.showFragment(NotificationFragment.newInstance("userId",parent.getName(), parent.getParent_id(),"parent"), false);
+                    navigationManager.showFragment(NotificationFragment.newInstance("userId",parent.getName(), parent.getParent_id(),"parent",0), false);
 
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
-
+    /*
         TextView TextView_logout = findViewById(R.id.TextView_logout);
         TextView_logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,7 +179,7 @@ public class ParentMainActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
-        });
+        });*/
     }
 
     private void setupExpandableListViewAnimation(final Animation animation) {

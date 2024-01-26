@@ -1,5 +1,6 @@
 package com.example.birdaha.Activities;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -106,6 +107,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main); // Set the content view to the main login layout
 
+        // Get the ActionBar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            // Set the title
+            actionBar.setTitle("");
+        }
         // Find and initialize UI elements
         username = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
@@ -179,6 +186,9 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("Respond", new Gson().toJson(respond.getUser()).toString());
                     switch (response.code()) {
                         case 201:
+
+                            LocalDataManager.setSharedPreference(getApplicationContext(), "USER", "TEACHER");
+
                             List<Classroom> classrooms = respond.getUser().getClassrooms();
                             Lecture course = respond.getUser().getCourse();
                             Log.d("Course", course.getName());
@@ -260,6 +270,9 @@ public class MainActivity extends AppCompatActivity {
                             }
                             break;
                         case 202:
+
+                            LocalDataManager.setSharedPreference(getApplicationContext(), "USER", "STUDENT");
+
                             Classroom classroom = respond.getUser().getClassroom();
                             Log.d("Classroom", classroom.getName());
                             Student student = new Student(user.getName(), user.getStudent_id(), classroom, user.getSchool_no());
@@ -339,6 +352,9 @@ public class MainActivity extends AppCompatActivity {
                             }
                             break;
                         case 203:
+
+                            LocalDataManager.setSharedPreference(getApplicationContext(), "USER", "PARENT");
+
                             Parent parent = new Parent(user.getName(), user.getParent_id(), user.getStudents());
                             SharedPreferences preferences = getSharedPreferences("ParentPrefs",Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = preferences.edit();

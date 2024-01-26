@@ -58,7 +58,7 @@ public class NotificationFragment extends Fragment {
      * @param param1 Title content to be displayed.
      * @return A new instance of NotificationFragment.
      */
-    public static NotificationFragment newInstance(String param1,String name,int userId,String userType) {
+    public static NotificationFragment newInstance(String param1,String name,int userId,String userType,long schoolNo) {
         if(instance == null)
         {
             instance = new NotificationFragment();
@@ -66,6 +66,7 @@ public class NotificationFragment extends Fragment {
             args.putString("name",name);
             args.putInt("userId",userId);
             args.putString("userType",userType);
+            args.putLong("schoolNo",schoolNo);
             args.putString(KEY_TITLE, param1);
             instance.setArguments(args);
         }
@@ -113,7 +114,14 @@ public class NotificationFragment extends Fragment {
         if(bundle != null){
             int userId = bundle.getInt("userId");
             name.setText(bundle.getString("name"));
-            id.setText(String.valueOf(userId));
+            long schoolno = bundle.getLong("schoolNo");
+            if(schoolno != 0){
+                id.setText(String.valueOf(schoolno));
+            }
+            else{
+                id.setVisibility(View.INVISIBLE);
+            }
+            //id.setText(String.valueOf(userId));
 
             String userType = bundle.getString("userType");
             if(userType.equals("teacher")){

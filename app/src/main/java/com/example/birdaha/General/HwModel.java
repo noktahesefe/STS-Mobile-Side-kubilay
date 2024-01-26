@@ -2,6 +2,7 @@ package com.example.birdaha.General;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 
 public class HwModel implements Serializable, Comparable<HwModel> {
@@ -19,6 +20,17 @@ public class HwModel implements Serializable, Comparable<HwModel> {
 
     @SerializedName("content")
     private String info;
+
+    private ArrayList<HomeworkResult> results;
+
+    public HomeworkResult getResult() {
+        if(!results.isEmpty())
+            return results.get(0);
+        else
+            return null;
+    }
+
+
 
     public HwModel(int classroom_id, int teacher_id, String course_name, String dueDate, String title, String info, String image){
         this.classroom_id = classroom_id;

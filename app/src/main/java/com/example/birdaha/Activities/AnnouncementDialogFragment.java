@@ -3,6 +3,7 @@ package com.example.birdaha.Activities;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +14,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.birdaha.Adapters.ClassAnnouncementAdapter;
 import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.General.ClassAnnouncementModel;
 import com.example.birdaha.General.UpdateRespond;
@@ -38,6 +41,11 @@ public class AnnouncementDialogFragment extends DialogFragment {
 
     private String image;
 
+    private ClassAnnouncementAdapter classAnnouncementAdapter;
+
+    public AnnouncementDialogFragment(ClassAnnouncementAdapter classAnnouncementAdapter) {
+        this.classAnnouncementAdapter = classAnnouncementAdapter;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -53,10 +61,17 @@ public class AnnouncementDialogFragment extends DialogFragment {
         TextView actionButton = view.findViewById(R.id.fullscreen_dialog_action);
         actionButton.setOnClickListener(v -> {
 
+            if(TextUtils.isEmpty(announcement_title.getText())){
+                Toast.makeText(requireContext(), "Duyuru adı ekleyiniz", Toast.LENGTH_SHORT).show();
+                return;
+            }
             String title = announcement_title.getText().toString();
             String content = announcement_content.getText().toString();
-
             ClassAnnouncementModel announcement = new ClassAnnouncementModel(title, content, classroom.getClassroom_id(), teacher.getTeacher_id());
+
+            classAnnouncementAdapter.getClassAnnouncementModels().add(announcement);
+            classAnnouncementAdapter.notifyDataSetChanged();
+
             announcement.setTeacher(teacher);
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("http://sinifdoktoruadmin.online/")
@@ -90,6 +105,7 @@ public class AnnouncementDialogFragment extends DialogFragment {
             teacher = (Teacher) getArguments().getSerializable("teacher");
             classroom = (Classroom) getArguments().getSerializable("classroom");
         }
+
     }
 
     // The system calls this only when creating the layout in a dialog.

@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -84,6 +85,13 @@ public class TeacherMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teacher_main);
         EventBus.getDefault().register(this);
+
+        // Get the ActionBar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            // Set the title
+            actionBar.setTitle("");
+        }
 
         Service.start(NotificationJobService.class, this, 102, "notification");
 
@@ -172,13 +180,15 @@ public class TeacherMainActivity extends AppCompatActivity {
                 }
 
                 if (!(f instanceof NotificationFragment))
-                    navigationManager.showFragment(NotificationFragment.newInstance("userId", teacher.getName(),teacher.getTeacher_id(),"teacher"), false);
+                    navigationManager.showFragment(NotificationFragment.newInstance("userId", teacher.getName(),teacher.getTeacher_id(),"teacher",0), false);
 
 
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
 
+
+        /*
         TextView TextView_logout = findViewById(R.id.TextView_logout);
         TextView_logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -189,6 +199,7 @@ public class TeacherMainActivity extends AppCompatActivity {
                 finish();
             }
         });
+        */
 
     }
 

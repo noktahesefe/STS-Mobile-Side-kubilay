@@ -15,10 +15,13 @@
         android:gravity="top"
         android:text="@string/student_classroom"
         android:textAppearance="@style/student_info_green"
+        android:textSize="25sp"
         app:layout_constraintBottom_toTopOf="@+id/classroom_info"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.061"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.045"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/classroom_info"
@@ -27,6 +30,7 @@
         android:layout_below="@id/classroom_name"
         android:layout_marginBottom="22dp"
         android:text="@string/student_classroom_info"
+        android:textSize="23sp"
         android:textAppearance="@style/student_info_white"
         app:layout_constraintBottom_toTopOf="@+id/classroom_announcements"
         app:layout_constraintEnd_toEndOf="parent"

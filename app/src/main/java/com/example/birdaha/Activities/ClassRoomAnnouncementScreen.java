@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.FragmentManager;
@@ -71,6 +72,12 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_classroom_announcement_screen);
+        // Get the ActionBar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            // Set the title
+            actionBar.setTitle("");
+        }
         RecyclerView recyclerView = findViewById(R.id.caRecyclerView_classroom);
 
         search = findViewById(R.id.searchView_students);
@@ -144,7 +151,7 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
     public void showAnnouncementDialog()
     {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        AnnouncementDialogFragment newFragment = new AnnouncementDialogFragment();
+        AnnouncementDialogFragment newFragment = new AnnouncementDialogFragment(classAnnouncementAdapter);
 
         Bundle args = new Bundle();
         args.putSerializable("teacher", getIntent().getSerializableExtra("teacher"));
@@ -176,6 +183,7 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
 
         title.setEnabled(false);
         details.setEnabled(false);
+        teacherName.setEnabled(false);
 
 
         builder.setView(overlayView);
@@ -194,7 +202,7 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
 
         TextView hw_dialog_title = overlayView.findViewById(R.id.fullscreen_ann_title);
 
-        hw_dialog_title.setText("Edit Announcement");
+        hw_dialog_title.setText("Duyuruyu Düzenle");
 
         title.setText(clickedItem.getTitle());
         details.setText(clickedItem.getDetails());
@@ -230,10 +238,12 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
                     public void onResponse(Call<UpdateRespond> call, Response<UpdateRespond> response) {
                         if(response.isSuccessful() && response.body() != null){
                             Toast.makeText(ClassRoomAnnouncementScreen.this, "Duyuru başarıyla güncellendi", Toast.LENGTH_SHORT).show();
-
+                            classAnnouncementAdapter.notifyDataSetChanged();
+                            Intent intent = new Intent(ClassRoomAnnouncementScreen.this,ClassRoomAnnouncementScreen.class);
+                            startActivity(intent);
                         }
                         else{
-                            Toast.makeText(ClassRoomAnnouncementScreen.this, "Hata oluştu!" + response.code(), Toast.LENGTH_SHORT).show();
+                          Toast.makeText(ClassRoomAnnouncementScreen.this, "Hata oluştu!" + response.code(), Toast.LENGTH_SHORT).show();
                         }
                     }
 

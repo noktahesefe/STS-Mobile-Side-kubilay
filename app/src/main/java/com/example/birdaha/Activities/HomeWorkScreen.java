@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,6 +32,8 @@ import com.bumptech.glide.Glide;
 import com.example.birdaha.Adapters.HomeworkAdapter;
 import com.example.birdaha.Adapters.StudentHomeworkAdapter;
 import com.example.birdaha.Classrooms.Classroom;
+import com.example.birdaha.General.HomeworkResult;
+import com.example.birdaha.General.HomeworkResultModel;
 import com.example.birdaha.General.HomeworksStudent;
 import com.example.birdaha.General.HwModel;
 import com.example.birdaha.General.NotificationDataModel;
@@ -42,6 +45,7 @@ import com.example.birdaha.R;
 import com.example.birdaha.Users.Student;
 import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 import com.example.birdaha.Utilities.NotificationService.NotificationJobService;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 
 import java.time.LocalDate;
@@ -71,6 +75,13 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
                                             @Path("studentId") int studentId);
     }
 
+    interface Result {
+        @GET("/api/v1/homework/result/{homeworkId}/{studentId}")
+        Call<HomeworkResultModel> getResult(@Path("homeworkId") int homeworkId, @Path("studentId") int studentId);
+
+    }
+
+
     SearchView search;
     ArrayList<HwModel> hwModels = new ArrayList<>();
     private RecyclerView recyclerView;
@@ -82,11 +93,18 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
     private ArrayList<HwModel> ongoingHws;
 
     private AlertDialog filterDialog = null;
-
+    private Student student = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_work_screen);
+
+        // Get the ActionBar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            // Set the title
+            actionBar.setTitle("");
+        }
 
         search = findViewById(R.id.searchView_homework);
 
@@ -97,7 +115,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         context = this;
         homeworkViewInterface = this;
 
-        Student student = null;
         Classroom classroom = null;
 
         Intent intent = getIntent();
@@ -150,6 +167,49 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
                     }
                     for(HwModel o : hwModels)
                     {
+//                        HomeworkResult newResult = new HomeworkResult();
+//                        int homeworkId = o.getHomework_id();
+//
+//                        newResult.setHomework_id(homeworkId);
+//                        newResult.setStudent_id(student.getStudent_id());
+//
+//                        Retrofit retrofit2 = new Retrofit.Builder()
+//                                .baseUrl("http://sinifdoktoruadmin.online/")
+//                                .addConverterFactory(GsonConverterFactory.create())
+//                                .build();
+//
+//                        HomeworkStudentsScreen.Result resultRequest = retrofit2.create(HomeworkStudentsScreen.Result.class);
+//
+//                        System.out.println(homeworkId);
+//                        System.out.println(student.getStudent_id());
+//                        resultRequest.getResult(homeworkId, student.getStudent_id()).enqueue(new Callback<HomeworkResultModel>(){
+//
+//                            @Override
+//                            public void onResponse(Call<HomeworkResultModel> call, Response<HomeworkResultModel> response) {
+//                                if(response.isSuccessful() && response.body() != null)
+//                                {
+//                                    HomeworkResultModel model = response.body();
+//                                    HomeworkResult result = model.getResult();
+//                                    System.out.println(result);
+//                                    o.setResult(result);
+//                                    System.out.println(new Gson().toJson(model.getResult()));
+//                                    if(result != null)
+//                                    {
+//                                        newResult.setGradedBefore(true);
+//                                        newResult.setHomework_result_id(result.getHomework_result_id());
+//                                    }
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onFailure(Call<HomeworkResultModel> call, Throwable t) {
+//
+//                            }
+//                        });
+
+                        //System.out.println(o.getResult());
+
+
                         System.out.println("HWID - " + o.getHomework_id());
                         LocalDate today = LocalDate.now(turkeyZone);
                         LocalDate localDate = LocalDate.parse(o.getDue_date(), formatter);
@@ -161,9 +221,10 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
                     }
 
                     sortListByDate(hwModels);
-                    homeworkAdapter = new StudentHomeworkAdapter(context, (ArrayList<HwModel>) hwModels, homeworkViewInterface);
+                    homeworkAdapter = new StudentHomeworkAdapter(context, hwModels, homeworkViewInterface);
                     recyclerView.setAdapter(homeworkAdapter);
                     Toast.makeText(HomeWorkScreen.this, "Ödevler Listeleniyor", Toast.LENGTH_SHORT).show();
+
                 }
                 else{
                     Toast.makeText(HomeWorkScreen.this, "Response Unsuccessful", Toast.LENGTH_SHORT).show();
@@ -172,8 +233,12 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
             @Override
             public void onFailure(Call<HomeworksStudent> call, Throwable t) {
                 Toast.makeText(HomeWorkScreen.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                System.out.println(t.getMessage());
             }
         });
+
+
+
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -301,17 +366,38 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         ImageView imageView = overlayView.findViewById(R.id.homework_detail_image);
         Button gradeButton = overlayView.findViewById(R.id.give_grade_button);
 
+        EditText parentNote = overlayView.findViewById(R.id.hw_parent_note_edittext);
+        EditText studentNote = overlayView.findViewById(R.id.hw_student_note_edittext);
+
+
+        if(LocalDataManager.getSharedPreference(getApplicationContext(), "USER", "unknown").equals("STUDENT"))
+        {
+            TextInputLayout pn =overlayView.findViewById(R.id.hw_parent_note);
+            pn.setVisibility(View.GONE);
+        }
+
+        if(clickedItem.getResult() != null)
+        {
+            parentNote.setText(clickedItem.getResult().getNote_for_parent());
+            studentNote.setText(""+clickedItem.getResult().getGrade());
+        }
+
+
         gradeButton.setVisibility(View.GONE);
 
         courseName.setEnabled(false);
         title.setEnabled(false);
         dueDate.setEnabled(false);
         content.setEnabled(false);
+        parentNote.setEnabled(false);
+        studentNote.setEnabled(false);
 
         courseName.setText(clickedItem.getCourse_name());
         title.setText(clickedItem.getTitle());
         dueDate.setText(clickedItem.getDue_date());
         content.setText(clickedItem.getInfo());
+
+
 
 
 

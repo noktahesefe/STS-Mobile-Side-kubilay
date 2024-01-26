@@ -32,6 +32,7 @@ import com.denzcoskun.imageslider.constants.AnimationTypes;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.interfaces.ItemClickListener;
 import com.denzcoskun.imageslider.models.SlideModel;
+import com.example.birdaha.Adapters.HomeworkAdapter;
 import com.example.birdaha.General.Event;
 import com.example.birdaha.General.EventAndAnnouncements;
 import com.example.birdaha.General.GeneralAnnouncement;
@@ -71,6 +72,7 @@ public class HomePageFragment extends Fragment {
     }
 
     private static final String KEY_TITLE = "Content";
+
 
     private HomePageFragment() {
         // Required empty public constructor
@@ -121,7 +123,11 @@ public class HomePageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_home_page, container, false);
+        View layout = inflater.inflate(R.layout.fragment_home_page, container, false);
+        if(isPulled)
+            layout.findViewById(R.id.responselayout).setVisibility(View.GONE);
+
+        return layout;
     }
 
     @Override
@@ -191,6 +197,8 @@ public class HomePageFragment extends Fragment {
                     }
 
                     isPulled = true;
+                    curView.findViewById(R.id.responselayout).setVisibility(View.GONE);
+
                 }
                 @Override
                 public void onFailure(Call<EventAndAnnouncements> call, Throwable t) {
