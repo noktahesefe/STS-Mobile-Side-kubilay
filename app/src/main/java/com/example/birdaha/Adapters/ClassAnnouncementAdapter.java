@@ -36,7 +36,7 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
 
     Context context;
     private final ClassAnnouncementViewInterface classAnnouncementViewInterface;
-    ArrayList<ClassAnnouncementModel> classAnnouncementModels;
+    public ArrayList<ClassAnnouncementModel> classAnnouncementModels;
     ArrayList<ClassAnnouncementModel> classAnnouncementModelsFiltered;
     private Teacher teacher;
 
@@ -49,6 +49,14 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
         this.classAnnouncementViewInterface = classAnnouncementViewInterface;
         this.teacher = teacher;
         this.isTeacher = isTeacher;
+    }
+
+    public ArrayList<ClassAnnouncementModel> getClassAnnouncementModels() {
+        return classAnnouncementModels;
+    }
+
+    public void setClassAnnouncementModels(ArrayList<ClassAnnouncementModel> classAnnouncementModels) {
+        this.classAnnouncementModels = classAnnouncementModels;
     }
 
     /**

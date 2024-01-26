@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -29,12 +30,16 @@ import com.example.birdaha.Fragments.NotificationFragment;
 import com.example.birdaha.Fragments.StudentProfileFragment;
 import com.example.birdaha.Helper.FragmentNavigationManager;
 import com.example.birdaha.Helper.LocalDataManager;
+import com.example.birdaha.Helper.ProfilePictureChangeEvent;
 import com.example.birdaha.Interface.NavigationManager;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Student;
 import com.example.birdaha.Users.Teacher;
+import com.example.birdaha.Utilities.NotificationService.NotificationJobService;
+import com.example.birdaha.Utilities.NotificationService.Service;
 
-import java.util.Arrays;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 
 /**
@@ -44,6 +49,7 @@ import java.util.Arrays;
  * It extends AppCompatActivity to ensure compatibility across various Android versions.
  */
 public class StudentMainActivity extends AppCompatActivity {
+
 
     /***
      * DrawerLayout for menu usage
@@ -60,6 +66,7 @@ public class StudentMainActivity extends AppCompatActivity {
      */
     private NavigationManager navigationManager;
 
+    private ImageView studentPhoto;
 
     /**
      * Called when the activity is created.
@@ -76,10 +83,22 @@ public class StudentMainActivity extends AppCompatActivity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_main);
+        EventBus.getDefault().register(this);
+
+        // Get the ActionBar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            // Set the title
+            actionBar.setTitle("");
+        }
+
+        Service.start(NotificationJobService.class, this, 102, "notification");
+
 
         drawerLayout = (DrawerLayout) findViewById(R.id.DrawerLayout_window_field);
         TextView nameSurname = drawerLayout.findViewById(R.id.TextView_student_name_surname);
-        ImageView studentPhoto = drawerLayout.findViewById(R.id.ImageView_person_photo);
+        studentPhoto = drawerLayout.findViewById(R.id.ImageView_person_photo);
+
         Intent intent = getIntent();
         if(intent != null){
             Student student = (Student) intent.getSerializableExtra("user");
@@ -153,13 +172,19 @@ public class StudentMainActivity extends AppCompatActivity {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 Fragment f = fragmentManager.findFragmentById(R.id.FrameLayout_container);
 
+                Student student = null;
+                if(getIntent() != null){
+                    student = (Student) getIntent().getSerializableExtra("user");
+                }
+
                 if(!(f instanceof NotificationFragment))
-                    navigationManager.showFragment(NotificationFragment.newInstance("userId"), false);
+                    navigationManager.showFragment(NotificationFragment.newInstance("userId",student.getName(), student.getStudent_id(),"student",student.getSchool_no()), false);
 
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
 
+        /*
         TextView TextView_logout = findViewById(R.id.TextView_logout);
         TextView_logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -170,6 +195,7 @@ public class StudentMainActivity extends AppCompatActivity {
                 finish();
             }
         });
+        */
 
     }
 
@@ -282,4 +308,41 @@ public class StudentMainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Subscribe
+    public void onProfilePictureChange(ProfilePictureChangeEvent event){
+        boolean profilePictureDeleted = event.isProfilePictureDeleted();
+        boolean profilePictureChanged = event.isProfilePictureChanged();
+
+        if(profilePictureDeleted){
+            Glide.with(this)
+                    .load(R.drawable.baseline_person_24)
+                    .circleCrop()
+                    .into(studentPhoto);
+        }
+        if(profilePictureChanged){
+            Intent intent = getIntent();
+            if(intent != null){
+                Student student = (Student) intent.getSerializableExtra("user");
+                SharedPreferences preferences = getSharedPreferences("StudentPrefs", Context.MODE_PRIVATE);
+                String key = "profile_data_" + student.getStudent_id();
+                String combinedData = preferences.getString(key,"");
+                String[] dataParts = combinedData.split("\\|");
+                //System.out.println(Arrays.toString(dataParts));
+                if(dataParts.length == 2){
+                    int studentId = Integer.parseInt(dataParts[0]);
+                    String encodedImage = dataParts[1];
+                    if(student.getStudent_id() == studentId){
+                        byte[] byteArray = Base64.decode(encodedImage,Base64.DEFAULT);
+                        Bitmap decodedImage = BitmapFactory.decodeByteArray(byteArray,0, byteArray.length);
+                        Glide.with(this)
+                                .load(decodedImage)
+                                .circleCrop()
+                                .into(studentPhoto);
+                    }
+                }
+            }
+        }
+    }
+
 }

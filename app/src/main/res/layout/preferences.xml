@@ -37,6 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
+                android:id="@+id/preferencesName"
                 android:text="Student Name"
                 android:textColor="@color/white"
                 android:textSize="22sp"
@@ -45,6 +46,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/preferencesId"
                 android:text="Student ID: 123456789"
                 android:textColor="#979797"
                 android:layout_gravity="center"
@@ -86,6 +88,7 @@
                     <androidx.appcompat.widget.SwitchCompat
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:id="@+id/notificationsSwitch"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:switchMinWidth="50dp"
@@ -118,6 +121,7 @@
                     <androidx.appcompat.widget.SwitchCompat
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:id="@+id/vibrateSwitch"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:switchMinWidth="50dp" />
@@ -148,6 +152,7 @@
                     <androidx.appcompat.widget.SwitchCompat
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:id="@+id/soundSwitch"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:switchMinWidth="50dp" />
@@ -188,6 +193,7 @@
                         android:textColorHint="@color/white"
                         app:startIconDrawable="@drawable/baseline_key_24">
                         <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/oldPassword"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColorHint="@color/white"
@@ -205,6 +211,7 @@
                         app:passwordToggleTint="@color/white"
                         app:startIconDrawable="@drawable/baseline_key_24">
                         <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/newPassword"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textPassword"
@@ -223,6 +230,7 @@
                         app:passwordToggleTint="@color/white"
                         app:startIconDrawable="@drawable/baseline_key_24">
                         <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/confirmPassword"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textPassword"
@@ -234,6 +242,7 @@
                     <Button
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:id="@+id/changePasswordButton"
                         android:layout_marginTop="20dp"
                         style="@style/PurpleButton"
                         android:text="Şifreyi Değiştir" />
@@ -245,7 +254,7 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/logoutButton"
                 android:layout_margin="15dp"
                 style="@style/PurpleButton"
                 android:padding="10dp"

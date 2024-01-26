@@ -50,6 +50,11 @@ public class StudentHomeworkAdapter extends RecyclerView.Adapter<StudentHomework
         String formattedDateTime = localDate.format(formatter);
 
         HwModel current = hwModels.get(position);
+        if(current.getResult() != null)
+            holder.grade.setText(""+current.getResult().getGrade());
+        else
+            holder.grade.setText("Not: /");
+
         holder.textViewname.setText(current.getTitle());
         holder.textViewname.setBackground((current.getDue_date().compareTo(formattedDateTime) < 0) ? context.getDrawable(R.drawable.darkgray_round_background) : context.getDrawable(R.drawable.blue_round_background));
 
@@ -64,6 +69,7 @@ public class StudentHomeworkAdapter extends RecyclerView.Adapter<StudentHomework
                 }
             }
         });
+
     }
 
     @Override
@@ -107,8 +113,8 @@ public class StudentHomeworkAdapter extends RecyclerView.Adapter<StudentHomework
 
     public static class HomeworkViewHolder extends RecyclerView.ViewHolder{
 
-        TextView textViewTitle;
         TextView textViewname;
+        TextView grade;
 
         /**
          * Constructor for HomeworkViewHolder.
@@ -125,6 +131,8 @@ public class StudentHomeworkAdapter extends RecyclerView.Adapter<StudentHomework
 
             // Initialize the cardView variable with the view from the layout with id cardView
             textViewname = itemView.findViewById(R.id.student_homework_title);
+            grade = itemView.findViewById(R.id.student_hw_grade);
+
         }
     }
 }

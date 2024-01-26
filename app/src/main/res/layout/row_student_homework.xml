@@ -32,7 +32,7 @@
 
         <TextView
             android:id="@+id/student_hw_grade"
-            android:layout_width="45dp"
+            android:layout_width="55dp"
             android:layout_height="match_parent"
             android:layout_marginStart="6dp"
             android:layout_marginTop="2dp"
@@ -45,7 +45,8 @@
             android:background="@drawable/gray_round_background"
             android:elevation="10dp"
             android:gravity="center"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:minHeight="55dp"/>
 
     </LinearLayout>
 </LinearLayout>

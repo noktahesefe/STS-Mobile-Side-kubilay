@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -29,9 +30,17 @@ import com.example.birdaha.Fragments.NotificationFragment;
 import com.example.birdaha.Fragments.TeacherProfileFragment;
 import com.example.birdaha.Helper.FragmentNavigationManager;
 import com.example.birdaha.Helper.LocalDataManager;
+import com.example.birdaha.Helper.ProfilePictureChangeEvent;
 import com.example.birdaha.Interface.NavigationManager;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Teacher;
+import com.example.birdaha.Utilities.NotificationService.NotificationJobService;
+import com.example.birdaha.Utilities.NotificationService.Service;
+
+import java.util.Arrays;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Arrays;
 
@@ -58,6 +67,7 @@ public class TeacherMainActivity extends AppCompatActivity {
      * NavigationManager for switch between fragments
      */
     private NavigationManager navigationManager;
+    private ImageView teacherPhoto;
 
     /**
      * Called when the activity is created.
@@ -74,10 +84,20 @@ public class TeacherMainActivity extends AppCompatActivity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teacher_main);
+        EventBus.getDefault().register(this);
+
+        // Get the ActionBar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            // Set the title
+            actionBar.setTitle("");
+        }
+
+        Service.start(NotificationJobService.class, this, 102, "notification");
 
         drawerLayout = (DrawerLayout) findViewById(R.id.DrawerLayout_window_field);
         TextView nameSurname = drawerLayout.findViewById(R.id.TextView_teacher_name_surname);
-        ImageView teacherPhoto = drawerLayout.findViewById(R.id.ImageView_person_photo);
+        teacherPhoto = drawerLayout.findViewById(R.id.ImageView_person_photo);
         Intent intent = getIntent();
         if (intent != null) {
             Teacher teacher = (Teacher) intent.getSerializableExtra("user");
@@ -154,13 +174,21 @@ public class TeacherMainActivity extends AppCompatActivity {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 Fragment f = fragmentManager.findFragmentById(R.id.FrameLayout_container);
 
+                Teacher teacher = null;
+                if(getIntent() != null){
+                    teacher = (Teacher) getIntent().getSerializableExtra("user");
+                }
+
                 if (!(f instanceof NotificationFragment))
-                    navigationManager.showFragment(NotificationFragment.newInstance("userId"), false);
+                    navigationManager.showFragment(NotificationFragment.newInstance("userId", teacher.getName(),teacher.getTeacher_id(),"teacher",0), false);
+
 
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
 
+
+        /*
         TextView TextView_logout = findViewById(R.id.TextView_logout);
         TextView_logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,6 +199,7 @@ public class TeacherMainActivity extends AppCompatActivity {
                 finish();
             }
         });
+        */
 
     }
 
@@ -284,5 +313,41 @@ public class TeacherMainActivity extends AppCompatActivity {
             return true;
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Subscribe
+    public void onProfilePictureChanged(ProfilePictureChangeEvent event){
+        boolean profilePictureDeleted = event.isProfilePictureDeleted();
+        boolean profilePictureChanged = event.isProfilePictureChanged();
+
+        if(profilePictureDeleted){
+            Glide.with(this)
+                    .load(R.drawable.baseline_person_24)
+                    .circleCrop()
+                    .into(teacherPhoto);
+        }
+        if(profilePictureChanged){
+            Intent intent = getIntent();
+            if (intent != null) {
+                Teacher teacher = (Teacher) intent.getSerializableExtra("user");
+                SharedPreferences preferences = getSharedPreferences("TeacherPrefs", Context.MODE_PRIVATE);
+                String key = "teacher_profile_data_" + teacher.getTeacher_id();
+                String combinedData = preferences.getString(key,"");
+                String[] dataParts = combinedData.split("\\|");
+                System.out.println(Arrays.toString(dataParts));
+                if(dataParts.length == 2){
+                    int teacherId = Integer.parseInt(dataParts[0]);
+                    String encodedImage = dataParts[1];
+                    if(teacher.getTeacher_id() == teacherId){
+                        byte[] byteArray = Base64.decode(encodedImage,Base64.DEFAULT);
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray,0, byteArray.length);
+                        Glide.with(this)
+                                .load(bitmap)
+                                .circleCrop()
+                                .into(teacherPhoto);
+                    }
+                }
+            }
+        }
     }
 }

@@ -3,7 +3,6 @@ package com.example.birdaha.Fragments;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -33,6 +32,7 @@ import com.denzcoskun.imageslider.constants.AnimationTypes;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.interfaces.ItemClickListener;
 import com.denzcoskun.imageslider.models.SlideModel;
+import com.example.birdaha.Adapters.HomeworkAdapter;
 import com.example.birdaha.General.Event;
 import com.example.birdaha.General.EventAndAnnouncements;
 import com.example.birdaha.General.GeneralAnnouncement;
@@ -72,6 +72,7 @@ public class HomePageFragment extends Fragment {
     }
 
     private static final String KEY_TITLE = "Content";
+
 
     private HomePageFragment() {
         // Required empty public constructor
@@ -122,7 +123,11 @@ public class HomePageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_home_page, container, false);
+        View layout = inflater.inflate(R.layout.fragment_home_page, container, false);
+        if(isPulled)
+            layout.findViewById(R.id.responselayout).setVisibility(View.GONE);
+
+        return layout;
     }
 
     @Override
@@ -192,6 +197,8 @@ public class HomePageFragment extends Fragment {
                     }
 
                     isPulled = true;
+                    curView.findViewById(R.id.responselayout).setVisibility(View.GONE);
+
                 }
                 @Override
                 public void onFailure(Call<EventAndAnnouncements> call, Throwable t) {
@@ -250,12 +257,30 @@ public class HomePageFragment extends Fragment {
                     Glide.with(requireActivity())
                             .load(decodedImage)
                             .into(imageView);
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            final Dialog dialog = new Dialog(requireContext(),android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+                            dialog.setContentView(R.layout.dialog_full_screen_image);
+
+                            ImageView fullscreenImage = dialog.findViewById(R.id.fullScreenImageView);
+                            fullscreenImage.setImageBitmap(decodedImage);
+                            fullscreenImage.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            dialog.show();
+                        }
+                    });
                 }
                 else{
                     Glide.with(requireActivity())
                             .load(R.drawable.img_1)
                             .into(imageView);
                 }
+
 
                 //imageView.setImageResource(currentEvent.getImagePath());
                 detail.setText(currentEvent.getDetails());

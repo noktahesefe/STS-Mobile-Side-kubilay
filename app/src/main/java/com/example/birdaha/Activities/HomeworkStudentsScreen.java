@@ -1,5 +1,6 @@
 package com.example.birdaha.Activities;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -89,6 +90,13 @@ public class HomeworkStudentsScreen extends AppCompatActivity implements Homewor
         setContentView(R.layout.activity_homework_students_screen);
         RecyclerView recyclerView = findViewById(R.id.RecyclerView_students);
         search = findViewById(R.id.searchView_students);
+
+        // Get the ActionBar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            // Set the title
+            actionBar.setTitle("");
+        }
 
         Classroom classroom = (Classroom) getIntent().getSerializableExtra("classroom");
         students = (ArrayList<StudentModel>) getIntent().getSerializableExtra("students");
@@ -184,10 +192,10 @@ public class HomeworkStudentsScreen extends AppCompatActivity implements Homewor
         Thread.sleep(100);
 
         // Create and show the AlertDialog
-        new AlertDialog.Builder(this)
-                .setTitle("Enter Grade and Note")
+        new AlertDialog.Builder(this,R.style.CustomAlertDialog)
+                .setTitle("Not ve Puan Giriniz")
                 .setView(dialogView)
-                .setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Kaydet", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
@@ -260,12 +268,8 @@ public class HomeworkStudentsScreen extends AppCompatActivity implements Homewor
 
                         }
 
-
-                        // TODO: Process the entered grade and note here
-                        // For example, save them or send them to a database
                     }
                 })
-                .setNegativeButton("Cancel", null)
                 .show();
     }
 
@@ -286,7 +290,7 @@ public class HomeworkStudentsScreen extends AppCompatActivity implements Homewor
     }
 
     private void showAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.CustomAlertDialog);
 
         // Set the dialog title and message
         builder.setTitle("Hata")

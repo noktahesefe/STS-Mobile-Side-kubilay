@@ -28,7 +28,7 @@
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginStart="8dp"
-                android:text="Homework Detail"
+                android:text="Ödev Detayları"
                 android:textColor="@android:color/white"
                 android:textSize="20sp" />
 
@@ -55,12 +55,11 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="15dp"
-                android:hint="Homework Name"
+                android:hint="Ödev İsmi"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:textColorHint="@color/black"
-
                 app:startIconDrawable="@drawable/baseline_assignment_24">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -75,12 +74,11 @@
                 android:id="@+id/hw_courseTextLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Course Name"
+                android:hint="Ders"
                 android:layout_margin="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:textColorHint="@color/black"
-
                 app:layout_constraintTop_toBottomOf="@+id/hw_titleTextLayout"
                 app:startIconDrawable="@drawable/baseline_class_24">
 
@@ -102,8 +100,7 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="15dp"
                 android:textColorHint="@color/black"
-
-                android:hint="Homework Content"
+                android:hint="Ödev İçeriği"
                 app:layout_constraintTop_toBottomOf="@+id/dateTextInputLayout"
                 app:startIconDrawable="@drawable/baseline_topic_24">
 
@@ -175,10 +172,6 @@
 
             </LinearLayout>
 
-
-
-
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/dateTextInputLayout"
                 android:layout_width="match_parent"
@@ -186,9 +179,8 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="15dp"
                 android:textColorHint="@color/black"
-
                 android:layout_marginEnd="15dp"
-                android:hint="Due Date"
+                android:hint="Son Bitiş Tarihi"
                 app:layout_constraintStart_toStartOf="parent"
                 app:startIconDrawable="@drawable/baseline_calendar_today_24"
                 app:layout_constraintTop_toBottomOf="@+id/hw_courseTextLayout">
@@ -226,9 +218,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="Puanla"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/homework_detail_image"
                 app:layout_constraintStart_toStartOf="@+id/homework_detail_image"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+                app:layout_constraintVertical_bias="0.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

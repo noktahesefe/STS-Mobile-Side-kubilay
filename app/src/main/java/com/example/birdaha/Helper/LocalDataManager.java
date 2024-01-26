@@ -9,7 +9,19 @@ public class LocalDataManager {
         SharedPreferences sharedPref = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sharedPref.edit();
         edit.putString(key, value);
-        edit.commit();
+        edit.apply();
+    }
+
+    public static void setSharedPreference(Context context, String key, Boolean value, String sharedPrefName)
+    {
+        SharedPreferences sharedPref = context.getSharedPreferences(sharedPrefName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = sharedPref.edit();
+        edit.putBoolean(key, value);
+        edit.apply();
+    }
+
+    public static Boolean getSharedPreference(Context context, String key, String sharedPrefName, Boolean defValue) {
+        return context.getSharedPreferences(sharedPrefName, Context.MODE_PRIVATE).getBoolean(key, defValue);
     }
 
     public static String getSharedPreference(Context context, String key, String defaultValue) {
@@ -20,13 +32,14 @@ public class LocalDataManager {
         SharedPreferences sharedPref = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sharedPref.edit();
         edit.clear();
-        edit.commit();
+        edit.apply();
     }
 
     public static void removeSharedPreference(Context context, String key){
         SharedPreferences sharedPref = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sharedPref.edit();
         edit.remove(key);
-        edit.commit();
+        edit.apply();
     }
+
 }

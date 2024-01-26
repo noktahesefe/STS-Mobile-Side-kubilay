@@ -16,7 +16,6 @@ public class SendProfilePictureStudent {
     public String getStudent_image() {
         return student_image;
     }
-
     public void setStudent_image(String student_image) {
         this.student_image = student_image;
     }
@@ -24,7 +23,6 @@ public class SendProfilePictureStudent {
     public int getStudent_id() {
         return student_id;
     }
-
     public void setStudent_id(int student_id) {
         this.student_id = student_id;
     }

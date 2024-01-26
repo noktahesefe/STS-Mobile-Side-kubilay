@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -20,8 +21,14 @@ import com.example.birdaha.Adapters.ClassAnnouncementAdapter;
 import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.General.AnnouncementsStudent;
 import com.example.birdaha.General.ClassAnnouncementModel;
+import com.example.birdaha.General.NotificationDataModel;
+import com.example.birdaha.General.NotificationModel;
+import com.example.birdaha.General.StudentSharedPrefModel;
+import com.example.birdaha.Helper.LocalDataManager;
 import com.example.birdaha.R;
+import com.example.birdaha.Users.Student;
 import com.example.birdaha.Utilities.ClassAnnouncementViewInterface;
+import com.example.birdaha.Utilities.NotificationService.NotificationJobService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,15 +55,35 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_announcement_screen);
         RecyclerView recyclerView = findViewById(R.id.caRecyclerView);
+        // Get the ActionBar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            // Set the title
+            actionBar.setTitle("");
+        }
 
         search = findViewById(R.id.searchView_Announcement);
 
         Classroom classroom = null;
+        Student student = null;
 
         Intent intent = getIntent();
         if(intent != null){
             classroom = (Classroom) intent.getSerializableExtra("classroom");
-            //classAnnouncementModels = (ArrayList<ClassAnnouncementModel>) intent.getSerializableExtra("classAnnouncements");
+            student = (Student) intent.getSerializableExtra("student");
+
+            NotificationModel notificationModel = NotificationJobService.fetchNotification(student.getStudent_id());
+            String studentsArrayJson = LocalDataManager.getSharedPreference(getApplicationContext(), "studentsArray", NotificationDataModel.getDefaultJson());
+            NotificationDataModel notificationDataModel = NotificationDataModel.fromJson(studentsArrayJson);
+            StudentSharedPrefModel studentSharedPref = notificationDataModel.getOrDefault(student.getStudent_id(), student.getClassroom().getName());
+
+            System.out.println(notificationModel.getAnnouncementId());
+            studentSharedPref.setLastAnnouncementId(notificationModel.getAnnouncementId());
+            System.out.println(studentSharedPref.toString());
+
+            notificationDataModel.addOrUpdateStudents(studentSharedPref);
+            LocalDataManager.setSharedPreference(getApplicationContext(), "studentsArray", notificationDataModel.toJson());
+
         }
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -70,6 +97,9 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
                 if(response.isSuccessful() && response.body() != null){
                     AnnouncementsStudent models = response.body();
                     classAnnouncementModels = models.getClassAnnouncements();
+                    if(classAnnouncementModels.isEmpty()){
+                        Toast.makeText(ClassAnnouncementScreen.this, "Duyuru yok!", Toast.LENGTH_SHORT).show();
+                    }
                     classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassAnnouncementScreen.this, (ArrayList<ClassAnnouncementModel>) classAnnouncementModels, ClassAnnouncementScreen.this,null, false);
                     recyclerView.setAdapter(classAnnouncementAdapter);
                     Toast.makeText(ClassAnnouncementScreen.this, "Duyurular Listeleniyor", Toast.LENGTH_SHORT).show();

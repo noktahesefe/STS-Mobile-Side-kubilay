@@ -39,7 +39,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="8dp"
                 android:layout_toEndOf="@id/fullscreen_dialog_close"
-                android:text="Add Announcement"
+                android:text="Duyuru Ekle"
                 android:textColor="@android:color/white"
                 android:textSize="20sp" />
 
@@ -52,7 +52,7 @@
                 android:layout_marginEnd="8dp"
                 android:background="?attr/selectableItemBackground"
                 android:padding="8dp"
-                android:text="SAVE"
+                android:text="KAYDET"
                 android:textColor="@android:color/white" />
 
         </RelativeLayout>
@@ -78,7 +78,7 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="15dp"
-                android:hint="Announcement Name"
+                android:hint="Duyuru İsmi"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:textColorHint="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
@@ -101,17 +101,19 @@
                 android:hint=""
                 android:textColorHint="@color/black"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.862"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/announcement_titleTextLayout"
                 app:layout_constraintVertical_bias="0.0"
-                app:startIconDrawable="@drawable/baseline_topic_24"
-                tools:layout_editor_absoluteX="29dp">
+                app:startIconDrawable="@drawable/baseline_topic_24">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/add_announcement_content"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:gravity="center"
-                    android:hint="Etkinlik bilgilerini giriniz."
+                    android:hint="Duyuru içerğini giriniz."
                     android:inputType="textMultiLine"
                     android:textColor="@color/black"
                     app:layout_constraintBottom_toBottomOf="parent"

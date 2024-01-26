@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.DialogFragment;
 
 import com.bumptech.glide.Glide;
+import com.example.birdaha.Adapters.HomeworkAdapter;
 import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.General.HwModel;
 import com.example.birdaha.General.UpdateRespond;
@@ -55,6 +57,13 @@ public class HomeworkDialogFragment extends DialogFragment {
     private String image;
     private Button hw_adding_image;
     private ImageView homeworkImage;
+
+    HomeworkAdapter homeworkAdapter;
+
+    ArrayList<HwModel> hwModels = new ArrayList<>();
+    public HomeworkDialogFragment(HomeworkAdapter homeworkAdapter) {
+        this.homeworkAdapter = homeworkAdapter;
+    }
 
     private ActivityResultLauncher<String> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
@@ -121,41 +130,47 @@ public class HomeworkDialogFragment extends DialogFragment {
         TextView actionButton = view.findViewById(R.id.fullscreen_dialog_action);
         actionButton.setOnClickListener(v -> {
 
-            String title = hw_title.getText().toString();
-            String content = hw_content.getText().toString();
-            String due_date = hw_due_date.getText().toString();
-            HwModel hwModel = new HwModel(classroom.getClassroom_id(),teacher.getTeacher_id(),teacher.getCourse().getName(),due_date,title,content,image);
-            hwModel.setGetImage(image);
+            if(TextUtils.isEmpty(hw_title.getText())){
+                Toast.makeText(requireContext(), "Ödev adı boş", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            // Retrofit call
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://sinifdoktoruadmin.online/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-            ClassroomHomeworkScreen.AddHomework addHomework = retrofit.create(ClassroomHomeworkScreen.AddHomework.class);
-            addHomework.addHomework(hwModel).enqueue(new Callback<UpdateRespond>() {
-                @Override
-                public void onResponse(Call<UpdateRespond> call, Response<UpdateRespond> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        // Handle successful response
-                        Toast.makeText(getActivity(), "Ödev başarıyla eklendi", Toast.LENGTH_SHORT).show();
-                    } else {
-                        // Handle unsuccessful response
-                        Log.d("ResponseError", new Gson().toJson(response.body()));
+                String title = hw_title.getText().toString();
+                String content = hw_content.getText().toString();
+                String due_date = hw_due_date.getText().toString();
+                HwModel hwModel = new HwModel(classroom.getClassroom_id(), teacher.getTeacher_id(), teacher.getCourse().getName(), due_date, title, content, image);
+                hwModel.setGetImage(image);
+                homeworkAdapter.getHwModels().add(hwModel);
+                homeworkAdapter.notifyDataSetChanged();
+
+                        // Retrofit call
+                        Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("http://sinifdoktoruadmin.online/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+                ClassroomHomeworkScreen.AddHomework addHomework = retrofit.create(ClassroomHomeworkScreen.AddHomework.class);
+                addHomework.addHomework(hwModel).enqueue(new Callback<UpdateRespond>() {
+                    @Override
+                    public void onResponse(Call<UpdateRespond> call, Response<UpdateRespond> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            // Handle successful response
+                            Toast.makeText(getActivity(), "Ödev başarıyla eklendi", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Handle unsuccessful response
+                            Log.d("ResponseError", new Gson().toJson(response.body()));
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(Call<UpdateRespond> call, Throwable t) {
-                    // Handle failure
-                    Log.d("Error", t.getMessage());
-                }
+                    @Override
+                    public void onFailure(Call<UpdateRespond> call, Throwable t) {
+                        // Handle failure
+                        Log.d("Error", t.getMessage());
+                    }
+                });
+                dismiss(); // Dismiss the dialog after action
             });
-            dismiss(); // Dismiss the dialog after action
-        });
 
-        //TextView dialog_title = view.findViewById(R.id.hw_title);
-
+            //TextView dialog_title = view.findViewById(R.id.hw_title);
         return view;
     }
 
@@ -166,6 +181,8 @@ public class HomeworkDialogFragment extends DialogFragment {
             teacher = (Teacher) getArguments().getSerializable("teacher");
             classroom = (Classroom) getArguments().getSerializable("classroom");
         }
+
+
     }
 
 

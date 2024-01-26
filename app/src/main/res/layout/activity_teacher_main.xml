@@ -146,17 +146,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textColor="@color/lavender" />
 
-            <TextView
-                android:id="@+id/TextView_logout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Çıkış"
-                android:drawableLeft="@drawable/baseline_exit_to_app_24"
-                android:drawablePadding="5dp"
-                android:padding="10dp"
-                android:textAlignment="textStart"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textColor="@color/lavender" />
+
 
 
         </LinearLayout>
