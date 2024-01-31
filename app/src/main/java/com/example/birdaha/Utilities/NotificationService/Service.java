@@ -16,7 +16,9 @@ public class Service {
     {
         ComponentName componentName = new ComponentName(context, cls);
         JobInfo info = new JobInfo.Builder(jobId, componentName)
-                .setPeriodic(1)
+                .setMinimumLatency(0)
+                .setOverrideDeadline(1)
+                //.setPeriodic(1)
                 .build();
 
         JobScheduler scheduler = (JobScheduler) context.getSystemService(context.JOB_SCHEDULER_SERVICE);

@@ -16,9 +16,7 @@ import com.example.birdaha.Utilities.EventRecyclerViewInterface;
 import java.util.List;
 
 /**
- * The EventAdapter class is an adapter for the RecyclerView that displays a list of events.
- * It binds the data to the views in each ViewHolder and provides a way to handle item click events
- * through the EventRecyclerViewInterface.
+ * Adapter class for the RecyclerView that displays a list of events.
  */
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
     private final EventRecyclerViewInterface eventRecyclerViewInterface;
@@ -28,11 +26,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     /**
      * Constructor for the EventAdapter.
      *
-     * @param context                    The context of the calling activity or fragment.
-     * @param events                     The list of events to be displayed in the RecyclerView.
+     * @param context                   The context of the calling activity or fragment.
+     * @param events                    The list of events to be displayed in the RecyclerView.
      * @param eventRecyclerViewInterface The interface to handle item click events.
      */
-    public EventAdapter(Context context, List<Event> events, EventRecyclerViewInterface eventRecyclerViewInterface) {
+    public EventAdapter(Context context, List<Event> events, EventRecyclerViewInterface eventRecyclerViewInterface){
         this.context = context;
         this.events = events;
         this.eventRecyclerViewInterface = eventRecyclerViewInterface;
@@ -48,7 +46,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     @NonNull
     @Override
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new EventViewHolder(LayoutInflater.from(context).inflate(R.layout.events_view, parent, false), eventRecyclerViewInterface);
+        return new EventViewHolder(LayoutInflater.from(context).inflate(R.layout.events_view,parent,false),eventRecyclerViewInterface);
     }
 
     /**
@@ -59,7 +57,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
      */
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
-        Event currentEvent = events.get(position);
+        Event currentEvent =events.get(position);
 
         holder.image.setImageResource(currentEvent.getImageResource());
     }
@@ -78,14 +76,14 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     /**
      * ViewHolder class representing each item in the RecyclerView.
      */
-    public class EventViewHolder extends RecyclerView.ViewHolder {
+    public class EventViewHolder extends RecyclerView.ViewHolder{
         ImageView image;
 
         /**
          * Constructor for the EventViewHolder.
          *
-         * @param itemView                   The view for each item in the RecyclerView.
-         * @param eventRecyclerViewInterface The interface to handle item click events.
+         * @param itemView                     The view for each item in the RecyclerView.
+         * @param eventRecyclerViewInterface   The interface to handle item click events.
          */
         public EventViewHolder(@NonNull View itemView, EventRecyclerViewInterface eventRecyclerViewInterface) {
             super(itemView);
@@ -95,9 +93,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (eventRecyclerViewInterface != null) {
+                    if(eventRecyclerViewInterface != null){
                         int pos = getAdapterPosition();
-                        if (pos != RecyclerView.NO_POSITION) {
+                        if(pos != RecyclerView.NO_POSITION){
                             eventRecyclerViewInterface.onEventItemClick(pos, itemView);
                         }
                     }

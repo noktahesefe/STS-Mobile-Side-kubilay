@@ -31,19 +31,14 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * A DialogFragment for adding class announcements in a fullscreen dialog.
- */
 public class AnnouncementDialogFragment extends DialogFragment {
 
-    // UI elements
     private EditText announcement_title, announcement_content;
 
-    // Data entities
     private Teacher teacher;
+
     private Classroom classroom;
 
-    // Image URL for the announcement
     private String image;
 
     private ClassAnnouncementAdapter classAnnouncementAdapter;
@@ -52,16 +47,9 @@ public class AnnouncementDialogFragment extends DialogFragment {
         this.classAnnouncementAdapter = classAnnouncementAdapter;
     }
 
-    /**
-     * Called to have the fragment instantiate its user interface view.
-     *
-     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment.
-     * @param container          If non-null, this is the parent view that the fragment's UI should be attached to.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
-     * @return The View for the fragment's UI, or null.
-     */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
         View view = inflater.inflate(R.layout.full_screen_announcement_adding_dialog, container, false);
 
         announcement_title = view.findViewById(R.id.lectureNameEditText);
@@ -93,16 +81,17 @@ public class AnnouncementDialogFragment extends DialogFragment {
             postAnnouncement.makeAnnouncement(announcement).enqueue(new Callback<UpdateRespond>() {
                 @Override
                 public void onResponse(Call<UpdateRespond> call, Response<UpdateRespond> response) {
-                    if (response.isSuccessful() && response.body() != null) {
+                    if(response.isSuccessful() && response.body() != null){
                         Toast.makeText(getActivity(), "Duyuru başarıyla yapıldı", Toast.LENGTH_SHORT).show();
-                    } else {
+                    }
+                    else{
                         Toast.makeText(requireContext(), "Hata oluştu!" + response.code(), Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<UpdateRespond> call, Throwable t) {
-                    Log.d("Error", t.getMessage());
+                    Log.d("Error",t.getMessage());
                 }
             });
             dismiss();
@@ -110,11 +99,6 @@ public class AnnouncementDialogFragment extends DialogFragment {
         return view;
     }
 
-    /**
-     * Called when the fragment is created.
-     *
-     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
-     */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
@@ -124,12 +108,7 @@ public class AnnouncementDialogFragment extends DialogFragment {
 
     }
 
-    /**
-     * The system calls this only when creating the layout in a dialog.
-     *
-     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
-     * @return The created Dialog.
-     */
+    // The system calls this only when creating the layout in a dialog.
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
@@ -138,25 +117,18 @@ public class AnnouncementDialogFragment extends DialogFragment {
 
     }
 
-    /**
-     * Called when the dialog is dismissed.
-     *
-     * @param dialog The dialog that was dismissed.
-     */
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
         // Handle the dialog dismiss event
     }
 
-    /**
-     * Called when the dialog is canceled.
-     *
-     * @param dialog The dialog that was canceled.
-     */
     @Override
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
         // Handle the dialog cancel event
     }
+
+
+
 }
