@@ -21,25 +21,19 @@ import com.example.birdaha.Utilities.HomeworkStudentsViewInterface;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * The StudentAdapter class is an adapter for the RecyclerView that displays a list of students.
- * It binds the data to the views in each ViewHolder and provides a way to handle student item click events
- * through the HomeworkStudentsViewInterface. It also supports filtering based on the student name.
- */
+
 public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentViewHolder> {
 
-    private Context context;
-    private ArrayList<StudentModel> students;
-    private ArrayList<StudentModel> studentsFiltered;
+    Context context;
+
+
+    ArrayList<StudentModel> students;
+    ArrayList<StudentModel> studentsFiltered;
+
+
     private final HomeworkStudentsViewInterface studentViewInterface;
 
-    /**
-     * Constructor for the StudentAdapter.
-     *
-     * @param context                 The context of the calling activity or fragment.
-     * @param students                The list of student items to be displayed in the RecyclerView.
-     * @param studentViewInterface    The interface to handle student item click events.
-     */
+
     public StudentAdapter(Context context, ArrayList<StudentModel> students, HomeworkStudentsViewInterface studentViewInterface) {
         this.context = context;
         this.students = students;
@@ -47,13 +41,6 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
         this.studentViewInterface = studentViewInterface;
     }
 
-    /**
-     * Inflates the layout for each item in the RecyclerView.
-     *
-     * @param parent   The parent view group.
-     * @param viewType The type of view.
-     * @return A new instance of the StudentViewHolder.
-     */
     @NonNull
     @Override
     public StudentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -62,12 +49,6 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
         return new StudentViewHolder(view, studentViewInterface);
     }
 
-    /**
-     * Binds the data to the views in each ViewHolder.
-     *
-     * @param holder   The ViewHolder to bind the data to.
-     * @param position The position of the item in the data set.
-     */
     @Override
     public void onBindViewHolder(@NonNull StudentViewHolder holder, int position) {
         StudentModel currentStudent = students.get(position);
@@ -91,21 +72,11 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
         });
     }
 
-    /**
-     * Returns the total number of items in the data set.
-     *
-     * @return The total number of items.
-     */
     @Override
     public int getItemCount() {
         return students.size();
     }
 
-    /**
-     * Returns a filter that can be used to constrain data with a filtering pattern.
-     *
-     * @return A filter for student items.
-     */
     public Filter getFilter() {
         Filter filter = new Filter() {
             @Override
@@ -138,6 +109,9 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
         return filter;
     }
 
+
+
+
     /**
      * This class represents the ViewHolder for individual class announcement items.
      */
@@ -146,12 +120,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
         TextView studentNameTextView;
         CardView cardView;
 
-        /**
-         * Constructor for StudentViewHolder.
-         *
-         * @param itemView              The view item for the student item.
-         * @param studentViewInterface The interface to handle student item clicks.
-         */
+
         public StudentViewHolder(@NonNull View itemView, HomeworkStudentsViewInterface studentViewInterface) {
             super(itemView);
 
@@ -160,6 +129,8 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
 
             // Initialize the cardView variable with the view from the layout with id cardView2
             cardView = itemView.findViewById(R.id.cardView3);
+
+            // Set a click listener on the cardView
         }
     }
 

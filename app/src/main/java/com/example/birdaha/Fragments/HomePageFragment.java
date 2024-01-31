@@ -7,8 +7,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.transition.Slide;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
@@ -29,31 +32,18 @@ import com.denzcoskun.imageslider.constants.AnimationTypes;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.interfaces.ItemClickListener;
 import com.denzcoskun.imageslider.models.SlideModel;
-import com.example.birdaha.Activities.ClassAnnouncementScreen;
-import com.example.birdaha.Adapters.ClassAnnouncementAdapter;
-import com.example.birdaha.Classrooms.Classroom;
-import com.example.birdaha.General.AnnouncementsStudent;
-import com.example.birdaha.General.AnnouncementsTeacher;
-import com.example.birdaha.General.ClassAnnouncementModel;
 import com.example.birdaha.Adapters.HomeworkAdapter;
 import com.example.birdaha.General.Event;
 import com.example.birdaha.General.EventAndAnnouncements;
 import com.example.birdaha.General.GeneralAnnouncement;
-import com.example.birdaha.General.HomeworksStudent;
-import com.example.birdaha.General.HomeworksTeacher;
-import com.example.birdaha.Helper.LocalDataManager;
 import com.example.birdaha.R;
-import com.example.birdaha.Users.Parent;
-import com.example.birdaha.Users.Student;
-import com.example.birdaha.Users.Teacher;
-import com.example.birdaha.Users.User;
-import com.example.birdaha.Utilities.AnnouncementSerialize;
-import com.example.birdaha.Utilities.HomeworkSerialize;
-import com.google.gson.Gson;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +53,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
-import retrofit2.http.Path;
 
 /**
  * The HomePageFragment class represents the fragment displaying the home page content.
@@ -71,68 +60,28 @@ import retrofit2.http.Path;
  * required for displaying the home page.
  */
 public class HomePageFragment extends Fragment {
-    // List to store events
     ArrayList<Event> events = new ArrayList<>();
-
-    // List to store slide models for image slider
     ArrayList<SlideModel> slideModels = new ArrayList<>();
-
-    // Singleton instance of HomePageFragment
     private static HomePageFragment instance = null;
-
-    // Flag to track whether data has been pulled from the server
     private boolean isPulled = false;
-
-    // View of the current instance
     private View curView;
-    private static User user2;
 
-    // Retrofit interface for fetching events and announcements
     interface EventAndAnnouncement{
         @GET("api/v1/event/announcement")
         Call<EventAndAnnouncements> getEventAndAnnouncement();
     }
 
-    interface AddHomework {
-        @GET("/api/v1/teacher/homeworks/{classroomId}")
-        Call<HomeworksTeacher> getHomeworks(@Path("classroomId") int classroomId);
-    }
-
-    public interface MakeAnnouncement {
-
-        @GET("api/v1/teacher/announcements/{classroomId}")
-        Call<AnnouncementsTeacher> getAnnouncements(@Path("classroomId") int classroomId);
-    }
-
-    interface GetAnnouncement {
-        @GET("api/v1/announcements/{classroomId}")
-        Call<AnnouncementsStudent> getAnnouncements(@Path("classroomId") int classroomId);
-    }
-
-    interface GetHomework{
-        @GET("api/v1/homeworks/{classroomId}/{studentId}")
-        Call<HomeworksStudent> getHomeworks(@Path("classroomId") int classroomId,
-                                            @Path("studentId") int studentId);
-    }
-
-        private static final String KEY_TITLE = "Content";
+    private static final String KEY_TITLE = "Content";
 
 
     private HomePageFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Creates a new instance of HomePageFragment.
-     *
-     * @param param1 Content parameter
-     * @return An instance of HomePageFragment
-     */
-    public static HomePageFragment newInstance(String param1, User user) {
+    public static HomePageFragment newInstance(String param1) {
 
         if(instance == null)
         {
-            user2 = user;
             System.out.println("hi");
             instance = new HomePageFragment();
             Bundle args = new Bundle();
@@ -248,7 +197,8 @@ public class HomePageFragment extends Fragment {
                     }
 
                     isPulled = true;
-                    fetchHomeworks();
+                    curView.findViewById(R.id.responselayout).setVisibility(View.GONE);
+
                 }
                 @Override
                 public void onFailure(Call<EventAndAnnouncements> call, Throwable t) {
@@ -274,195 +224,6 @@ public class HomePageFragment extends Fragment {
         }
     }
 
-    public void fetchHomeworks()
-    {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://sinifdoktoruadmin.online/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        if(user2 instanceof Teacher)
-        {
-
-            AddHomework getHomework = retrofit.create(AddHomework.class);
-
-            for(Classroom classroom : user2.getClassrooms())
-            {
-                getHomework.getHomeworks(classroom.getClassroom_id()).enqueue(new Callback<HomeworksTeacher>() {
-                    @Override
-                    public void onResponse(Call<HomeworksTeacher> call, Response<HomeworksTeacher> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            HomeworksTeacher models = response.body();
-                            HomeworkSerialize obj = new HomeworkSerialize();
-                            obj.arr = models.getHomeworks();
-                            String json = new Gson().toJson(obj);
-                            System.out.println(json);
-                            LocalDataManager.setSharedPreference(getActivity().getApplicationContext(), "homework"+classroom.getName(), json);
-                            fetchAnnouncements();
-
-                        } else {
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<HomeworksTeacher> call, Throwable t) {
-                        Log.d("Fail", t.getMessage());
-                    }
-                });
-            }
-        }
-        else if(user2 instanceof Student)
-        {
-            System.out.println("student");
-            Classroom classroom = user2.getClassroom();
-            System.out.println(classroom.getName());
-            GetHomework getHomework = retrofit.create(GetHomework.class);
-            getHomework.getHomeworks(classroom.getClassroom_id(),user2.getStudent_id()).enqueue(new Callback<HomeworksStudent>() {
-                @Override
-                public void onResponse(Call<HomeworksStudent> call, Response<HomeworksStudent> response) {
-                    if(response.isSuccessful() && response.body() != null){
-                        HomeworksStudent models = response.body();
-                        System.out.println(models.getHomeworks());
-                        HomeworkSerialize obj = new HomeworkSerialize();
-                        obj.arr = models.getHomeworks();
-                        String json = new Gson().toJson(obj);
-                        System.out.println(json);
-                        LocalDataManager.setSharedPreference(getActivity().getApplicationContext(), "homework"+classroom.getName(), json);
-                        fetchAnnouncements();
-
-                    }
-                    else{
-                    }
-                }
-                @Override
-                public void onFailure(Call<HomeworksStudent> call, Throwable t) {
-                    System.out.println(t.getMessage());
-                }
-            });
-        }
-        else if(user2 instanceof Parent)
-        {
-            for(Student student : user2.getStudents())
-            {
-                Classroom classroom = student.getClassroom();
-                GetHomework getHomework = retrofit.create(GetHomework.class);
-                getHomework.getHomeworks(classroom.getClassroom_id(),student.getStudent_id()).enqueue(new Callback<HomeworksStudent>() {
-                    @Override
-                    public void onResponse(Call<HomeworksStudent> call, Response<HomeworksStudent> response) {
-                        if(response.isSuccessful() && response.body() != null){
-                            HomeworksStudent models = response.body();
-                            HomeworkSerialize obj = new HomeworkSerialize();
-                            obj.arr = models.getHomeworks();
-                            String json = new Gson().toJson(obj);
-                            System.out.println(json);
-                            LocalDataManager.setSharedPreference(getActivity().getApplicationContext(), "homework"+classroom.getName(), json);
-                            fetchAnnouncements();
-                        }
-                        else{
-                        }
-                    }
-                    @Override
-                    public void onFailure(Call<HomeworksStudent> call, Throwable t) {
-                        System.out.println(t.getMessage());
-                    }
-                });
-            }
-
-        }
-
-
-    }
-
-    private void fetchAnnouncements()
-    {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://sinifdoktoruadmin.online/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        if(user2 instanceof Teacher)
-        {
-            MakeAnnouncement getAnnouncement = retrofit.create(MakeAnnouncement.class);
-            for(Classroom classroom : user2.getClassrooms())
-            {
-                getAnnouncement.getAnnouncements(classroom.getClassroom_id()).enqueue(new Callback<AnnouncementsTeacher>() {
-                    @Override
-                    public void onResponse(Call<AnnouncementsTeacher> call, Response<AnnouncementsTeacher> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            AnnouncementsTeacher models = response.body();
-                            AnnouncementSerialize obj = new AnnouncementSerialize();
-                            obj.arr = models.getClassroomAnnouncements();
-                            String json = new Gson().toJson(obj);
-                            LocalDataManager.setSharedPreference(getContext(), "announcement"+classroom.getName(), json);
-                            curView.findViewById(R.id.responseLayout).setVisibility(View.GONE);
-                        } else {
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<AnnouncementsTeacher> call, Throwable t) {
-                    }
-                });
-            }
-        }
-        else if(user2 instanceof Student)
-        {
-            Classroom classroom = user2.getClassroom();
-
-            GetAnnouncement getAnnouncement = retrofit.create(GetAnnouncement.class);
-            getAnnouncement.getAnnouncements(classroom.getClassroom_id()).enqueue(new Callback<AnnouncementsStudent>() {
-                @Override
-                public void onResponse(Call<AnnouncementsStudent> call, Response<AnnouncementsStudent> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        AnnouncementsStudent models = response.body();
-                        AnnouncementSerialize obj = new AnnouncementSerialize();
-                        obj.arr = models.getClassAnnouncements();
-                        String json = new Gson().toJson(obj);
-                        LocalDataManager.setSharedPreference(getActivity().getApplicationContext(), "announcement"+classroom.getName(), json);
-                        curView.findViewById(R.id.responseLayout).setVisibility(View.GONE);
-                    } else {
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<AnnouncementsStudent> call, Throwable t) {
-                }
-            });
-        }
-        else if(user2 instanceof Parent)
-        {
-            for(Student student : user2.getStudents())
-            {
-                Classroom classroom = student.getClassroom();
-                GetAnnouncement getAnnouncement = retrofit.create(GetAnnouncement.class);
-                getAnnouncement.getAnnouncements(classroom.getClassroom_id()).enqueue(new Callback<AnnouncementsStudent>() {
-                    @Override
-                    public void onResponse(Call<AnnouncementsStudent> call, Response<AnnouncementsStudent> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            AnnouncementsStudent models = response.body();
-                            AnnouncementSerialize obj = new AnnouncementSerialize();
-                            obj.arr = models.getClassAnnouncements();
-                            String json = new Gson().toJson(obj);
-                            LocalDataManager.setSharedPreference(getActivity().getApplicationContext(), "announcement"+classroom.getName(), json);
-                            curView.findViewById(R.id.responseLayout).setVisibility(View.GONE);
-                        } else {
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<AnnouncementsStudent> call, Throwable t) {
-                    }
-                });
-            }
-        }
-    }
-
-    /**
-     * Sets up the image slider with the provided slide models and events.
-     *
-     * @param slideModels List of slide models for the image slider
-     * @param events      List of events
-     */
     private void setImageSlider(ArrayList<SlideModel> slideModels, ArrayList<Event> events)
     {
 
@@ -482,7 +243,7 @@ public class HomePageFragment extends Fragment {
                     VibrationEffect effect = VibrationEffect.createOneShot(15, VibrationEffect.DEFAULT_AMPLITUDE);
                     vibrator.vibrate(effect);
                 }
-
+                //SlideModel currentEvent = slideModels.get(i);
                 Event currentEvent = events.get(i);
                 AlertDialog.Builder builder = new AlertDialog.Builder(curView.getContext());
                 LayoutInflater inflater = LayoutInflater.from(curView.getContext());

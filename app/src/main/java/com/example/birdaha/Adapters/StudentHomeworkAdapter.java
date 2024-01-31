@@ -23,17 +23,10 @@ import java.util.List;
 
 public class StudentHomeworkAdapter extends RecyclerView.Adapter<StudentHomeworkAdapter.HomeworkViewHolder> implements Filterable{
     private final ClassroomHomeworkViewInterface homeworkViewInterface;
-    private Context context;
-    private ArrayList<HwModel> hwModels;
-    private ArrayList<HwModel> hwModelsFiltered;
+    Context context;
+    ArrayList<HwModel> hwModels;
+    ArrayList<HwModel> hwModelsFiltered;
 
-    /**
-     * Constructor for the StudentHomeworkAdapter.
-     *
-     * @param context                 The context of the calling activity or fragment.
-     * @param hwModels                The list of student homework items to be displayed in the RecyclerView.
-     * @param homeworkViewInterface  The interface to handle student homework item click events.
-     */
     public StudentHomeworkAdapter(Context context, ArrayList<HwModel> hwModels, ClassroomHomeworkViewInterface homeworkViewInterface){
         this.context = context;
         this.hwModels = hwModels;
@@ -41,13 +34,6 @@ public class StudentHomeworkAdapter extends RecyclerView.Adapter<StudentHomework
         this.homeworkViewInterface = homeworkViewInterface;
     }
 
-    /**
-     * Inflates the layout for each item in the RecyclerView.
-     *
-     * @param parent   The parent view group.
-     * @param viewType The type of view.
-     * @return A new instance of the HomeworkViewHolder.
-     */
     @NonNull
     @Override
     public HomeworkViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -56,12 +42,6 @@ public class StudentHomeworkAdapter extends RecyclerView.Adapter<StudentHomework
         return new HomeworkViewHolder(view, homeworkViewInterface);
     }
 
-    /**
-     * Binds the data to the views in each ViewHolder.
-     *
-     * @param holder   The ViewHolder to bind the data to.
-     * @param position The position of the item in the data set.
-     */
     @Override
     public void onBindViewHolder(@NonNull HomeworkViewHolder holder, int position) {
         ZoneId turkeyZone = ZoneId.of("Europe/Istanbul");
@@ -92,21 +72,11 @@ public class StudentHomeworkAdapter extends RecyclerView.Adapter<StudentHomework
 
     }
 
-    /**
-     * Returns the total number of items in the data set.
-     *
-     * @return The total number of items.
-     */
     @Override
     public int getItemCount() {
         return hwModels.size();
     }
 
-    /**
-     * Returns a filter that can be used to constrain data with a filtering pattern.
-     *
-     * @return A filter for student homework items.
-     */
     @Override
     public Filter getFilter() {
         Filter filter = new Filter() {
@@ -140,9 +110,7 @@ public class StudentHomeworkAdapter extends RecyclerView.Adapter<StudentHomework
         return filter;
     }
 
-    /**
-     * This class represents the ViewHolder for individual student homework items.
-     */
+
     public static class HomeworkViewHolder extends RecyclerView.ViewHolder{
 
         TextView textViewname;
@@ -151,11 +119,15 @@ public class StudentHomeworkAdapter extends RecyclerView.Adapter<StudentHomework
         /**
          * Constructor for HomeworkViewHolder.
          *
-         * @param itemView              The view item for the student homework item.
-         * @param homeworkViewInterface The interface to handle student homework item clicks.
+         * @param itemView              The view item for the homework item.
+         * @param homeworkViewInterface The interface to handle homework item clicks.
          */
+
         public HomeworkViewHolder(@NonNull View itemView, ClassroomHomeworkViewInterface homeworkViewInterface) {
             super(itemView);
+
+            // Initialize the textViewTitle variable with the view from the layout with id textView
+            //textViewTitle = itemView.findViewById(R.id.studentName);
 
             // Initialize the cardView variable with the view from the layout with id cardView
             textViewname = itemView.findViewById(R.id.student_homework_title);

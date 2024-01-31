@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.birdaha.Adapters.ClassAnnouncementAdapter;
-import com.example.birdaha.Adapters.StudentHomeworkAdapter;
 import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.General.AnnouncementsStudent;
 import com.example.birdaha.General.ClassAnnouncementModel;
@@ -28,9 +27,7 @@ import com.example.birdaha.General.StudentSharedPrefModel;
 import com.example.birdaha.Helper.LocalDataManager;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Student;
-import com.example.birdaha.Utilities.AnnouncementSerialize;
 import com.example.birdaha.Utilities.ClassAnnouncementViewInterface;
-import com.example.birdaha.Utilities.HomeworkSerialize;
 import com.example.birdaha.Utilities.NotificationService.NotificationJobService;
 
 import java.util.ArrayList;
@@ -44,28 +41,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 
-/**
- * Activity to display class announcements for students.
- */
 public class ClassAnnouncementScreen extends AppCompatActivity implements ClassAnnouncementViewInterface {
 
-    /**
-     * Retrofit interface for fetching class announcements.
-     */
-    interface GetAnnouncement {
+    interface GetAnnouncement{
         @GET("api/v1/announcements/{classroomId}")
         Call<AnnouncementsStudent> getAnnouncements(@Path("classroomId") int classroomId);
     }
-
     SearchView search;
-    ArrayList<ClassAnnouncementModel> classAnnouncementModels;
+    List<ClassAnnouncementModel> classAnnouncementModels;
     ClassAnnouncementAdapter classAnnouncementAdapter;
-
-    /**
-     * Called when the activity is first created.
-     *
-     * @param savedInstanceState If non-null, this activity is being re-constructed from a previous saved state.
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,15 +64,14 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
 
         search = findViewById(R.id.searchView_Announcement);
 
-        // Extract classroom and student information from the intent
         Classroom classroom = null;
         Student student = null;
+
         Intent intent = getIntent();
-        if (intent != null) {
+        if(intent != null){
             classroom = (Classroom) intent.getSerializableExtra("classroom");
             student = (Student) intent.getSerializableExtra("student");
 
-            // Update notification-related information
             NotificationModel notificationModel = NotificationJobService.fetchNotification(student.getStudent_id());
             String studentsArrayJson = LocalDataManager.getSharedPreference(getApplicationContext(), "studentsArray", NotificationDataModel.getDefaultJson());
             NotificationDataModel notificationDataModel = NotificationDataModel.fromJson(studentsArrayJson);
@@ -97,17 +80,12 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
             System.out.println(notificationModel.getAnnouncementId());
             studentSharedPref.setLastAnnouncementId(notificationModel.getAnnouncementId());
             System.out.println(studentSharedPref.toString());
+
             notificationDataModel.addOrUpdateStudents(studentSharedPref);
             LocalDataManager.setSharedPreference(getApplicationContext(), "studentsArray", notificationDataModel.toJson());
 
-            classAnnouncementModels = AnnouncementSerialize.fromJson(LocalDataManager.getSharedPreference(getApplicationContext(), "announcement"+classroom.getName(), "")).arr;
-
-            classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassAnnouncementScreen.this, (ArrayList<ClassAnnouncementModel>) classAnnouncementModels, ClassAnnouncementScreen.this, null, false);
-            recyclerView.setAdapter(classAnnouncementAdapter);
-
         }
 
-        // Fetch class announcements using Retrofit
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://sinifdoktoruadmin.online/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -116,16 +94,17 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
         getAnnouncement.getAnnouncements(classroom.getClassroom_id()).enqueue(new Callback<AnnouncementsStudent>() {
             @Override
             public void onResponse(Call<AnnouncementsStudent> call, Response<AnnouncementsStudent> response) {
-                if (response.isSuccessful() && response.body() != null) {
+                if(response.isSuccessful() && response.body() != null){
                     AnnouncementsStudent models = response.body();
                     classAnnouncementModels = models.getClassAnnouncements();
-                    if (classAnnouncementModels.isEmpty()) {
+                    if(classAnnouncementModels.isEmpty()){
                         Toast.makeText(ClassAnnouncementScreen.this, "Duyuru yok!", Toast.LENGTH_SHORT).show();
                     }
-                    classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassAnnouncementScreen.this, (ArrayList<ClassAnnouncementModel>) classAnnouncementModels, ClassAnnouncementScreen.this, null, false);
+                    classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassAnnouncementScreen.this, (ArrayList<ClassAnnouncementModel>) classAnnouncementModels, ClassAnnouncementScreen.this,null, false);
                     recyclerView.setAdapter(classAnnouncementAdapter);
                     Toast.makeText(ClassAnnouncementScreen.this, "Duyurular Listeleniyor", Toast.LENGTH_SHORT).show();
-                } else {
+                }
+                else{
                     Toast.makeText(ClassAnnouncementScreen.this, "Response Unsuccessful", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -138,6 +117,11 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        /*
+        ImageButton editButton = recyclerView.findViewById(R.id.edit_icon_button);
+        editButton.setVisibility(View.GONE);
+        ImageButton deleteButton = recyclerView.findViewById(R.id.delete_icon_button);
+        deleteButton.setVisibility(View.GONE);*/
 
         // Set up the search functionality
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -156,17 +140,12 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
         search.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
+                //classAnnouncementAdapter.restoreOriginalList();
                 return false;
             }
         });
     }
 
-    /**
-     * Handles the click event on a class announcement item.
-     *
-     * @param clickedItem The clicked class announcement item.
-     * @param view        The clicked view.
-     */
     public void onClassAnnouncementItemClick(ClassAnnouncementModel clickedItem, View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
@@ -190,12 +169,6 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
         dialog.show();
     }
 
-    /**
-     * Handles the click event on the edit button of a class announcement item.
-     *
-     * @param clickedItem The clicked class announcement item.
-     * @param view        The clicked view.
-     */
     @Override
     public void onClassAnnouncementEditClick(ClassAnnouncementModel clickedItem, View view) {
 

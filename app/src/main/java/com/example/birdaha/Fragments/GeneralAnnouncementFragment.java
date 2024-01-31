@@ -41,11 +41,6 @@ public class GeneralAnnouncementFragment extends Fragment implements GeneralAnno
         // Required empty public constructor
     }
 
-    /**
-     * Constructor for the GeneralAnnouncementFragment with a list of general announcements.
-     *
-     * @param generalAnnouncements The list of general announcements to be displayed.
-     */
     public GeneralAnnouncementFragment(List<GeneralAnnouncement> generalAnnouncements){
         this.generalAnnouncements = generalAnnouncements;
     }
@@ -79,6 +74,15 @@ public class GeneralAnnouncementFragment extends Fragment implements GeneralAnno
         generalAnnouncementrecyclerView = view.findViewById(R.id.general_announcement_recyclerView);
         generalAnnouncementrecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false));
 
+        /*generalAnnouncements.add(new GeneralAnnouncement("Duyuru 1", "Duyuru 1 içeriği"));
+        generalAnnouncements.add(new GeneralAnnouncement("Duyuru 2", "Duyuru 2 içeriği"));
+        generalAnnouncements.add(new GeneralAnnouncement("Duyuru 3", "Duyuru 3 içeriği"));
+        generalAnnouncements.add(new GeneralAnnouncement("Duyuru 4", "Duyuru 4 içeriği"));
+        generalAnnouncements.add(new GeneralAnnouncement("Duyuru 5", "Duyuru 5 içeriği"));
+        generalAnnouncements.add(new GeneralAnnouncement("Duyuru 6", "Duyuru 6 içeriği"));
+        generalAnnouncements.add(new GeneralAnnouncement("Duyuru 7", "Duyuru 7 içeriği"));
+        generalAnnouncements.add(new GeneralAnnouncement("Duyuru 8", "Duyuru 8 içeriği"));*/
+
         GeneralAnnouncementAdapter adapter = new GeneralAnnouncementAdapter(getActivity(),generalAnnouncements,this);
         generalAnnouncementrecyclerView.setAdapter(adapter);
 
@@ -86,13 +90,6 @@ public class GeneralAnnouncementFragment extends Fragment implements GeneralAnno
 
     }
 
-    /**
-     * Called when a general announcement item is clicked.
-     * Displays an AlertDialog with the details of the selected general announcement.
-     *
-     * @param position The position of the clicked item in the list.
-     * @param view     The View that was clicked.
-     */
     @Override
     public void onGeneralAnnouncementItemClick(int position, View view) {
         GeneralAnnouncement current = generalAnnouncements.get(position);

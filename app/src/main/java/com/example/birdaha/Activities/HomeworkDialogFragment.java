@@ -48,12 +48,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-/**
- * A DialogFragment for adding homework in a classroom. It allows the user to input
- * the homework details, including title, content, due date, and an optional image.
- * The homework information is sent to the server using Retrofit.
- *
- */
 public class HomeworkDialogFragment extends DialogFragment {
 
 
@@ -74,32 +68,25 @@ public class HomeworkDialogFragment extends DialogFragment {
     private ActivityResultLauncher<String> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
             result -> {
-                if (result != null) {
+                if(result != null){
                     Uri imageUri = result;
-                    try {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), imageUri);
+                    try{
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(),imageUri);
                         Glide.with(requireContext())
                                 .load(bitmap)
                                 .into(homeworkImage);
                         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, bos);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG,20,bos);
                         byte[] byteArray = bos.toByteArray();
-                        image = Base64.encodeToString(byteArray, Base64.DEFAULT);
-                    } catch (IOException e) {
+                        image = Base64.encodeToString(byteArray,Base64.DEFAULT);
+                    } catch(IOException e){
                         e.printStackTrace();
                     }
                 }
             }
     );
+    
 
-    /**
-     * Initializes the dialog fragment's view and sets up UI components.
-     *
-     * @param inflater           The LayoutInflater object that can be used to inflate views.
-     * @param container          If non-null, this is the parent view that the fragment's UI should be attached to.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
-     * @return The View for the fragment's UI, or null.
-     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout
@@ -182,14 +169,11 @@ public class HomeworkDialogFragment extends DialogFragment {
                 });
                 dismiss(); // Dismiss the dialog after action
             });
+
+            //TextView dialog_title = view.findViewById(R.id.hw_title);
         return view;
     }
 
-    /**
-     * Called when the fragment is being created.
-     *
-     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
-     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -201,12 +185,11 @@ public class HomeworkDialogFragment extends DialogFragment {
 
     }
 
-    /**
-     * Called to create and return the shown dialog.
-     *
-     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
-     * @return Return a new Dialog instance to be displayed by the Fragment.
-     */
+
+
+
+
+    // The system calls this only when creating the layout in a dialog.
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
@@ -215,26 +198,18 @@ public class HomeworkDialogFragment extends DialogFragment {
 
     }
 
-    /**
-     * Called when the dialog is dismissed.
-     *
-     * @param dialog The dialog that was dismissed.
-     */
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
         // Handle the dialog dismiss event
     }
 
-    /**
-     * Called when the dialog is canceled.
-     *
-     * @param dialog The dialog that was canceled.
-     */
     @Override
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
         // Handle the dialog cancel event
     }
+
+
 
 }
