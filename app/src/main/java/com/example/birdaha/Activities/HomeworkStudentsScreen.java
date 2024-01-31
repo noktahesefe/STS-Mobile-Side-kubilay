@@ -53,9 +53,12 @@ import java.util.ArrayList;
 /**
  * This class represents the HomeworkStudentsScreen activity.
  * It implements the HomeworkStudentsViewInterface.
+ * It allows teachers to grade students' homework and add notes.
+ *
  */
 public class HomeworkStudentsScreen extends AppCompatActivity implements HomeworkStudentsViewInterface {
 
+    // Retrofit interface for handling homework results
     interface Result{
         @GET("/api/v1/homework/result/{homeworkId}/{studentId}")
         Call<HomeworkResultModel> getResult(@Path("homeworkId") int homeworkId, @Path("studentId") int studentId);
@@ -80,9 +83,9 @@ public class HomeworkStudentsScreen extends AppCompatActivity implements Homewor
     SearchView search;
 
     /**
-     * This method is called when the activity is starting.
-     * It sets the content view, initializes the RecyclerView and sets the students.
-     * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle). Note: Otherwise it is null.
+     * Called when the activity is starting. Initializes the content view, RecyclerView, and students.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after being shut down, this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle). Otherwise, it is null.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,10 +142,11 @@ public class HomeworkStudentsScreen extends AppCompatActivity implements Homewor
     }
 
     /**
-     * This method is called when a student item in the RecyclerView is clicked.
-     * It inflates a dialog for entering grade and note, and shows the dialog.
-     * @param position The position of the clicked item.
-     * @param view The view within the RecyclerView that was clicked.
+     * Called when a student item in the RecyclerView is clicked.
+     * Inflates a dialog for entering grade and note, and shows the dialog.
+     *
+     * @param student The clicked student model.
+     * @param view    The view within the RecyclerView that was clicked.
      */
     @Override
     public void onHomeworkStudentItemClick(StudentModel student, View view) throws InterruptedException {
@@ -273,7 +277,12 @@ public class HomeworkStudentsScreen extends AppCompatActivity implements Homewor
                 .show();
     }
 
-
+    /**
+     * Checks whether the entered grade is valid.
+     *
+     * @param grade The entered grade as a string.
+     * @return True if the grade is valid; false otherwise.
+     */
     private boolean isGradeValid(String grade)
     {
         int gradeInt;
@@ -289,6 +298,9 @@ public class HomeworkStudentsScreen extends AppCompatActivity implements Homewor
 
     }
 
+    /**
+     * Shows an alert dialog indicating an error in the entered values.
+     */
     private void showAlertDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.CustomAlertDialog);
 

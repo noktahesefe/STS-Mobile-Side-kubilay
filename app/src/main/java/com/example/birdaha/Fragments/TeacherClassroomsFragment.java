@@ -25,22 +25,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link TeacherClassroomsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * A fragment representing a list of teacher classrooms.
+ * It displays a list of classrooms the teacher is associated with
+ * and handles item click events to navigate to the ClassroomScreen.
  */
 public class TeacherClassroomsFragment extends Fragment implements TeacherClassroomsRecyclerViewInterface {
 
+    // RecyclerView to display teacher classrooms
     private RecyclerView teacherClassroomsRecyclerView;
+
+    // List of teacher classrooms
     private List<Classroom> teacherClassrooms;
+
+    // The teacher associated with the classrooms
     private Teacher teacher;
 
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -48,6 +51,10 @@ public class TeacherClassroomsFragment extends Fragment implements TeacherClassr
         // Required empty public constructor
     }
 
+    /**
+     * Default constructor for the TeacherClassroomsFragment.
+     * Required empty public constructor.
+     */
     public TeacherClassroomsFragment(Teacher teacher,List<Classroom> classrooms){
         this.teacher = teacher;
         this.teacherClassrooms = classrooms;
@@ -61,7 +68,6 @@ public class TeacherClassroomsFragment extends Fragment implements TeacherClassr
      * @param param2 Parameter 2.
      * @return A new instance of fragment TeacherClassroomsFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static TeacherClassroomsFragment newInstance(String param1, String param2) {
         TeacherClassroomsFragment fragment = new TeacherClassroomsFragment();
         Bundle args = new Bundle();
@@ -71,6 +77,12 @@ public class TeacherClassroomsFragment extends Fragment implements TeacherClassr
         return fragment;
     }
 
+    /**
+     * Called when the fragment is created.
+     *
+     * @param savedInstanceState A Bundle containing the saved state of the fragment,
+     *                           or null if there is no saved state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -46,18 +46,7 @@ public class Notification {
         boolean isVibrateEnabled = LocalDataManager.getSharedPreference(context, "vibration", "notifications", true);
 
         if (isNotificationEnabled) {
-            System.out.println("isnotif");
             createNotificationChannel(context, "name", "desc", CHANNEL_ID);
-
-            Uri notificationSound;
-            if (isSoundEnabled) {
-                notificationSound = Settings.System.DEFAULT_NOTIFICATION_URI;
-            }
-            else
-            {
-                System.out.println("kapalı");
-                notificationSound = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.silence);
-            }
 
             PendingIntent pendingIntent;
             if(!isAppInForeground(context))
@@ -82,15 +71,9 @@ public class Notification {
                     .setContentText(content)
                     .setGroup("CLASS_NOTIFICATIONS")
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                    .setSound(notificationSound)
                     .setAutoCancel(true)
                     .setContentIntent(pendingIntent);
 
-
-            if (isVibrateEnabled) {
-                long[] vibrationPattern = { 0, 500, 1000 };
-                builder.setVibrate(vibrationPattern);
-            }
 
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 
@@ -106,38 +89,6 @@ public class Notification {
             }
             notificationManager.notify(notificationId, builder.build());
 
-        /*String channelID = "CHANNEL_ID_NOTIFICATION";
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(),channelID)
-                .setSmallIcon(R.drawable.ic_launcher_background)
-                .setContentTitle("Title")
-                .setContentText("Text")
-                .setAutoCancel(true)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-        Intent intent = new Intent(getApplicationContext(), NotificationActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("data", "Some value to be passed here");
-
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_MUTABLE);
-        builder.setContentIntent(pendingIntent);
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-        {
-            NotificationChannel notificationChannel = notificationManager.getNotificationChannel(channelID);
-
-            if(notificationChannel == null)
-            {
-                int importance = NotificationManager.IMPORTANCE_HIGH;
-                notificationChannel = new NotificationChannel(channelID, "Some description", importance);
-                notificationChannel.setLightColor(Color.GREEN);
-                notificationChannel.enableVibration(true);
-                notificationChannel.setSound(null, null);
-                notificationManager.createNotificationChannel(notificationChannel);
-            }
-        }
-
-        notificationManager.notify(0, builder.build());*/
         }
     }
 

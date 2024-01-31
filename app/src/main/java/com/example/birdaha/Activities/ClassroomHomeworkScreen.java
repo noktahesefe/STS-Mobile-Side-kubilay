@@ -45,10 +45,12 @@ import com.example.birdaha.General.HomeworksTeacher;
 import com.example.birdaha.General.HwModel;
 import com.example.birdaha.General.StudentModel;
 import com.example.birdaha.General.UpdateRespond;
+import com.example.birdaha.Helper.LocalDataManager;
 import com.example.birdaha.R;
 import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 
 import com.example.birdaha.Users.Teacher;
+import com.example.birdaha.Utilities.HomeworkSerialize;
 import com.google.gson.Gson;
 
 
@@ -75,24 +77,35 @@ import retrofit2.http.POST;
 
 import retrofit2.http.Path;
 
+/**
+ * This class represents the screen for managing homework within a classroom.
+ * It allows teachers to view, add, edit, and filter homework assignments.
+ * The class implements the ClassroomHomeworkViewInterface to handle item clicks.
+ * It communicates with the backend server using Retrofit for CRUD operations on homework.
+ *
+ */
 public class ClassroomHomeworkScreen extends AppCompatActivity implements ClassroomHomeworkViewInterface {
 
 
-    public interface AddHomework{
+    /**
+     * Interface for handling homework-related operations, such as item clicks.
+     */
+    public interface AddHomework {
         @GET("/api/v1/teacher/homeworks/{classroomId}")
         Call<HomeworksTeacher> getHomeworks(@Path("classroomId") int classroomId);
+
         @POST("/api/v1/homework/add")
         Call<UpdateRespond> addHomework(@Body HwModel hwmodel);
+
         @POST("/api/v1/homework/update")
         Call<UpdateRespond> updateHomework(@Body HwModel hwModel);
+
         @GET("api/v1/homework/delete/{homeworkId}")
         Call<UpdateRespond> deleteHomework(@Path("homeworkId") int homeworkId);
     }
 
-    SearchView search;
-
-    ArrayList<HwModel> hwModels = new ArrayList<>();
-
+    private SearchView search;
+    private ArrayList<HwModel> hwModels = new ArrayList<>();
     private ArrayList<HwModel> expiredHws;
     private ArrayList<HwModel> ongoingHws;
     private ArrayList<StudentModel> students;
@@ -100,8 +113,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
     private Context context;
     private ClassroomHomeworkViewInterface homeworkViewInterface;
 
-    Button addingHomeworkButton;
-    Button gradeButton;
+    private Button addingHomeworkButton;
     private ImageView homeworkImage;
 
     private String image;
@@ -111,8 +123,6 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
     private AlertDialog filterDialog = null;
 
     private Teacher teacher1 = null;
-
-
 
     private ActivityResultLauncher<String> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
@@ -133,6 +143,12 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             }
     );
 
+    /**
+     * Initializes the activity, sets up the UI components, and fetches homework data from the server.
+     * Displays ongoing and expired homework items separately.
+     *
+     * @param savedInstanceState A Bundle containing the activity's previously saved state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -155,14 +171,17 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
 
         search = findViewById(R.id.searchView_homework);
         addingHomeworkButton = findViewById(R.id.adding_hw_btn);
-        //gradeButton = findViewById(R.id.grade_btn);
 
         Classroom classroom = null;
 
         Intent intent = getIntent();
         if (intent != null) {
             classroom = (Classroom) intent.getSerializableExtra("classroom");
-            //hwModels = (ArrayList<HwModel>) intent.getSerializableExtra("homeworks");
+            hwModels = HomeworkSerialize.fromJson(LocalDataManager.getSharedPreference(context, "homework"+classroom.getName(), "")).arr;
+            sortListByDate(hwModels);
+            teacher1 = (Teacher) getIntent().getSerializableExtra("teacher");
+            homeworkAdapter = new HomeworkAdapter(context, (ArrayList<HwModel>) hwModels, homeworkViewInterface, teacher1);
+            recyclerView.setAdapter(homeworkAdapter);
         }
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -178,7 +197,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                         Toast.makeText(ClassroomHomeworkScreen.this, "Ödevler Listeleniyor", Toast.LENGTH_SHORT).show();
                         HomeworksTeacher models = response.body();
                         hwModels = models.getHomeworks();
-                        if(hwModels.isEmpty()){
+                        if (hwModels.isEmpty()) {
                             Toast.makeText(context, "Ödev yok!", Toast.LENGTH_SHORT).show();
                         }
                         students = models.getStudents();
@@ -231,9 +250,6 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             }
         });
 
-
-
-
         // Set a listener for the SearchView to handle query text changes
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -263,23 +279,6 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             }
         });
 
-        /*gradeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int homeworkId = 2280;
-                Classroom classroom = (Classroom) intent.getSerializableExtra("classroom");
-                ArrayList<StudentModel> students = (ArrayList<StudentModel>) intent.getSerializableExtra("students");
-                Intent homeworkGradeIntent = new Intent(ClassroomHomeworkScreen.this, HomeworkStudentsScreen.class);
-
-                homeworkGradeIntent.putExtra("students", (Serializable) students);
-                homeworkGradeIntent.putExtra("classroom", classroom);
-                homeworkGradeIntent.putExtra("homeworkId", homeworkId);
-                startActivity(homeworkGradeIntent);
-
-            }
-        });*/
-
-
         // Set a listener for the SearchView to handle query text changes
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -304,9 +303,10 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
 
     }
 
-
-    public void showHwDialog()
-    {
+    /**
+     * Displays a dialog for adding a new homework assignment.
+     */
+    public void showHwDialog() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         HomeworkDialogFragment newFragment = new HomeworkDialogFragment(homeworkAdapter);
 
@@ -403,6 +403,13 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         filterDialog.show();
     }
 
+    /**
+     * Handles item clicks in the RecyclerView displaying homework items.
+     * Displays detailed information about the clicked homework item.
+     *
+     * @param clickedItem The clicked homework item.
+     * @param view        The view that was clicked.
+     */
     @Override
     public void onClassroomHomeworkItemClick(HwModel clickedItem, View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
@@ -430,6 +437,19 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         dueDate.setText(clickedItem.getDue_date());
         content.setText(clickedItem.getInfo());
 
+        gradeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent homeworkGradeIntent = new Intent(ClassroomHomeworkScreen.this, HomeworkStudentsScreen.class);
+
+                homeworkGradeIntent.putExtra("students", (Serializable) students);
+                homeworkGradeIntent.putExtra("classroom", teacher1.getClassroom());
+                homeworkGradeIntent.putExtra("homeworkId", clickedItem.getHomework_id());
+                startActivity(homeworkGradeIntent);
+
+            }
+        });
 
 
         gradeButton.setOnClickListener(new View.OnClickListener() {
@@ -476,6 +496,13 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         dialog.show();
     }
 
+    /**
+     * Handles item edit clicks in the RecyclerView displaying homework items.
+     * Displays a dialog for editing the clicked homework item.
+     *
+     * @param clickedItem The clicked homework item.
+     * @param view        The view that was clicked.
+     */
     @Override
     public void onClassroomHomeworkEditClick(HwModel clickedItem, View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
@@ -537,9 +564,6 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
             }
         });
 
-        //Classroom classroom = (Classroom) getIntent().getSerializableExtra("classroom");
-        //Teacher teacher = (Teacher) getIntent().getSerializableExtra("teacher");
-
         TextView actionButton = overlayView.findViewById(R.id.fullscreen_dialog_action);
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -550,7 +574,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                 clickedItem.setTitle(title);
                 clickedItem.setInfo(content);
                 clickedItem.setDue_date(due_date);
-                if(image != null){
+                if (image != null) {
                     clickedItem.setImage(image);
                     clickedItem.setGetImage(image);
                 }
@@ -563,8 +587,6 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                 System.out.println("Due Date:" + clickedItem.getDue_date());
                 System.out.println("Image :" + clickedItem.getImage());
 
-                //HwModel hwModel = new HwModel(classroom.getClassroom_id(), teacher.getTeacher_id(), teacher.getCourse().getName(), due_date, title, content, image);
-                //hwModel.setGetImage(image);
                 // Retrofit call
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl("http://sinifdoktoruadmin.online/")
@@ -595,6 +617,15 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         });
     }
 
+    /**
+     * Sorts the list of homework items by due date.
+     * The list is sorted in the following order:
+     * 1. Homework items due today (in ascending order of due time).
+     * 2. Expired homework items (in descending order of due date).
+     * 3. Future homework items (in ascending order of due date).
+     *
+     * @param list The list of homework items to be sorted.
+     */
     private void sortListByDate(ArrayList<HwModel> list) {
         ZoneId turkeyZone = ZoneId.of("Europe/Istanbul");
         LocalDate today = LocalDate.now(turkeyZone);

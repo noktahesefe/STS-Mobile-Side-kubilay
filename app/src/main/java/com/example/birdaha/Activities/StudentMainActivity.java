@@ -83,7 +83,7 @@ public class StudentMainActivity extends AppCompatActivity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_main);
-        EventBus.getDefault().register(this);
+        //EventBus.getDefault().register(this);
 
         // Get the ActionBar
         ActionBar actionBar = getSupportActionBar();
@@ -157,9 +157,10 @@ public class StudentMainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 Fragment f = fragmentManager.findFragmentById(R.id.FrameLayout_container);
+                Student student = (Student) intent.getSerializableExtra("user");
 
                 if(!(f instanceof HomePageFragment))
-                    navigationManager.showFragment(HomePageFragment.newInstance("userId"), false);
+                    navigationManager.showFragment(HomePageFragment.newInstance("userId", student), false);
 
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
@@ -234,9 +235,10 @@ public class StudentMainActivity extends AppCompatActivity {
      * as the default fragment without adding it to the back stack.
      */
     private void selectFirstItemAsDefault() {
+        Student student = (Student) getIntent().getSerializableExtra("user");
 
         if(navigationManager != null)
-            navigationManager.showFragment(HomePageFragment.newInstance(""), false);
+            navigationManager.showFragment(HomePageFragment.newInstance("", student), false);
 
     }
 
@@ -301,48 +303,10 @@ public class StudentMainActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
         if(drawerToggle.onOptionsItemSelected(item))
             return true;
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Subscribe
-    public void onProfilePictureChange(ProfilePictureChangeEvent event){
-        boolean profilePictureDeleted = event.isProfilePictureDeleted();
-        boolean profilePictureChanged = event.isProfilePictureChanged();
-
-        if(profilePictureDeleted){
-            Glide.with(this)
-                    .load(R.drawable.baseline_person_24)
-                    .circleCrop()
-                    .into(studentPhoto);
-        }
-        if(profilePictureChanged){
-            Intent intent = getIntent();
-            if(intent != null){
-                Student student = (Student) intent.getSerializableExtra("user");
-                SharedPreferences preferences = getSharedPreferences("StudentPrefs", Context.MODE_PRIVATE);
-                String key = "profile_data_" + student.getStudent_id();
-                String combinedData = preferences.getString(key,"");
-                String[] dataParts = combinedData.split("\\|");
-                //System.out.println(Arrays.toString(dataParts));
-                if(dataParts.length == 2){
-                    int studentId = Integer.parseInt(dataParts[0]);
-                    String encodedImage = dataParts[1];
-                    if(student.getStudent_id() == studentId){
-                        byte[] byteArray = Base64.decode(encodedImage,Base64.DEFAULT);
-                        Bitmap decodedImage = BitmapFactory.decodeByteArray(byteArray,0, byteArray.length);
-                        Glide.with(this)
-                                .load(decodedImage)
-                                .circleCrop()
-                                .into(studentPhoto);
-                    }
-                }
-            }
-        }
     }
 
 }

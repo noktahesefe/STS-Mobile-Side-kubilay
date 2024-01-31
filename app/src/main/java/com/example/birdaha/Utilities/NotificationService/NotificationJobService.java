@@ -3,8 +3,10 @@ package com.example.birdaha.Utilities.NotificationService;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 
+import com.example.birdaha.General.NotificationDataModel;
 import com.example.birdaha.General.NotificationModel;
 import com.example.birdaha.General.StudentSharedPrefModel;
+import com.example.birdaha.Helper.LocalDataManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,8 +31,8 @@ public class NotificationJobService extends JobService {
     public boolean onStartJob(JobParameters params) {
         // Sunucuya istek gönderme işlemini burada gerçekleştirin
         System.out.println("hi hw");
-        Notification.builder(getApplicationContext(), TITLE, "", "NOTIFICATION", 24);
-        /*String studentsArrayJson = LocalDataManager.getSharedPreference(getApplicationContext(), "studentsArray", NotificationDataModel.getDefaultJson());
+
+        String studentsArrayJson = LocalDataManager.getSharedPreference(getApplicationContext(), "studentsArray", NotificationDataModel.getDefaultJson());
         NotificationDataModel notificationDataModel = NotificationDataModel.fromJson(studentsArrayJson);
 
         new Thread( () -> {
@@ -51,10 +53,7 @@ public class NotificationJobService extends JobService {
                 });
 
             }
-        }).start();*/
-
-
-
+        }).start();
 
         return false; // İş hala devam ediyorsa true, tamamlandıysa false döndürün
     }

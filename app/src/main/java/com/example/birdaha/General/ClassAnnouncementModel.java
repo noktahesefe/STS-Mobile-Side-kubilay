@@ -12,9 +12,6 @@ public class ClassAnnouncementModel implements Serializable {
     private int teacher_id;
     private int classroom_id;
 
-    private boolean isEditButtonVisible;
-    private boolean isRemoveButtonVisible;
-
     @SerializedName("announcement_title")
     private String title;
     @SerializedName("announcement_content")

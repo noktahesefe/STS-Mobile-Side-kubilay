@@ -24,7 +24,7 @@ import java.util.List;
  * The adapter also provides a click interface through `TeacherClassroomsRecyclerViewInterface`
  * for handling item clicks on the teacher classrooms.
  */
-public class TeacherClassroomsAdapter extends RecyclerView.Adapter<TeacherClassroomsAdapter.TeacherClassroomsViewHolder>{
+public class TeacherClassroomsAdapter extends RecyclerView.Adapter<TeacherClassroomsAdapter.TeacherClassroomsViewHolder> {
     private final TeacherClassroomsRecyclerViewInterface teacherClassroomsRecyclerViewInterface;
     private Context context;
     private List<Classroom> teacherClassrooms;
@@ -33,11 +33,11 @@ public class TeacherClassroomsAdapter extends RecyclerView.Adapter<TeacherClassr
     /**
      * Constructs a new `TeacherClassroomsAdapter`.
      *
-     * @param context                           The context in which the adapter is used.
-     * @param teacherClassrooms                 The list of teacher classrooms to be displayed.
+     * @param context                                The context in which the adapter is used.
+     * @param teacherClassrooms                      The list of teacher classrooms to be displayed.
      * @param teacherClassroomsRecyclerViewInterface The interface for handling item clicks.
      */
-    public TeacherClassroomsAdapter(Context context, List<Classroom> teacherClassrooms, TeacherClassroomsRecyclerViewInterface teacherClassroomsRecyclerViewInterface, Teacher teacher){
+    public TeacherClassroomsAdapter(Context context, List<Classroom> teacherClassrooms, TeacherClassroomsRecyclerViewInterface teacherClassroomsRecyclerViewInterface, Teacher teacher) {
         this.context = context;
         this.teacherClassrooms = teacherClassrooms;
         this.teacherClassroomsRecyclerViewInterface = teacherClassroomsRecyclerViewInterface;
@@ -54,7 +54,7 @@ public class TeacherClassroomsAdapter extends RecyclerView.Adapter<TeacherClassr
     @NonNull
     @Override
     public TeacherClassroomsAdapter.TeacherClassroomsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new TeacherClassroomsAdapter.TeacherClassroomsViewHolder(LayoutInflater.from(context).inflate(R.layout.teacherclassrooms_view,parent,false),teacherClassroomsRecyclerViewInterface,teacher);
+        return new TeacherClassroomsAdapter.TeacherClassroomsViewHolder(LayoutInflater.from(context).inflate(R.layout.teacherclassrooms_view, parent, false), teacherClassroomsRecyclerViewInterface, teacher);
 
     }
 
@@ -85,14 +85,14 @@ public class TeacherClassroomsAdapter extends RecyclerView.Adapter<TeacherClassr
      * The `TeacherClassroomsViewHolder` class represents the ViewHolder for teacher classrooms.
      * It holds references to the views within the item layout and handles item click events.
      */
-    public class TeacherClassroomsViewHolder extends RecyclerView.ViewHolder{
+    public class TeacherClassroomsViewHolder extends RecyclerView.ViewHolder {
 
         TextView name;
 
         /**
          * Constructs a new `TeacherClassroomsViewHolder`.
          *
-         * @param itemView                           The View representing the teacher classroom item.
+         * @param itemView                               The View representing the teacher classroom item.
          * @param teacherClassroomsRecyclerViewInterface The interface for handling item clicks.
          */
         public TeacherClassroomsViewHolder(@NonNull View itemView, TeacherClassroomsRecyclerViewInterface teacherClassroomsRecyclerViewInterface, Teacher teacher) {
@@ -103,10 +103,10 @@ public class TeacherClassroomsAdapter extends RecyclerView.Adapter<TeacherClassr
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(teacherClassroomsRecyclerViewInterface != null){
+                    if (teacherClassroomsRecyclerViewInterface != null) {
                         int pos = getAdapterPosition();
-                        if(pos != RecyclerView.NO_POSITION){
-                            teacherClassroomsRecyclerViewInterface.onTeacherClassroomsItemClick(pos,itemView,teacher);
+                        if (pos != RecyclerView.NO_POSITION) {
+                            teacherClassroomsRecyclerViewInterface.onTeacherClassroomsItemClick(pos, itemView, teacher);
                         }
                     }
                 }

@@ -32,6 +32,11 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * The ClassAnnouncementAdapter class is a RecyclerView adapter for displaying and managing
+ * class announcement items. It extends RecyclerView.Adapter and implements Filterable
+ * to handle data binding and filtering functionalities.
+ */
 public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnouncementAdapter.ClassAnnouncementViewHolder> implements Filterable {
 
     Context context;
@@ -39,9 +44,17 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
     public ArrayList<ClassAnnouncementModel> classAnnouncementModels;
     ArrayList<ClassAnnouncementModel> classAnnouncementModelsFiltered;
     private Teacher teacher;
-
     private boolean isTeacher;
 
+    /**
+     * Constructor for the ClassAnnouncementAdapter.
+     *
+     * @param context                        The context in which the adapter is used.
+     * @param classAnnouncementModels        The list of class announcement items to be displayed.
+     * @param classAnnouncementViewInterface The interface for handling item click and edit events.
+     * @param teacher                        The teacher object associated with the adapter.
+     * @param isTeacher                      A boolean flag indicating whether the user is a teacher.
+     */
     public ClassAnnouncementAdapter(Context context, ArrayList<ClassAnnouncementModel> classAnnouncementModels, ClassAnnouncementViewInterface classAnnouncementViewInterface, Teacher teacher, boolean isTeacher) {
         this.context = context;
         this.classAnnouncementModels = classAnnouncementModels;
@@ -234,7 +247,5 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
                 deleteButton.setVisibility(View.GONE);
             }
         }
-
-
     }
 }

@@ -314,35 +314,7 @@ public class NotificationFragment extends Fragment {
             }
         });
 
-
         return view;
-
-        // Inflate the layout for this fragment
-        // Inflate the layout for this fragment
-        /*View view = inflater.inflate(R.layout.fragment_notifications, container, false);
-        Context context = requireContext();
-
-        Switch notification = view.findViewById(R.id.Switch_show_notifications);
-        Switch sound = view.findViewById(R.id.Switch_voice);
-        Switch vibration = view.findViewById(R.id.Switch_vibration);
-
-        notification.setChecked(LocalDataManager.getSharedPreference(context, "notification", "notifications", true));
-        sound.setChecked(LocalDataManager.getSharedPreference(context, "sound", "notifications", true));
-        vibration.setChecked(LocalDataManager.getSharedPreference(context, "vibration", "notifications", true));
-
-        notification.setOnCheckedChangeListener((switchView, isChecked) -> {
-            LocalDataManager.setSharedPreference(context, "notification",  isChecked, "notifications");
-        });
-
-        sound.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            LocalDataManager.setSharedPreference(context, "sound",  isChecked, "notifications");
-        });
-
-        vibration.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            LocalDataManager.setSharedPreference(context, "vibration",  isChecked, "notifications");
-        });
-
-        return view;*/
     }
 
     /**
@@ -357,10 +329,6 @@ public class NotificationFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        /*String title = getArguments().getString(KEY_TITLE);
-        ((TextView)view.findViewById(R.id.title)).setText(title);*/
-
 
     }
 

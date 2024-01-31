@@ -25,8 +25,10 @@ import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.General.AnnouncementsTeacher;
 import com.example.birdaha.General.ClassAnnouncementModel;
 import com.example.birdaha.General.UpdateRespond;
+import com.example.birdaha.Helper.LocalDataManager;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Teacher;
+import com.example.birdaha.Utilities.AnnouncementSerialize;
 import com.example.birdaha.Utilities.ClassAnnouncementViewInterface;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
@@ -43,9 +45,15 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
+/**
+ * Activity to display and manage class announcements for teachers.
+ */
 public class ClassRoomAnnouncementScreen extends AppCompatActivity implements ClassAnnouncementViewInterface {
 
-    public interface MakeAnnouncement{
+    /**
+     * Retrofit interface for handling class announcements.
+     */
+    public interface MakeAnnouncement {
 
         @GET("api/v1/teacher/announcements/{classroomId}")
         Call<AnnouncementsTeacher> getAnnouncements(@Path("classroomId") int classroomId);
@@ -61,13 +69,15 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
     }
 
     SearchView search;
-
     ArrayList<ClassAnnouncementModel> classAnnouncementModels;
-
     Button addingAnnouncementButton;
-
     ClassAnnouncementAdapter classAnnouncementAdapter;
 
+    /**
+     * Called when the activity is first created.
+     *
+     * @param savedInstanceState If non-null, this activity is being re-constructed from a previous saved state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,8 +96,15 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
         Classroom classroom = null;
 
         Intent intent = getIntent();
-        if(intent != null){
+        if (intent != null) {
             classroom = (Classroom) intent.getSerializableExtra("classroom");
+
+            classAnnouncementModels = AnnouncementSerialize.fromJson(LocalDataManager.getSharedPreference(getApplicationContext(), "announcement"+classroom.getName(), "")).arr;
+
+            Teacher teacher = (Teacher) getIntent().getSerializableExtra("teacher");
+            classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassRoomAnnouncementScreen.this, classAnnouncementModels, ClassRoomAnnouncementScreen.this, teacher, true);
+            recyclerView.setAdapter(classAnnouncementAdapter);
+
         }
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -95,24 +112,23 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        if(classroom != null){
+        if (classroom != null) {
             MakeAnnouncement getAnnouncement = retrofit.create(MakeAnnouncement.class);
             getAnnouncement.getAnnouncements(classroom.getClassroom_id()).enqueue(new Callback<AnnouncementsTeacher>() {
                 @Override
                 public void onResponse(Call<AnnouncementsTeacher> call, Response<AnnouncementsTeacher> response) {
-                    if(response.isSuccessful() && response.body() != null){
+                    if (response.isSuccessful() && response.body() != null) {
                         Toast.makeText(ClassRoomAnnouncementScreen.this, "Duyurular Listeleniyor", Toast.LENGTH_SHORT).show();
                         AnnouncementsTeacher models = response.body();
                         classAnnouncementModels = (ArrayList<ClassAnnouncementModel>) models.getClassroomAnnouncements();
-                        if(classAnnouncementModels.isEmpty()){
+                        if (classAnnouncementModels.isEmpty()) {
                             Toast.makeText(ClassRoomAnnouncementScreen.this, "Duyuru yok", Toast.LENGTH_SHORT).show();
                         }
 
                         Teacher teacher = (Teacher) getIntent().getSerializableExtra("teacher");
-                        classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassRoomAnnouncementScreen.this, classAnnouncementModels, ClassRoomAnnouncementScreen.this,teacher,true);
+                        classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassRoomAnnouncementScreen.this, classAnnouncementModels, ClassRoomAnnouncementScreen.this, teacher, true);
                         recyclerView.setAdapter(classAnnouncementAdapter);
-                    }
-                    else{
+                    } else {
                         Toast.makeText(ClassRoomAnnouncementScreen.this, "Response Unsuccessful", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -148,8 +164,11 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
         });
 
     }
-    public void showAnnouncementDialog()
-    {
+
+    /**
+     * Shows the announcement dialog fragment for adding a new announcement.
+     */
+    public void showAnnouncementDialog() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         AnnouncementDialogFragment newFragment = new AnnouncementDialogFragment(classAnnouncementAdapter);
 
@@ -163,13 +182,19 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
         transaction.replace(android.R.id.content, newFragment).addToBackStack(null).commit();
     }
 
+    /**
+     * Handles the click event on a class announcement item for viewing details.
+     *
+     * @param clickedItem The clicked class announcement item.
+     * @param view        The clicked view.
+     */
     public void onClassAnnouncementItemClick(ClassAnnouncementModel clickedItem, View view) {
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
 
         View overlayView = inflater.inflate(R.layout.dialog_ann_detail, null);
 
-        System.out.println("Clicked item teacher name: "+ clickedItem.getTeacher().getName());
+        System.out.println("Clicked item teacher name: " + clickedItem.getTeacher().getName());
 
 
         EditText title = overlayView.findViewById(R.id.announcement_detail_name);
@@ -191,12 +216,18 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
         dialog.show();
     }
 
+    /**
+     * Handles the click event on the edit button of a class announcement item.
+     *
+     * @param clickedItem The clicked class announcement item.
+     * @param view        The clicked view.
+     */
     @Override
     public void onClassAnnouncementEditClick(ClassAnnouncementModel clickedItem, View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
 
-        View overlayView = inflater.inflate(R.layout.full_screen_announcement_adding_dialog,null);
+        View overlayView = inflater.inflate(R.layout.full_screen_announcement_adding_dialog, null);
         TextInputEditText title = overlayView.findViewById(R.id.lectureNameEditText);
         TextInputEditText details = overlayView.findViewById(R.id.add_announcement_content);
 
@@ -236,7 +267,7 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
                 updateAnnouncement.updateAnnouncement(clickedItem).enqueue(new Callback<UpdateRespond>() {
                     @Override
                     public void onResponse(Call<UpdateRespond> call, Response<UpdateRespond> response) {
-                        if(response.isSuccessful() && response.body() != null){
+                        if (response.isSuccessful() && response.body() != null) {
                             Toast.makeText(ClassRoomAnnouncementScreen.this, "Duyuru başarıyla güncellendi", Toast.LENGTH_SHORT).show();
                             classAnnouncementAdapter.notifyDataSetChanged();
                             Intent intent = new Intent(ClassRoomAnnouncementScreen.this,ClassRoomAnnouncementScreen.class);

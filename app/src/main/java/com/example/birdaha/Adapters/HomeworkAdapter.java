@@ -35,7 +35,12 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.HomeworkViewHolder> implements Filterable{
+/**
+ * The HomeworkAdapter class is an adapter for the RecyclerView that displays a list of homework items.
+ * It binds the data to the views in each ViewHolder and provides a way to handle homework item click events
+ * through the ClassroomHomeworkViewInterface. It also supports filtering based on the homework title.
+ */
+public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.HomeworkViewHolder> implements Filterable {
     private final ClassroomHomeworkViewInterface homeworkViewInterface;
     Context context;
     ArrayList<HwModel> hwModels;
@@ -51,7 +56,15 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
 
     private final Teacher currentTeacher;
 
-    public HomeworkAdapter(Context context, ArrayList<HwModel> hwModels, ClassroomHomeworkViewInterface homeworkViewInterface, Teacher teacher){
+    /**
+     * Constructor for the HomeworkAdapter.
+     *
+     * @param context               The context of the calling activity or fragment.
+     * @param hwModels              The list of homework items to be displayed in the RecyclerView.
+     * @param homeworkViewInterface The interface to handle homework item click events.
+     * @param teacher               The current teacher object.
+     */
+    public HomeworkAdapter(Context context, ArrayList<HwModel> hwModels, ClassroomHomeworkViewInterface homeworkViewInterface, Teacher teacher) {
         this.context = context;
         this.hwModels = hwModels;
         this.hwModelsFiltered = hwModels;
@@ -59,6 +72,13 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
         this.currentTeacher = teacher;
     }
 
+    /**
+     * Inflates the layout for each item in the RecyclerView.
+     *
+     * @param parent   The parent view group.
+     * @param viewType The type of view.
+     * @return A new instance of the HomeworkViewHolder.
+     */
     @NonNull
     @Override
     public HomeworkViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -67,6 +87,12 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
         return new HomeworkViewHolder(view, homeworkViewInterface);
     }
 
+    /**
+     * Binds the data to the views in each ViewHolder.
+     *
+     * @param holder   The ViewHolder to bind the data to.
+     * @param position The position of the item in the data set.
+     */
     @Override
     public void onBindViewHolder(@NonNull HomeworkViewHolder holder, int position) {
         ZoneId turkeyZone = ZoneId.of("Europe/Istanbul");
@@ -89,21 +115,21 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
             }
         });
 
-        if(current.getTeacher_id() == currentTeacher.getTeacher_id()){
+        if (current.getTeacher_id() == currentTeacher.getTeacher_id()) {
             holder.editButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(homeworkViewInterface != null){
+                    if (homeworkViewInterface != null) {
                         int pos = hwModels.indexOf(current);
-                        if(pos != -1){
-                            homeworkViewInterface.onClassroomHomeworkEditClick(hwModels.get(pos),v);
+                        if (pos != -1) {
+                            homeworkViewInterface.onClassroomHomeworkEditClick(hwModels.get(pos), v);
                         }
                     }
                 }
             });
         }
 
-        if(current.getTeacher_id() == currentTeacher.getTeacher_id()){
+        if (current.getTeacher_id() == currentTeacher.getTeacher_id()) {
             System.out.println("Homework name:" + current.getTitle());
             System.out.println("Teacher Id:" + currentTeacher.getTeacher_id());
             System.out.println("Homework Teacher Id: " + current.getTeacher_id());
@@ -124,18 +150,18 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
                             deleteHomework.deleteHomework(current.getHomework_id()).enqueue(new Callback<UpdateRespond>() {
                                 @Override
                                 public void onResponse(Call<UpdateRespond> call, Response<UpdateRespond> response) {
-                                    if(response.isSuccessful() && response.body() != null){
+                                    if (response.isSuccessful() && response.body() != null) {
                                         Toast.makeText(context, "Ödev başarıyla silindi!", Toast.LENGTH_SHORT).show();
                                         hwModels.remove(current);
                                         notifyDataSetChanged();
-                                    }
-                                    else{
+                                    } else {
                                         Toast.makeText(context, "Hata oluştu!" + response.code(), Toast.LENGTH_SHORT).show();
                                     }
                                 }
+
                                 @Override
                                 public void onFailure(Call<UpdateRespond> call, Throwable t) {
-                                    Log.d("Error",t.getMessage());
+                                    Log.d("Error", t.getMessage());
                                 }
                             });
                         }
@@ -152,26 +178,35 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
         }
     }
 
+    /**
+     * Returns the total number of items in the data set.
+     *
+     * @return The total number of items.
+     */
     @Override
     public int getItemCount() {
         return hwModels.size();
     }
 
+    /**
+     * Returns a filter that can be used to constrain data with a filtering pattern.
+     *
+     * @return A filter for homework items.
+     */
     @Override
     public Filter getFilter() {
         Filter filter = new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults filterResults = new FilterResults();
-                if(constraint == null || constraint.length() == 0){
+                if (constraint == null || constraint.length() == 0) {
                     filterResults.values = hwModelsFiltered;
                     filterResults.count = hwModelsFiltered.size();
-                }
-                else{
+                } else {
                     String searchStr = constraint.toString().toLowerCase();
                     List<HwModel> hwmodel = new ArrayList<>();
-                    for(HwModel model : hwModelsFiltered){
-                        if(model.getTitle().toLowerCase().contains(searchStr)){
+                    for (HwModel model : hwModelsFiltered) {
+                        if (model.getTitle().toLowerCase().contains(searchStr)) {
                             hwmodel.add(model);
                         }
                     }
@@ -190,10 +225,11 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
         return filter;
     }
 
+    /**
+     * ViewHolder class representing each item in the RecyclerView.
+     */
+    public static class HomeworkViewHolder extends RecyclerView.ViewHolder {
 
-    public static class HomeworkViewHolder extends RecyclerView.ViewHolder{
-
-        TextView textViewTitle;
         TextView textViewname;
         ImageButton editButton;
         ImageButton deleteButton;

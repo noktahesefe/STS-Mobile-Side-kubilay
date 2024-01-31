@@ -68,6 +68,7 @@ public class TeacherMainActivity extends AppCompatActivity {
      */
     private NavigationManager navigationManager;
     private ImageView teacherPhoto;
+    private Teacher teacher;
 
     /**
      * Called when the activity is created.
@@ -84,7 +85,7 @@ public class TeacherMainActivity extends AppCompatActivity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teacher_main);
-        EventBus.getDefault().register(this);
+        //EventBus.getDefault().register(this);
 
         // Get the ActionBar
         ActionBar actionBar = getSupportActionBar();
@@ -100,7 +101,7 @@ public class TeacherMainActivity extends AppCompatActivity {
         teacherPhoto = drawerLayout.findViewById(R.id.ImageView_person_photo);
         Intent intent = getIntent();
         if (intent != null) {
-            Teacher teacher = (Teacher) intent.getSerializableExtra("user");
+            teacher = (Teacher) intent.getSerializableExtra("user");
             nameSurname.setText(teacher.getName());
             SharedPreferences preferences = getSharedPreferences("TeacherPrefs", Context.MODE_PRIVATE);
             String key = "teacher_profile_data_" + teacher.getTeacher_id();
@@ -149,8 +150,6 @@ public class TeacherMainActivity extends AppCompatActivity {
                     drawerLayout.closeDrawer(GravityCompat.START);
                 }
 
-                //navigationManager.showFragment(TeacherProfileFragment.newInstance("teachId"), false);
-                //drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
 
@@ -162,7 +161,7 @@ public class TeacherMainActivity extends AppCompatActivity {
                 Fragment f = fragmentManager.findFragmentById(R.id.FrameLayout_container);
 
                 if (!(f instanceof HomePageFragment))
-                    navigationManager.showFragment(HomePageFragment.newInstance("userId"), false);
+                    navigationManager.showFragment(HomePageFragment.newInstance("userId", teacher), false);
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
@@ -241,7 +240,7 @@ public class TeacherMainActivity extends AppCompatActivity {
     private void selectFirstItemAsDefault() {
 
         if(navigationManager != null)
-            navigationManager.showFragment(HomePageFragment.newInstance(""), false);
+            navigationManager.showFragment(HomePageFragment.newInstance("", teacher), false);
 
     }
 
@@ -313,41 +312,5 @@ public class TeacherMainActivity extends AppCompatActivity {
             return true;
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Subscribe
-    public void onProfilePictureChanged(ProfilePictureChangeEvent event){
-        boolean profilePictureDeleted = event.isProfilePictureDeleted();
-        boolean profilePictureChanged = event.isProfilePictureChanged();
-
-        if(profilePictureDeleted){
-            Glide.with(this)
-                    .load(R.drawable.baseline_person_24)
-                    .circleCrop()
-                    .into(teacherPhoto);
-        }
-        if(profilePictureChanged){
-            Intent intent = getIntent();
-            if (intent != null) {
-                Teacher teacher = (Teacher) intent.getSerializableExtra("user");
-                SharedPreferences preferences = getSharedPreferences("TeacherPrefs", Context.MODE_PRIVATE);
-                String key = "teacher_profile_data_" + teacher.getTeacher_id();
-                String combinedData = preferences.getString(key,"");
-                String[] dataParts = combinedData.split("\\|");
-                System.out.println(Arrays.toString(dataParts));
-                if(dataParts.length == 2){
-                    int teacherId = Integer.parseInt(dataParts[0]);
-                    String encodedImage = dataParts[1];
-                    if(teacher.getTeacher_id() == teacherId){
-                        byte[] byteArray = Base64.decode(encodedImage,Base64.DEFAULT);
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray,0, byteArray.length);
-                        Glide.with(this)
-                                .load(bitmap)
-                                .circleCrop()
-                                .into(teacherPhoto);
-                    }
-                }
-            }
-        }
     }
 }

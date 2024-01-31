@@ -16,9 +16,11 @@ import com.example.birdaha.Utilities.GeneralAnnouncementViewInterface;
 import java.util.List;
 
 /**
- * Adapter class for the RecyclerView that displays a list of general announcements.
+ * The GeneralAnnouncementAdapter class is an adapter for the RecyclerView that displays a list of general announcements.
+ * It binds the data to the views in each ViewHolder and provides a way to handle item click events
+ * through the GeneralAnnouncementViewInterface.
  */
-public class GeneralAnnouncementAdapter extends RecyclerView.Adapter<GeneralAnnouncementAdapter.GeneralAnnouncementViewHolder>{
+public class GeneralAnnouncementAdapter extends RecyclerView.Adapter<GeneralAnnouncementAdapter.GeneralAnnouncementViewHolder> {
     private final GeneralAnnouncementViewInterface generalAnnouncementViewInterface;
     private Context context;
     private List<GeneralAnnouncement> generalAnnouncements;
@@ -26,11 +28,11 @@ public class GeneralAnnouncementAdapter extends RecyclerView.Adapter<GeneralAnno
     /**
      * Constructor for the GeneralAnnouncementAdapter.
      *
-     * @param context                       The context of the calling activity or fragment.
-     * @param generalAnnouncements         The list of general announcements to be displayed in the RecyclerView.
+     * @param context                          The context of the calling activity or fragment.
+     * @param generalAnnouncements             The list of general announcements to be displayed in the RecyclerView.
      * @param generalAnnouncementViewInterface The interface to handle item click events.
      */
-    public GeneralAnnouncementAdapter(Context context, List<GeneralAnnouncement> generalAnnouncements, GeneralAnnouncementViewInterface generalAnnouncementViewInterface){
+    public GeneralAnnouncementAdapter(Context context, List<GeneralAnnouncement> generalAnnouncements, GeneralAnnouncementViewInterface generalAnnouncementViewInterface) {
         this.context = context;
         this.generalAnnouncements = generalAnnouncements;
         this.generalAnnouncementViewInterface = generalAnnouncementViewInterface;
@@ -46,7 +48,7 @@ public class GeneralAnnouncementAdapter extends RecyclerView.Adapter<GeneralAnno
     @NonNull
     @Override
     public GeneralAnnouncementViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new GeneralAnnouncementViewHolder(LayoutInflater.from(context).inflate(R.layout.general_announcement_view,parent,false),generalAnnouncementViewInterface);
+        return new GeneralAnnouncementViewHolder(LayoutInflater.from(context).inflate(R.layout.general_announcement_view, parent, false), generalAnnouncementViewInterface);
     }
 
     /**
@@ -76,13 +78,13 @@ public class GeneralAnnouncementAdapter extends RecyclerView.Adapter<GeneralAnno
     /**
      * ViewHolder class representing each item in the RecyclerView.
      */
-    public class GeneralAnnouncementViewHolder extends RecyclerView.ViewHolder{
+    public class GeneralAnnouncementViewHolder extends RecyclerView.ViewHolder {
         TextView title;
 
         /**
          * Constructor for the GeneralAnnouncementViewHolder.
          *
-         * @param itemView                       The view for each item in the RecyclerView.
+         * @param itemView                         The view for each item in the RecyclerView.
          * @param generalAnnouncementViewInterface The interface to handle item click events.
          */
         public GeneralAnnouncementViewHolder(@NonNull View itemView, GeneralAnnouncementViewInterface generalAnnouncementViewInterface) {
@@ -93,9 +95,9 @@ public class GeneralAnnouncementAdapter extends RecyclerView.Adapter<GeneralAnno
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(generalAnnouncementViewInterface != null){
+                    if (generalAnnouncementViewInterface != null) {
                         int pos = getAdapterPosition();
-                        if(pos != RecyclerView.NO_POSITION){
+                        if (pos != RecyclerView.NO_POSITION) {
                             generalAnnouncementViewInterface.onGeneralAnnouncementItemClick(pos, itemView);
                         }
                     }
