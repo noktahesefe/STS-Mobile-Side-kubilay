@@ -137,7 +137,7 @@ public class ParentMainActivity extends AppCompatActivity {
                 Fragment f = fragmentManager.findFragmentById(R.id.FrameLayout_container);
 
                 if(!(f instanceof HomePageFragment))
-                    navigationManager.showFragment(HomePageFragment.newInstance("userId"), false);
+                    navigationManager.showFragment(HomePageFragment.newInstance("userId", currentParent), false);
 
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
@@ -227,7 +227,7 @@ public class ParentMainActivity extends AppCompatActivity {
     private void setDefaultFragment() {
 
         if(navigationManager != null)
-            navigationManager.showFragment(HomePageFragment.newInstance(""), false);
+            navigationManager.showFragment(HomePageFragment.newInstance("", currentParent), false);
 
     }
 

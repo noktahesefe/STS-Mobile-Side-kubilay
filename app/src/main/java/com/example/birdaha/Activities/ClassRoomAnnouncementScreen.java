@@ -24,8 +24,10 @@ import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.General.AnnouncementsTeacher;
 import com.example.birdaha.General.ClassAnnouncementModel;
 import com.example.birdaha.General.UpdateRespond;
+import com.example.birdaha.Helper.LocalDataManager;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Teacher;
+import com.example.birdaha.Utilities.AnnouncementSerialize;
 import com.example.birdaha.Utilities.ClassAnnouncementViewInterface;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
@@ -89,6 +91,13 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
         Intent intent = getIntent();
         if (intent != null) {
             classroom = (Classroom) intent.getSerializableExtra("classroom");
+
+            classAnnouncementModels = AnnouncementSerialize.fromJson(LocalDataManager.getSharedPreference(getApplicationContext(), "announcement"+classroom.getName(), "")).arr;
+
+            Teacher teacher = (Teacher) getIntent().getSerializableExtra("teacher");
+            classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassRoomAnnouncementScreen.this, classAnnouncementModels, ClassRoomAnnouncementScreen.this, teacher, true);
+            recyclerView.setAdapter(classAnnouncementAdapter);
+
         }
 
         Retrofit retrofit = new Retrofit.Builder()

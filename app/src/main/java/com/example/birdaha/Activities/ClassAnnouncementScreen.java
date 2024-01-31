@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.birdaha.Adapters.ClassAnnouncementAdapter;
+import com.example.birdaha.Adapters.StudentHomeworkAdapter;
 import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.General.AnnouncementsStudent;
 import com.example.birdaha.General.ClassAnnouncementModel;
@@ -26,7 +27,9 @@ import com.example.birdaha.General.StudentSharedPrefModel;
 import com.example.birdaha.Helper.LocalDataManager;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Student;
+import com.example.birdaha.Utilities.AnnouncementSerialize;
 import com.example.birdaha.Utilities.ClassAnnouncementViewInterface;
+import com.example.birdaha.Utilities.HomeworkSerialize;
 import com.example.birdaha.Utilities.NotificationService.NotificationJobService;
 
 import java.util.ArrayList;
@@ -54,7 +57,7 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
     }
 
     SearchView search;
-    List<ClassAnnouncementModel> classAnnouncementModels;
+    ArrayList<ClassAnnouncementModel> classAnnouncementModels;
     ClassAnnouncementAdapter classAnnouncementAdapter;
 
     /**
@@ -87,9 +90,13 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
             System.out.println(notificationModel.getAnnouncementId());
             studentSharedPref.setLastAnnouncementId(notificationModel.getAnnouncementId());
             System.out.println(studentSharedPref.toString());
-
             notificationDataModel.addOrUpdateStudents(studentSharedPref);
             LocalDataManager.setSharedPreference(getApplicationContext(), "studentsArray", notificationDataModel.toJson());
+
+            classAnnouncementModels = AnnouncementSerialize.fromJson(LocalDataManager.getSharedPreference(getApplicationContext(), "announcement"+classroom.getName(), "")).arr;
+
+            classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassAnnouncementScreen.this, (ArrayList<ClassAnnouncementModel>) classAnnouncementModels, ClassAnnouncementScreen.this, null, false);
+            recyclerView.setAdapter(classAnnouncementAdapter);
 
         }
 

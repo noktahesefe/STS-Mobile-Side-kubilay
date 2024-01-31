@@ -44,10 +44,12 @@ import com.example.birdaha.General.HomeworksTeacher;
 import com.example.birdaha.General.HwModel;
 import com.example.birdaha.General.StudentModel;
 import com.example.birdaha.General.UpdateRespond;
+import com.example.birdaha.Helper.LocalDataManager;
 import com.example.birdaha.R;
 import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 
 import com.example.birdaha.Users.Teacher;
+import com.example.birdaha.Utilities.HomeworkSerialize;
 import com.google.gson.Gson;
 
 
@@ -167,6 +169,11 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         Intent intent = getIntent();
         if (intent != null) {
             classroom = (Classroom) intent.getSerializableExtra("classroom");
+            hwModels = HomeworkSerialize.fromJson(LocalDataManager.getSharedPreference(context, "homework"+classroom.getName(), "")).arr;
+            sortListByDate(hwModels);
+            teacher1 = (Teacher) getIntent().getSerializableExtra("teacher");
+            homeworkAdapter = new HomeworkAdapter(context, (ArrayList<HwModel>) hwModels, homeworkViewInterface, teacher1);
+            recyclerView.setAdapter(homeworkAdapter);
         }
 
         Retrofit retrofit = new Retrofit.Builder()

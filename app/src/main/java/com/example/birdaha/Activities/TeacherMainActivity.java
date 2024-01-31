@@ -67,6 +67,7 @@ public class TeacherMainActivity extends AppCompatActivity {
      */
     private NavigationManager navigationManager;
     private ImageView teacherPhoto;
+    private Teacher teacher;
 
     /**
      * Called when the activity is created.
@@ -83,7 +84,7 @@ public class TeacherMainActivity extends AppCompatActivity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teacher_main);
-        EventBus.getDefault().register(this);
+        //EventBus.getDefault().register(this);
 
         Service.start(NotificationJobService.class, this, 102, "notification");
 
@@ -92,7 +93,7 @@ public class TeacherMainActivity extends AppCompatActivity {
         teacherPhoto = drawerLayout.findViewById(R.id.ImageView_person_photo);
         Intent intent = getIntent();
         if (intent != null) {
-            Teacher teacher = (Teacher) intent.getSerializableExtra("user");
+            teacher = (Teacher) intent.getSerializableExtra("user");
             nameSurname.setText(teacher.getName());
             SharedPreferences preferences = getSharedPreferences("TeacherPrefs", Context.MODE_PRIVATE);
             String key = "teacher_profile_data_" + teacher.getTeacher_id();
@@ -152,7 +153,7 @@ public class TeacherMainActivity extends AppCompatActivity {
                 Fragment f = fragmentManager.findFragmentById(R.id.FrameLayout_container);
 
                 if (!(f instanceof HomePageFragment))
-                    navigationManager.showFragment(HomePageFragment.newInstance("userId"), false);
+                    navigationManager.showFragment(HomePageFragment.newInstance("userId", teacher), false);
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
@@ -228,7 +229,7 @@ public class TeacherMainActivity extends AppCompatActivity {
     private void selectFirstItemAsDefault() {
 
         if(navigationManager != null)
-            navigationManager.showFragment(HomePageFragment.newInstance(""), false);
+            navigationManager.showFragment(HomePageFragment.newInstance("", teacher), false);
 
     }
 

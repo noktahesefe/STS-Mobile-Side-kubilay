@@ -82,7 +82,7 @@ public class StudentMainActivity extends AppCompatActivity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_main);
-        EventBus.getDefault().register(this);
+        //EventBus.getDefault().register(this);
 
         Service.start(NotificationJobService.class, this, 102, "notification");
 
@@ -149,9 +149,10 @@ public class StudentMainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 Fragment f = fragmentManager.findFragmentById(R.id.FrameLayout_container);
+                Student student = (Student) intent.getSerializableExtra("user");
 
                 if(!(f instanceof HomePageFragment))
-                    navigationManager.showFragment(HomePageFragment.newInstance("userId"), false);
+                    navigationManager.showFragment(HomePageFragment.newInstance("userId", student), false);
 
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
@@ -224,9 +225,10 @@ public class StudentMainActivity extends AppCompatActivity {
      * as the default fragment without adding it to the back stack.
      */
     private void selectFirstItemAsDefault() {
+        Student student = (Student) getIntent().getSerializableExtra("user");
 
         if(navigationManager != null)
-            navigationManager.showFragment(HomePageFragment.newInstance(""), false);
+            navigationManager.showFragment(HomePageFragment.newInstance("", student), false);
 
     }
 

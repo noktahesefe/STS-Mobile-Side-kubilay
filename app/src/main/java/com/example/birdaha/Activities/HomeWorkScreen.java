@@ -43,6 +43,7 @@ import com.example.birdaha.Helper.LocalDataManager;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Student;
 import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
+import com.example.birdaha.Utilities.HomeworkSerialize;
 import com.example.birdaha.Utilities.NotificationService.NotificationJobService;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
@@ -130,6 +131,13 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
             studentSharedPref.setLastHomeworkId(notificationModel.getHomeworkId());
             notificationDataModel.addOrUpdateStudents(studentSharedPref);
             LocalDataManager.setSharedPreference(context, "studentsArray", notificationDataModel.toJson());
+
+            hwModels = HomeworkSerialize.fromJson(LocalDataManager.getSharedPreference(context, "homework"+classroom.getName(), "")).arr;
+
+            sortListByDate(hwModels);
+            homeworkAdapter = new StudentHomeworkAdapter(context, hwModels, homeworkViewInterface);
+            recyclerView.setAdapter(homeworkAdapter);
+
         }
 
         // Fetch homeworks using Retrofit
