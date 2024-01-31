@@ -39,7 +39,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="8dp"
                 android:layout_toEndOf="@id/fullscreen_dialog_close"
-                android:text="Add Homework"
+                android:text="Ödev Ekle"
                 android:textColor="@android:color/white"
                 android:textSize="20sp" />
 
@@ -52,7 +52,7 @@
                 android:layout_marginEnd="8dp"
                 android:background="?attr/selectableItemBackground"
                 android:padding="8dp"
-                android:text="SAVE"
+                android:text="KAYDET"
                 android:textColor="@android:color/white" />
 
         </RelativeLayout>
@@ -78,7 +78,7 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="15dp"
-                android:hint="Homework Name"
+                android:hint="Ödev İsmi"
                 android:textColorHint="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -103,7 +103,7 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="15dp"
                 android:textColorHint="@color/black"
-                android:hint="Homework Content"
+                android:hint="Ödev İçeriği"
                 app:layout_constraintTop_toBottomOf="@+id/dateTextInputLayout"
                 app:startIconDrawable="@drawable/baseline_topic_24">
 
@@ -119,22 +119,23 @@
                 android:id="@+id/dateTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
                 android:layout_marginTop="15dp"
-                android:layout_marginEnd="150dp"
-                android:hint="Enter due date"
+                android:layout_marginEnd="15dp"
+                android:layout_marginStart="15dp"
+                android:hint="Son Teslim Tarihi"
                 android:textColorHint="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:startIconDrawable="@drawable/baseline_calendar_today_24"
-                app:layout_constraintTop_toBottomOf="@+id/hw_titleTextLayout">
+                app:layout_constraintTop_toBottomOf="@+id/hw_titleTextLayout"
+                app:startIconDrawable="@drawable/baseline_calendar_today_24">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/dateEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:focusable="false"
-                    android:hint="" />
+                    android:hint=""
+                    android:textColor="@color/black" />
 
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -142,29 +143,32 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/hw_adding_image"
+                style="@style/PurpleButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="22dp"
+                android:layout_marginTop="16dp"
                 android:text="Resim ekle"
-                style="@style/PurpleButton"
                 app:cornerRadius="5dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/dateTextInputLayout"
-                app:layout_constraintTop_toBottomOf="@+id/hw_titleTextLayout" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/homework_image"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="@+id/homework_image"
+                app:layout_constraintTop_toBottomOf="@+id/homework_image"
+                app:layout_constraintVertical_bias="0.0" />
 
             <ImageView
+                android:id="@+id/homework_image"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:id="@+id/homework_image"
                 android:layout_margin="16dp"
-                android:layout_marginBottom="50dp"
-                android:src="@drawable/baseline_add_photo_alternate_24"
-                android:padding="50dp"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:background="@drawable/imageview_border"
-                app:layout_constraintHorizontal_bias="0.473"
+                android:padding="50dp"
+                android:src="@drawable/baseline_add_photo_alternate_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/hw_adding_content"/>
+                app:layout_constraintTop_toBottomOf="@+id/hw_adding_content"
+                app:layout_constraintVertical_bias="0.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

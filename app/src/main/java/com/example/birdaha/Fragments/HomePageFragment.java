@@ -35,6 +35,7 @@ import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.General.AnnouncementsStudent;
 import com.example.birdaha.General.AnnouncementsTeacher;
 import com.example.birdaha.General.ClassAnnouncementModel;
+import com.example.birdaha.Adapters.HomeworkAdapter;
 import com.example.birdaha.General.Event;
 import com.example.birdaha.General.EventAndAnnouncements;
 import com.example.birdaha.General.GeneralAnnouncement;
@@ -116,6 +117,7 @@ public class HomePageFragment extends Fragment {
 
         private static final String KEY_TITLE = "Content";
 
+
     private HomePageFragment() {
         // Required empty public constructor
     }
@@ -174,7 +176,8 @@ public class HomePageFragment extends Fragment {
                              Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_home_page, container, false);
         if(isPulled)
-            layout.findViewById(R.id.responseLayout).setVisibility(View.GONE);
+            layout.findViewById(R.id.responselayout).setVisibility(View.GONE);
+
         return layout;
     }
 
@@ -246,7 +249,6 @@ public class HomePageFragment extends Fragment {
 
                     isPulled = true;
                     fetchHomeworks();
-
                 }
                 @Override
                 public void onFailure(Call<EventAndAnnouncements> call, Throwable t) {

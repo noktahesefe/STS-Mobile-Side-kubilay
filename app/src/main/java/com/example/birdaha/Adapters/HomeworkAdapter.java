@@ -45,6 +45,15 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
     Context context;
     ArrayList<HwModel> hwModels;
     ArrayList<HwModel> hwModelsFiltered;
+
+    public ArrayList<HwModel> getHwModels() {
+        return hwModels;
+    }
+
+    public void setHwModels(ArrayList<HwModel> hwModels) {
+        this.hwModels = hwModels;
+    }
+
     private final Teacher currentTeacher;
 
     /**

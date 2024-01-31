@@ -40,7 +40,26 @@
         app:layout_constraintEnd_toEndOf="@+id/cardView_imageSlider"
         app:layout_constraintHorizontal_bias="0.476"
         app:layout_constraintStart_toStartOf="@+id/cardView_imageSlider"
-        app:layout_constraintTop_toBottomOf="@+id/cardView_imageSlider" />
+        app:layout_constraintTop_toBottomOf="@+id/cardView_imageSlider" >
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/responselayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"
+        android:elevation="1000dp"
+        tools:layout_editor_absoluteX="54dp"
+        tools:layout_editor_absoluteY="446dp">
+
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="165dp"
+            android:layout_height="168dp"
+            android:layout_gravity="center"
+            android:src="@drawable/logo" />
+    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/responseLayout"

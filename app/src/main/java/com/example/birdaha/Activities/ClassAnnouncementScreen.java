@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -70,6 +71,12 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_announcement_screen);
         RecyclerView recyclerView = findViewById(R.id.caRecyclerView);
+        // Get the ActionBar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            // Set the title
+            actionBar.setTitle("");
+        }
 
         search = findViewById(R.id.searchView_Announcement);
 

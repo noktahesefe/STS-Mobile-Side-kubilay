@@ -11,9 +11,10 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/profilePicture_holder"
-        android:layout_width="wrap_content"
+        android:layout_width="176dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="117dp"
+        android:layout_marginStart="120dp"
+
         android:layout_marginTop="46dp"
         android:layout_marginEnd="2dp"
         android:background="@drawable/circle_background"
@@ -25,17 +26,18 @@
 
         <ImageView
             android:id="@+id/student_profilePicture"
-            android:layout_width="172dp"
-            android:layout_height="172dp"
+            android:layout_width="170dp"
+            android:layout_height="175dp"
             android:scaleType="centerCrop"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="2dp" />
+            tools:layout_editor_absoluteX="2dp"
+            tools:layout_editor_absoluteY="5dp" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
         android:id="@+id/student_gallery"
+        style="@style/PurpleButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -44,12 +46,11 @@
         android:text="Resim Yükle"
         android:textAllCaps="false"
         android:textSize="18sp"
-        style="@style/PurpleButton"
         app:layout_constraintBottom_toTopOf="@+id/student_name_surname_info"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/profilePicture_holder"
+        app:layout_constraintStart_toStartOf="@+id/profilePicture_holder"
         app:layout_constraintTop_toBottomOf="@+id/profilePicture_holder"
-        app:layout_constraintVertical_bias="0.522" />
+        app:layout_constraintVertical_bias="0.727" />
 
     <TextView
         android:id="@+id/student_name_surname"
@@ -119,7 +120,7 @@
         android:layout_marginStart="22dp"
         android:layout_marginTop="13dp"
         android:gravity="top"
-        android:text="Okul No:"
+        android:text="Öğrenci No:"
         android:textAppearance="@style/student_info_green"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/student_classroom_info" />
@@ -127,15 +128,15 @@
     <Button
         android:id="@+id/student_announcements"
         android:layout_width="200dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="217dp"
+        android:layout_height="52dp"
         android:drawableLeft="@drawable/baseline_event"
         android:text="Duyurular"
+        style="@style/PurpleButton"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/student_homeworks"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/student_homeworks" />
+        app:layout_constraintStart_toStartOf="@+id/student_homeworks"
+        app:layout_constraintTop_toBottomOf="@+id/student_school_number_info" />
 
     <Button
         android:id="@+id/student_homeworks"
@@ -144,6 +145,7 @@
         android:layout_marginBottom="108dp"
         android:drawableLeft="@drawable/baseline_homework"
         android:text="Ödevler"
+        style="@style/PurpleButton"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/student_logo"
         app:layout_constraintEnd_toEndOf="parent"
@@ -166,13 +168,12 @@
         android:id="@+id/deleteProfilePictureButton"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginTop="80dp"
-        android:layout_marginEnd="92dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="40dp"
         android:background="@drawable/background"
         android:src="@drawable/baseline_close_24"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/profilePicture_holder"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/profilePicture_holder" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

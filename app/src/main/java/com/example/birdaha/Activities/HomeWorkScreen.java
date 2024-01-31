@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -86,6 +87,7 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
 
     }
 
+
     // UI components
     private SearchView search;
     private ArrayList<HwModel> hwModels = new ArrayList<>();
@@ -107,6 +109,14 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_work_screen);
+
+        // Get the ActionBar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            // Set the title
+            actionBar.setTitle("");
+        }
+
 
         // Initialize UI components
         search = findViewById(R.id.searchView_homework);
@@ -161,6 +171,49 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
                     }
                     for(HwModel o : hwModels)
                     {
+//                        HomeworkResult newResult = new HomeworkResult();
+//                        int homeworkId = o.getHomework_id();
+//
+//                        newResult.setHomework_id(homeworkId);
+//                        newResult.setStudent_id(student.getStudent_id());
+//
+//                        Retrofit retrofit2 = new Retrofit.Builder()
+//                                .baseUrl("http://sinifdoktoruadmin.online/")
+//                                .addConverterFactory(GsonConverterFactory.create())
+//                                .build();
+//
+//                        HomeworkStudentsScreen.Result resultRequest = retrofit2.create(HomeworkStudentsScreen.Result.class);
+//
+//                        System.out.println(homeworkId);
+//                        System.out.println(student.getStudent_id());
+//                        resultRequest.getResult(homeworkId, student.getStudent_id()).enqueue(new Callback<HomeworkResultModel>(){
+//
+//                            @Override
+//                            public void onResponse(Call<HomeworkResultModel> call, Response<HomeworkResultModel> response) {
+//                                if(response.isSuccessful() && response.body() != null)
+//                                {
+//                                    HomeworkResultModel model = response.body();
+//                                    HomeworkResult result = model.getResult();
+//                                    System.out.println(result);
+//                                    o.setResult(result);
+//                                    System.out.println(new Gson().toJson(model.getResult()));
+//                                    if(result != null)
+//                                    {
+//                                        newResult.setGradedBefore(true);
+//                                        newResult.setHomework_result_id(result.getHomework_result_id());
+//                                    }
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onFailure(Call<HomeworkResultModel> call, Throwable t) {
+//
+//                            }
+//                        });
+
+                        //System.out.println(o.getResult());
+
+
                         System.out.println("HWID - " + o.getHomework_id());
                         LocalDate today = LocalDate.now(turkeyZone);
                         LocalDate localDate = LocalDate.parse(o.getDue_date(), formatter);
@@ -187,6 +240,9 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
                 System.out.println(t.getMessage());
             }
         });
+
+
+
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -293,6 +349,24 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         if(LocalDataManager.getSharedPreference(getApplicationContext(), "USER", "unknown").equals("STUDENT"))
             overlayView.findViewById(R.id.hw_parent_note).setVisibility(View.GONE);
 
+        EditText parentNote = overlayView.findViewById(R.id.hw_parent_note_edittext);
+        EditText studentNote = overlayView.findViewById(R.id.hw_student_note_edittext);
+
+
+        if(LocalDataManager.getSharedPreference(getApplicationContext(), "USER", "unknown").equals("STUDENT"))
+        {
+            TextInputLayout pn =overlayView.findViewById(R.id.hw_parent_note);
+            pn.setVisibility(View.GONE);
+        }
+
+        if(clickedItem.getResult() != null)
+        {
+            parentNote.setText(clickedItem.getResult().getNote_for_parent());
+            studentNote.setText(""+clickedItem.getResult().getGrade());
+        }
+
+
+        gradeButton.setVisibility(View.GONE);
 
 
         // Set content based on the clicked homework item

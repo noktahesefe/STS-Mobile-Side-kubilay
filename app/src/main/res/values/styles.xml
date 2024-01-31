@@ -21,6 +21,13 @@
         <item name="colorAccent">#00FFFFFF</item>
     </style>
 
+    <style name="CustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!-- Set the button text color -->
+        <item name="colorAccent">@color/night_blue</item>
+
+    </style>
+
+
     <style name="student_info_green">
         <item name="android:textSize">15sp</item>
         <item name="android:shadowColor">#40000000</item>
