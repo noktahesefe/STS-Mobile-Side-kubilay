@@ -121,8 +121,6 @@ public class HwModel implements Serializable, Comparable<HwModel> {
 
     @Override
     public int compareTo(HwModel o) {
-        System.out.println(title);
-        System.out.println(o.title);
         return this.title.toLowerCase().compareTo(o.getTitle().toLowerCase());
     }
 

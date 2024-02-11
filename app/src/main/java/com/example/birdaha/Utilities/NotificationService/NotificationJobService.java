@@ -3,8 +3,10 @@ package com.example.birdaha.Utilities.NotificationService;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 
+import com.example.birdaha.General.NotificationDataModel;
 import com.example.birdaha.General.NotificationModel;
 import com.example.birdaha.General.StudentSharedPrefModel;
+import com.example.birdaha.Helper.LocalDataManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,15 +30,13 @@ public class NotificationJobService extends JobService {
     @Override
     public boolean onStartJob(JobParameters params) {
         // Sunucuya istek gönderme işlemini burada gerçekleştirin
-        System.out.println("hi hw");
-        Notification.builder(getApplicationContext(), TITLE, "", "NOTIFICATION", 24);
-        /*String studentsArrayJson = LocalDataManager.getSharedPreference(getApplicationContext(), "studentsArray", NotificationDataModel.getDefaultJson());
+
+        String studentsArrayJson = LocalDataManager.getSharedPreference(getApplicationContext(), "studentsArray", NotificationDataModel.getDefaultJson());
         NotificationDataModel notificationDataModel = NotificationDataModel.fromJson(studentsArrayJson);
 
         new Thread( () -> {
             for(StudentSharedPrefModel student : notificationDataModel.getStudents())
             {
-                System.out.println("studentId - " + student.getStudentId() + "studentHw - " + student.getLastHomeworkId() + "studentAn - " + student.getLastAnnouncementId());
                 fetchNotification(student.getStudentId(), new NotificationCallback() {
 
                     @Override
@@ -51,10 +51,7 @@ public class NotificationJobService extends JobService {
                 });
 
             }
-        }).start();*/
-
-
-
+        }).start();
 
         return false; // İş hala devam ediyorsa true, tamamlandıysa false döndürün
     }
@@ -80,8 +77,6 @@ public class NotificationJobService extends JobService {
             public void onResponse(Call<NotificationModel> call, Response<NotificationModel> response) {
                 if(response.isSuccessful() && response.body() != null){
                     model.setModel((NotificationModel) response.body(), response.code());
-                    System.out.println("hw id from service - " + model.getHomeworkId());
-                    System.out.println("announc id from service - " + model.getAnnouncementId());
                 }
                 else{
                     //Toast.makeText(getApplicationContext(), "Response Unsuccessful", Toast.LENGTH_SHORT).show();
@@ -117,8 +112,6 @@ public class NotificationJobService extends JobService {
             public void onResponse(Call<NotificationModel> call, Response<NotificationModel> response) {
                 if(response.isSuccessful() && response.body() != null){
                     model.setModel((NotificationModel) response.body(), response.code());
-                    System.out.println("hw id from service - " + model.getHomeworkId());
-                    System.out.println("announc id from service - " + model.getAnnouncementId());
                 }
                 else{
                     //Toast.makeText(getApplicationContext(), "Response Unsuccessful", Toast.LENGTH_SHORT).show();

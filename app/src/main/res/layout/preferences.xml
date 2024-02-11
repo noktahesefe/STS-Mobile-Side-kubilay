@@ -99,7 +99,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:background="#4DFFFFFF">
+                    android:background="#4DFFFFFF"
+                    android:visibility="gone">
 
                     <ImageView
                         android:id="@+id/notification_Icon"
@@ -119,9 +120,9 @@
                         android:textStyle="bold" />
 
                     <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/vibrateSwitch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/vibrateSwitch"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:switchMinWidth="50dp" />
@@ -129,30 +130,33 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:background="#4DFFFFFF"
-                    android:layout_height="wrap_content">
+                    android:visibility="gone">
+
                     <ImageView
                         android:id="@+id/notificationIcon"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:padding="12dp"
-                        android:background="@drawable/baseline_volume_up_24" />
+                        android:background="@drawable/baseline_volume_up_24"
+                        android:padding="12dp" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Ses"
                         android:layout_centerVertical="true"
-                        android:textColor="@color/white"
-                        android:textStyle="bold"
+                        android:layout_marginStart="20dp"
                         android:layout_toEndOf="@id/notificationIcon"
-                        android:layout_marginStart="20dp"/>
+                        android:text="Ses"
+                        android:textColor="@color/white"
+                        android:textStyle="bold" />
 
                     <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/soundSwitch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/soundSwitch"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:switchMinWidth="50dp" />

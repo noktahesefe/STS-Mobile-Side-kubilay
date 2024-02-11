@@ -157,14 +157,14 @@ public class HomeworkDialogFragment extends DialogFragment {
                             Toast.makeText(getActivity(), "Ödev başarıyla eklendi", Toast.LENGTH_SHORT).show();
                         } else {
                             // Handle unsuccessful response
-                            Log.d("ResponseError", new Gson().toJson(response.body()));
+                            //Log.d("ResponseError", new Gson().toJson(response.body()));
                         }
                     }
 
                     @Override
                     public void onFailure(Call<UpdateRespond> call, Throwable t) {
                         // Handle failure
-                        Log.d("Error", t.getMessage());
+                        //Log.d("Error", t.getMessage());
                     }
                 });
                 dismiss(); // Dismiss the dialog after action

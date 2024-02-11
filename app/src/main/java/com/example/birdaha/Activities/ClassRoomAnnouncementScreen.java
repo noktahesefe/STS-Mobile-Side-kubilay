@@ -25,8 +25,10 @@ import com.example.birdaha.Classrooms.Classroom;
 import com.example.birdaha.General.AnnouncementsTeacher;
 import com.example.birdaha.General.ClassAnnouncementModel;
 import com.example.birdaha.General.UpdateRespond;
+import com.example.birdaha.Helper.LocalDataManager;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Teacher;
+import com.example.birdaha.Utilities.AnnouncementSerialize;
 import com.example.birdaha.Utilities.ClassAnnouncementViewInterface;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
@@ -88,6 +90,12 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
         Intent intent = getIntent();
         if(intent != null){
             classroom = (Classroom) intent.getSerializableExtra("classroom");
+
+            classAnnouncementModels = AnnouncementSerialize.fromJson(LocalDataManager.getSharedPreference(getApplicationContext(), "announcement"+classroom.getName(), "")).arr;
+
+            Teacher teacher = (Teacher) getIntent().getSerializableExtra("teacher");
+            classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassRoomAnnouncementScreen.this, classAnnouncementModels, ClassRoomAnnouncementScreen.this, teacher, true);
+            recyclerView.setAdapter(classAnnouncementAdapter);
         }
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -101,11 +109,9 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
                 @Override
                 public void onResponse(Call<AnnouncementsTeacher> call, Response<AnnouncementsTeacher> response) {
                     if(response.isSuccessful() && response.body() != null){
-                        Toast.makeText(ClassRoomAnnouncementScreen.this, "Duyurular Listeleniyor", Toast.LENGTH_SHORT).show();
                         AnnouncementsTeacher models = response.body();
                         classAnnouncementModels = (ArrayList<ClassAnnouncementModel>) models.getClassroomAnnouncements();
                         if(classAnnouncementModels.isEmpty()){
-                            Toast.makeText(ClassRoomAnnouncementScreen.this, "Duyuru yok", Toast.LENGTH_SHORT).show();
                         }
 
                         Teacher teacher = (Teacher) getIntent().getSerializableExtra("teacher");
@@ -113,13 +119,11 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
                         recyclerView.setAdapter(classAnnouncementAdapter);
                     }
                     else{
-                        Toast.makeText(ClassRoomAnnouncementScreen.this, "Response Unsuccessful", Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<AnnouncementsTeacher> call, Throwable t) {
-                    Toast.makeText(ClassRoomAnnouncementScreen.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -169,7 +173,6 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
 
         View overlayView = inflater.inflate(R.layout.dialog_ann_detail, null);
 
-        System.out.println("Clicked item teacher name: "+ clickedItem.getTeacher().getName());
 
 
         EditText title = overlayView.findViewById(R.id.announcement_detail_name);
@@ -237,19 +240,16 @@ public class ClassRoomAnnouncementScreen extends AppCompatActivity implements Cl
                     @Override
                     public void onResponse(Call<UpdateRespond> call, Response<UpdateRespond> response) {
                         if(response.isSuccessful() && response.body() != null){
-                            Toast.makeText(ClassRoomAnnouncementScreen.this, "Duyuru başarıyla güncellendi", Toast.LENGTH_SHORT).show();
                             classAnnouncementAdapter.notifyDataSetChanged();
                             Intent intent = new Intent(ClassRoomAnnouncementScreen.this,ClassRoomAnnouncementScreen.class);
                             startActivity(intent);
                         }
                         else{
-                          Toast.makeText(ClassRoomAnnouncementScreen.this, "Hata oluştu!" + response.code(), Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<UpdateRespond> call, Throwable t) {
-                        Toast.makeText(ClassRoomAnnouncementScreen.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
                 dialog.dismiss();

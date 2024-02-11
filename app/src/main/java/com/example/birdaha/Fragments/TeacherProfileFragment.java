@@ -124,7 +124,7 @@ public class TeacherProfileFragment extends Fragment {
 
                                 @Override
                                 public void onFailure(Call<ProfilePictureRespond> call, Throwable t) {
-                                    Toast.makeText(requireActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(requireActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }
@@ -396,7 +396,7 @@ public class TeacherProfileFragment extends Fragment {
 
                             @Override
                             public void onFailure(Call<ProfilePictureRespond> call, Throwable t) {
-                                Toast.makeText(requireActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(requireActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
                     }

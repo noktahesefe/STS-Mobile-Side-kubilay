@@ -104,9 +104,6 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
         }
 
         if(current.getTeacher_id() == currentTeacher.getTeacher_id()){
-            System.out.println("Homework name:" + current.getTitle());
-            System.out.println("Teacher Id:" + currentTeacher.getTeacher_id());
-            System.out.println("Homework Teacher Id: " + current.getTeacher_id());
             holder.deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -135,7 +132,7 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
                                 }
                                 @Override
                                 public void onFailure(Call<UpdateRespond> call, Throwable t) {
-                                    Log.d("Error",t.getMessage());
+                                    //Log.d("Error",t.getMessage());
                                 }
                             });
                         }

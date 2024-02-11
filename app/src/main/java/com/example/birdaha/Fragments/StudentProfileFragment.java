@@ -125,7 +125,7 @@ public class StudentProfileFragment extends Fragment {
 
                                 @Override
                                 public void onFailure(Call<ProfilePictureRespond> call, Throwable t) {
-                                    Toast.makeText(requireActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(requireActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }
@@ -354,7 +354,6 @@ public class StudentProfileFragment extends Fragment {
                 if(TextUtils.isEmpty(combinedData)){
                     deleteProfilePictureButton.setVisibility(View.INVISIBLE);
                 }
-                //System.out.println(Arrays.toString(dataParts));
                 if(dataParts.length == 2){
                     int studentId = Integer.parseInt(dataParts[0]);
                     String encodedImage = dataParts[1];
@@ -440,7 +439,7 @@ public class StudentProfileFragment extends Fragment {
 
                             @Override
                             public void onFailure(Call<ProfilePictureRespond> call, Throwable t) {
-                                Toast.makeText(requireActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(requireActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -500,7 +499,6 @@ public class StudentProfileFragment extends Fragment {
     @Override
     public void onDetach(){
         super.onDetach();
-        System.out.println("Deadge");
         instance = null;
     }
 }

@@ -170,7 +170,7 @@ public class NotificationFragment extends Fragment {
 
                             @Override
                             public void onFailure(Call<UserRespond> call, Throwable t) {
-                                Toast.makeText(requireContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(requireContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -222,7 +222,7 @@ public class NotificationFragment extends Fragment {
 
                             @Override
                             public void onFailure(Call<UserRespond> call, Throwable t) {
-                                Toast.makeText(requireContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(requireContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -275,7 +275,7 @@ public class NotificationFragment extends Fragment {
 
                             @Override
                             public void onFailure(Call<UserRespond> call, Throwable t) {
-                                Toast.makeText(requireContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(requireContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
                     }

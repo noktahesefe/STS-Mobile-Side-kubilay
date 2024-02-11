@@ -145,7 +145,7 @@ public class ParentMainActivity extends AppCompatActivity {
                 Fragment f = fragmentManager.findFragmentById(R.id.FrameLayout_container);
 
                 if(!(f instanceof HomePageFragment))
-                    navigationManager.showFragment(HomePageFragment.newInstance("userId"), false);
+                    navigationManager.showFragment(HomePageFragment.newInstance("userId", currentParent), false);
 
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
@@ -235,7 +235,7 @@ public class ParentMainActivity extends AppCompatActivity {
     private void setDefaultFragment() {
 
         if(navigationManager != null)
-            navigationManager.showFragment(HomePageFragment.newInstance(""), false);
+            navigationManager.showFragment(HomePageFragment.newInstance("", currentParent), false);
 
     }
 
@@ -288,7 +288,6 @@ public class ParentMainActivity extends AppCompatActivity {
 
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     Fragment f = fragmentManager.findFragmentById(R.id.FrameLayout_container);
-                    System.out.println(student.getClassroom().getName());
                     if(!(f instanceof StudentProfileFragment) || StudentProfileFragment.getCurrStudent().getSchool_no() != student.getSchool_no()) {
                         navigationManager.showFragment(StudentProfileFragment.newInstance(student, false), false);
                     }

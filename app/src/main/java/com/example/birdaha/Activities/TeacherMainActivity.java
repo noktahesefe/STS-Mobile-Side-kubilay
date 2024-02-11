@@ -68,6 +68,8 @@ public class TeacherMainActivity extends AppCompatActivity {
      */
     private NavigationManager navigationManager;
     private ImageView teacherPhoto;
+    private Teacher teacher;
+
 
     /**
      * Called when the activity is created.
@@ -100,13 +102,12 @@ public class TeacherMainActivity extends AppCompatActivity {
         teacherPhoto = drawerLayout.findViewById(R.id.ImageView_person_photo);
         Intent intent = getIntent();
         if (intent != null) {
-            Teacher teacher = (Teacher) intent.getSerializableExtra("user");
+            teacher = (Teacher) intent.getSerializableExtra("user");
             nameSurname.setText(teacher.getName());
             SharedPreferences preferences = getSharedPreferences("TeacherPrefs", Context.MODE_PRIVATE);
             String key = "teacher_profile_data_" + teacher.getTeacher_id();
             String combinedData = preferences.getString(key,"");
             String[] dataParts = combinedData.split("\\|");
-            System.out.println(Arrays.toString(dataParts));
             if(dataParts.length == 2){
                 int teacherId = Integer.parseInt(dataParts[0]);
                 String encodedImage = dataParts[1];
@@ -162,7 +163,7 @@ public class TeacherMainActivity extends AppCompatActivity {
                 Fragment f = fragmentManager.findFragmentById(R.id.FrameLayout_container);
 
                 if (!(f instanceof HomePageFragment))
-                    navigationManager.showFragment(HomePageFragment.newInstance("userId"), false);
+                    navigationManager.showFragment(HomePageFragment.newInstance("userId", teacher), false);
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
@@ -241,7 +242,7 @@ public class TeacherMainActivity extends AppCompatActivity {
     private void selectFirstItemAsDefault() {
 
         if(navigationManager != null)
-            navigationManager.showFragment(HomePageFragment.newInstance(""), false);
+            navigationManager.showFragment(HomePageFragment.newInstance("", teacher), false);
 
     }
 
@@ -334,7 +335,6 @@ public class TeacherMainActivity extends AppCompatActivity {
                 String key = "teacher_profile_data_" + teacher.getTeacher_id();
                 String combinedData = preferences.getString(key,"");
                 String[] dataParts = combinedData.split("\\|");
-                System.out.println(Arrays.toString(dataParts));
                 if(dataParts.length == 2){
                     int teacherId = Integer.parseInt(dataParts[0]);
                     String encodedImage = dataParts[1];

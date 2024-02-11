@@ -9,7 +9,6 @@ public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
-            //Service.start(AnnouncementJobService.class, context, 101, "announ");
             Service.start(NotificationJobService.class, context, 102, "notification");
         }
     }

@@ -44,6 +44,7 @@ import com.example.birdaha.Helper.LocalDataManager;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Student;
 import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
+import com.example.birdaha.Utilities.HomeworkSerialize;
 import com.example.birdaha.Utilities.NotificationService.NotificationJobService;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
@@ -120,7 +121,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         Intent intent = getIntent();
         if (intent != null) {
             student = (Student) intent.getSerializableExtra("student");
-            System.out.println("hwsc " + student.getClassroom().getName());
 
             classroom = (Classroom) intent.getSerializableExtra("classroom");
 
@@ -133,14 +133,17 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
             NotificationDataModel notificationDataModel = NotificationDataModel.fromJson(studentsArrayJson);
             StudentSharedPrefModel studentSharedPref = notificationDataModel.getOrDefault(student.getStudent_id(), student.getClassroom().getName());
 
-            System.out.println(notificationModel.getHomeworkId());
             studentSharedPref.setLastHomeworkId(notificationModel.getHomeworkId());
-            System.out.println(studentSharedPref.toString());
 
             notificationDataModel.addOrUpdateStudents(studentSharedPref);
 
             LocalDataManager.setSharedPreference(context, "studentsArray", notificationDataModel.toJson());
 
+            hwModels = HomeworkSerialize.fromJson(LocalDataManager.getSharedPreference(context, "homework"+classroom.getName(), "")).arr;
+
+            sortListByDate(hwModels);
+            homeworkAdapter = new StudentHomeworkAdapter(context, hwModels, homeworkViewInterface);
+            recyclerView.setAdapter(homeworkAdapter);
 
         }
 
@@ -210,7 +213,6 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
                         //System.out.println(o.getResult());
 
 
-                        System.out.println("HWID - " + o.getHomework_id());
                         LocalDate today = LocalDate.now(turkeyZone);
                         LocalDate localDate = LocalDate.parse(o.getDue_date(), formatter);
 
@@ -223,17 +225,13 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
                     sortListByDate(hwModels);
                     homeworkAdapter = new StudentHomeworkAdapter(context, hwModels, homeworkViewInterface);
                     recyclerView.setAdapter(homeworkAdapter);
-                    Toast.makeText(HomeWorkScreen.this, "Ödevler Listeleniyor", Toast.LENGTH_SHORT).show();
 
                 }
                 else{
-                    Toast.makeText(HomeWorkScreen.this, "Response Unsuccessful", Toast.LENGTH_SHORT).show();
                 }
             }
             @Override
             public void onFailure(Call<HomeworksStudent> call, Throwable t) {
-                Toast.makeText(HomeWorkScreen.this, t.getMessage(), Toast.LENGTH_SHORT).show();
-                System.out.println(t.getMessage());
             }
         });
 
@@ -296,49 +294,14 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
             checkBox1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    hwModels.clear();
-
-                    if (checkBox2.isChecked())
-                        hwModels.addAll(expiredHws);
-
-                    if (isChecked)
-                        hwModels.addAll(ongoingHws);
-
-
-                    if (!isChecked && !checkBox2.isChecked()) {
-                        hwModels.addAll(expiredHws);
-                        hwModels.addAll(ongoingHws);
-                    }
-
-
-                    sortListByDate(hwModels);
-                    homeworkAdapter = new StudentHomeworkAdapter(context, hwModels, homeworkViewInterface);
-                    recyclerView.setAdapter(homeworkAdapter);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                    updateHomeworkList(isChecked, checkBox2.isChecked());
                 }
             });
 
             checkBox2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    hwModels.clear();
-
-                    if (checkBox1.isChecked())
-                        hwModels.addAll(ongoingHws);
-
-                    if (isChecked)
-                        hwModels.addAll(expiredHws);
-
-
-                    if (!isChecked && !checkBox1.isChecked()) {
-                        hwModels.addAll(expiredHws);
-                        hwModels.addAll(ongoingHws);
-                    }
-
-                    sortListByDate(hwModels);
-                    homeworkAdapter = new StudentHomeworkAdapter(context, hwModels, homeworkViewInterface);
-                    recyclerView.setAdapter(homeworkAdapter);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                    updateHomeworkList(checkBox1.isChecked(), isChecked);
                 }
             });
 
@@ -347,6 +310,19 @@ public class HomeWorkScreen extends AppCompatActivity implements ClassroomHomewo
         filterDialog.show();
     }
 
+    private void updateHomeworkList(boolean includeOngoing, boolean includeExpired) {
+        ArrayList<HwModel> filteredList = new ArrayList<>();
+
+        if (includeOngoing) filteredList.addAll(ongoingHws);
+        else if (includeExpired) filteredList.addAll(expiredHws);
+        else filteredList.addAll(hwModels);
+
+        sortListByDate(filteredList);
+
+        homeworkAdapter = new StudentHomeworkAdapter(context, filteredList, homeworkViewInterface);
+        recyclerView.setAdapter(homeworkAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+    }
 
     @Override
     public void onClassroomHomeworkItemClick(HwModel clickedItem, View view) {

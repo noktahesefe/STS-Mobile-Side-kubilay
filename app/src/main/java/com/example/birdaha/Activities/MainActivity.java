@@ -126,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 LocalDataManager.setSharedPreference(getApplicationContext(), "isRemember", checkBox.isChecked() ? "true" : "false");
-                System.out.println(LocalDataManager.getSharedPreference(getApplicationContext(), "isRemember", "noValue"));
             }
         });
 
@@ -145,7 +144,6 @@ public class MainActivity extends AppCompatActivity {
         {
             String username = LocalDataManager.getSharedPreference(getApplicationContext(), "username", "noValue");
             String password = LocalDataManager.getSharedPreference(getApplicationContext(), "password", "noValue");
-            System.out.println(username + " - " + password);
             if(!(username.equals("noValue") || password.equals("noValue")))
                 login(username, password);
         }
@@ -172,7 +170,6 @@ public class MainActivity extends AppCompatActivity {
 
         RequestUser requestUser = retrofit.create(RequestUser.class);
         LoginRequest loginRequest = new LoginRequest(username, password);
-        System.out.println(new Gson().toJson(loginRequest).toString());
 
         requestUser.postUser(loginRequest).enqueue(new Callback<UserRespond>() {
             @Override
@@ -206,7 +203,6 @@ public class MainActivity extends AppCompatActivity {
                                         dialog.dismiss();
                                         Intent intent = new Intent(MainActivity.this, TeacherMainActivity.class);
                                         intent.putExtra("user", teacher);
-                                        Toast.makeText(MainActivity.this, "Öğretmen giriş yaptı", Toast.LENGTH_SHORT).show();
                                         startActivity(intent);
                                         finish();
                                     }
@@ -243,7 +239,6 @@ public class MainActivity extends AppCompatActivity {
                                                     dialog.dismiss();
                                                     Intent intent = new Intent(MainActivity.this, TeacherMainActivity.class);
                                                     intent.putExtra("user", teacher);
-                                                    Toast.makeText(MainActivity.this, "Öğretmen giriş yaptı", Toast.LENGTH_SHORT).show();
                                                     startActivity(intent);
                                                     finish();
                                                 }
@@ -254,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
 
                                             @Override
                                             public void onFailure(Call<UserRespond> call, Throwable t) {
-                                                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                                                //Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                                             }
                                         });
                                     }
@@ -264,7 +259,6 @@ public class MainActivity extends AppCompatActivity {
                             else{
                                 Intent intent = new Intent(MainActivity.this, TeacherMainActivity.class);
                                 intent.putExtra("user", teacher);
-                                Toast.makeText(MainActivity.this, "Öğretmen giriş yaptı", Toast.LENGTH_SHORT).show();
                                 startActivity(intent);
                                 finish();
                             }
@@ -288,7 +282,6 @@ public class MainActivity extends AppCompatActivity {
                                         dialog.dismiss();
                                         Intent intent = new Intent(MainActivity.this, StudentMainActivity.class);
                                         intent.putExtra("user", student);
-                                        Toast.makeText(MainActivity.this, "Öğrenci giriş yaptı", Toast.LENGTH_SHORT).show();
                                         startActivity(intent);
                                         finish();
                                     }
@@ -325,7 +318,6 @@ public class MainActivity extends AppCompatActivity {
                                                     dialog.dismiss();
                                                     Intent intent = new Intent(MainActivity.this, StudentMainActivity.class);
                                                     intent.putExtra("user", student);
-                                                    Toast.makeText(MainActivity.this, "Öğrenci giriş yaptı", Toast.LENGTH_SHORT).show();
                                                     startActivity(intent);
                                                     finish();
                                                 }
@@ -336,7 +328,7 @@ public class MainActivity extends AppCompatActivity {
 
                                             @Override
                                             public void onFailure(Call<UserRespond> call, Throwable t) {
-                                                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                                                //Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                                             }
                                         });
                                     }
@@ -346,7 +338,6 @@ public class MainActivity extends AppCompatActivity {
                             else{
                                 Intent intent = new Intent(MainActivity.this, StudentMainActivity.class);
                                 intent.putExtra("user", student);
-                                Toast.makeText(MainActivity.this, "Öğrenci giriş yaptı", Toast.LENGTH_SHORT).show();
                                 startActivity(intent);
                                 finish();
                             }
@@ -376,7 +367,6 @@ public class MainActivity extends AppCompatActivity {
                                         dialog.dismiss();
                                         Intent intent = new Intent(MainActivity.this, ParentMainActivity.class);
                                         intent.putExtra("user", parent);
-                                        Toast.makeText(MainActivity.this, "Veli giriş yaptı", Toast.LENGTH_SHORT).show();
                                         startActivity(intent);
                                         finish();
                                     }
@@ -413,7 +403,6 @@ public class MainActivity extends AppCompatActivity {
                                                     dialog.dismiss();
                                                     Intent intent = new Intent(MainActivity.this, ParentMainActivity.class);
                                                     intent.putExtra("user", parent);
-                                                    Toast.makeText(MainActivity.this, "Veli giriş yaptı", Toast.LENGTH_SHORT).show();
                                                     startActivity(intent);
                                                     finish();
                                                 }
@@ -424,7 +413,7 @@ public class MainActivity extends AppCompatActivity {
 
                                             @Override
                                             public void onFailure(Call<UserRespond> call, Throwable t) {
-                                                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                                                //Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                                             }
                                         });
                                     }
@@ -434,7 +423,6 @@ public class MainActivity extends AppCompatActivity {
                             else{
                                 Intent intent = new Intent(MainActivity.this, ParentMainActivity.class);
                                 intent.putExtra("user", parent);
-                                Toast.makeText(MainActivity.this, "Veli giriş yaptı", Toast.LENGTH_SHORT).show();
                                 startActivity(intent);
                                 finish();
                             }
@@ -447,7 +435,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<UserRespond> call, Throwable t) {
-                Log.d("ERROR", t.getMessage());
+                //Log.d("ERROR", t.getMessage());
             }
         });
     }

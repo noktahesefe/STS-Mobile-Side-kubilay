@@ -161,8 +161,6 @@ public class HomeworkStudentsScreen extends AppCompatActivity implements Homewor
                 .build();
 
         Result resultRequest = retrofit.create(Result.class);
-        System.out.println(homeworkId);
-        System.out.println(student.getStudent_id());
         resultRequest.getResult(homeworkId, student.getStudent_id()).enqueue(new Callback<HomeworkResultModel>(){
 
             @Override
@@ -171,7 +169,6 @@ public class HomeworkStudentsScreen extends AppCompatActivity implements Homewor
                 {
                     HomeworkResultModel model = response.body();
                     HomeworkResult result = model.getResult();
-                    System.out.println(new Gson().toJson(model.getResult()));
                     if(result != null)
                     {
                         editTextGrade.setText(Integer.toString(result.getGrade()));
@@ -239,8 +236,6 @@ public class HomeworkStudentsScreen extends AppCompatActivity implements Homewor
                                     Log.d("Error",t.getMessage());
                                 }
                             });
-                            System.out.println(newResult.toString());
-                            System.out.println("graded before");
 
                         }
                         else
@@ -263,8 +258,6 @@ public class HomeworkStudentsScreen extends AppCompatActivity implements Homewor
                                     Log.d("Error",t.getMessage());
                                 }
                             });
-                            System.out.println(newResult.toString());
-                            System.out.println("not graded before");
 
                         }
 

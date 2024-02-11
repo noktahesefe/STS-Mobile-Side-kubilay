@@ -128,7 +128,6 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
                                         .baseUrl("http://sinifdoktoruadmin.online/")
                                         .addConverterFactory(GsonConverterFactory.create())
                                         .build();
-                                System.out.println("announcement id:" + current.getAnnouncement_id());
                                 ClassRoomAnnouncementScreen.MakeAnnouncement deleteHomework = retrofit.create(ClassRoomAnnouncementScreen.MakeAnnouncement.class);
                                 deleteHomework.deleteHomework(current.getAnnouncement_id()).enqueue(new Callback<UpdateRespond>() {
                                     @Override
@@ -144,7 +143,7 @@ public class ClassAnnouncementAdapter extends RecyclerView.Adapter<ClassAnnounce
 
                                     @Override
                                     public void onFailure(Call<UpdateRespond> call, Throwable t) {
-                                        Log.d("Error", t.getMessage());
+                                        //Log.d("Error", t.getMessage());
                                     }
                                 });
                             }

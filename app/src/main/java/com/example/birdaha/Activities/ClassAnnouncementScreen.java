@@ -27,6 +27,7 @@ import com.example.birdaha.General.StudentSharedPrefModel;
 import com.example.birdaha.Helper.LocalDataManager;
 import com.example.birdaha.R;
 import com.example.birdaha.Users.Student;
+import com.example.birdaha.Utilities.AnnouncementSerialize;
 import com.example.birdaha.Utilities.ClassAnnouncementViewInterface;
 import com.example.birdaha.Utilities.NotificationService.NotificationJobService;
 
@@ -48,8 +49,10 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
         Call<AnnouncementsStudent> getAnnouncements(@Path("classroomId") int classroomId);
     }
     SearchView search;
-    List<ClassAnnouncementModel> classAnnouncementModels;
+    ArrayList<ClassAnnouncementModel> classAnnouncementModels;
     ClassAnnouncementAdapter classAnnouncementAdapter;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,12 +80,15 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
             NotificationDataModel notificationDataModel = NotificationDataModel.fromJson(studentsArrayJson);
             StudentSharedPrefModel studentSharedPref = notificationDataModel.getOrDefault(student.getStudent_id(), student.getClassroom().getName());
 
-            System.out.println(notificationModel.getAnnouncementId());
             studentSharedPref.setLastAnnouncementId(notificationModel.getAnnouncementId());
-            System.out.println(studentSharedPref.toString());
 
             notificationDataModel.addOrUpdateStudents(studentSharedPref);
             LocalDataManager.setSharedPreference(getApplicationContext(), "studentsArray", notificationDataModel.toJson());
+
+            classAnnouncementModels = AnnouncementSerialize.fromJson(LocalDataManager.getSharedPreference(getApplicationContext(), "announcement"+classroom.getName(), "")).arr;
+
+            classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassAnnouncementScreen.this, (ArrayList<ClassAnnouncementModel>) classAnnouncementModels, ClassAnnouncementScreen.this, null, false);
+            recyclerView.setAdapter(classAnnouncementAdapter);
 
         }
 
@@ -98,14 +104,11 @@ public class ClassAnnouncementScreen extends AppCompatActivity implements ClassA
                     AnnouncementsStudent models = response.body();
                     classAnnouncementModels = models.getClassAnnouncements();
                     if(classAnnouncementModels.isEmpty()){
-                        Toast.makeText(ClassAnnouncementScreen.this, "Duyuru yok!", Toast.LENGTH_SHORT).show();
                     }
                     classAnnouncementAdapter = new ClassAnnouncementAdapter(ClassAnnouncementScreen.this, (ArrayList<ClassAnnouncementModel>) classAnnouncementModels, ClassAnnouncementScreen.this,null, false);
                     recyclerView.setAdapter(classAnnouncementAdapter);
-                    Toast.makeText(ClassAnnouncementScreen.this, "Duyurular Listeleniyor", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    Toast.makeText(ClassAnnouncementScreen.this, "Response Unsuccessful", Toast.LENGTH_SHORT).show();
                 }
             }
 

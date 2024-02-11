@@ -96,13 +96,11 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
         String combinedData = preferences.getString(key,"");
         String[] dataParts = combinedData.split("\\|");
         if(dataParts[1].equals("null")){
-            System.out.println("null");
             Glide.with(context)
                     .load(R.drawable.ic_account_circle_white_24)
                     .into(imageView);
         }
         else{
-            System.out.println("not null");
             if(dataParts.length == 2) {
                 int studentId = Integer.parseInt(dataParts[0]);
                 String encodedImage = dataParts[1];

@@ -45,10 +45,12 @@ import com.example.birdaha.General.HomeworksTeacher;
 import com.example.birdaha.General.HwModel;
 import com.example.birdaha.General.StudentModel;
 import com.example.birdaha.General.UpdateRespond;
+import com.example.birdaha.Helper.LocalDataManager;
 import com.example.birdaha.R;
 import com.example.birdaha.Utilities.ClassroomHomeworkViewInterface;
 
 import com.example.birdaha.Users.Teacher;
+import com.example.birdaha.Utilities.HomeworkSerialize;
 import com.google.gson.Gson;
 
 
@@ -162,7 +164,12 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
         Intent intent = getIntent();
         if (intent != null) {
             classroom = (Classroom) intent.getSerializableExtra("classroom");
-            //hwModels = (ArrayList<HwModel>) intent.getSerializableExtra("homeworks");
+
+            hwModels = HomeworkSerialize.fromJson(LocalDataManager.getSharedPreference(context, "homework"+classroom.getName(), "")).arr;
+            sortListByDate(hwModels);
+            teacher1 = (Teacher) getIntent().getSerializableExtra("teacher");
+            homeworkAdapter = new HomeworkAdapter(context, (ArrayList<HwModel>) hwModels, homeworkViewInterface, teacher1);
+            recyclerView.setAdapter(homeworkAdapter);
         }
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -175,7 +182,6 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                 @Override
                 public void onResponse(Call<HomeworksTeacher> call, Response<HomeworksTeacher> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        Toast.makeText(ClassroomHomeworkScreen.this, "Ödevler Listeleniyor", Toast.LENGTH_SHORT).show();
                         HomeworksTeacher models = response.body();
                         hwModels = models.getHomeworks();
                         if(hwModels.isEmpty()){
@@ -198,15 +204,12 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                         teacher1 = (Teacher) getIntent().getSerializableExtra("teacher");
                         homeworkAdapter = new HomeworkAdapter(context, (ArrayList<HwModel>) hwModels, homeworkViewInterface, teacher1);
                         recyclerView.setAdapter(homeworkAdapter);
-                    } else {
-                        Toast.makeText(ClassroomHomeworkScreen.this, "Response Unsuccessful", Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<HomeworksTeacher> call, Throwable t) {
-                    Toast.makeText(ClassroomHomeworkScreen.this, t.getMessage(), Toast.LENGTH_SHORT).show();
-                    Log.d("Fail", t.getMessage());
+                   // Log.d("Fail", t.getMessage());
                 }
             });
         }
@@ -480,7 +483,6 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
     public void onClassroomHomeworkEditClick(HwModel clickedItem, View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
         LayoutInflater inflater = LayoutInflater.from(view.getContext());
-        System.out.println(clickedItem.getGetImage());
 
         View overlayView = inflater.inflate(R.layout.full_screen_hw_adding_dialog, null);
         EditText hw_title = overlayView.findViewById(R.id.hw_title);
@@ -554,14 +556,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                     clickedItem.setImage(image);
                     clickedItem.setGetImage(image);
                 }
-                System.out.println("hw id:" + clickedItem.getHomework_id());
-                System.out.println("teacher id:" + clickedItem.getTeacher_id());
-                System.out.println("classroom id:" + clickedItem.getClassroom_id());
-                System.out.println("teacher course name:" + clickedItem.getCourse_name());
-                System.out.println("Title:" + clickedItem.getTitle());
-                System.out.println("Content:" + clickedItem.getInfo());
-                System.out.println("Due Date:" + clickedItem.getDue_date());
-                System.out.println("Image :" + clickedItem.getImage());
+
 
                 //HwModel hwModel = new HwModel(classroom.getClassroom_id(), teacher.getTeacher_id(), teacher.getCourse().getName(), due_date, title, content, image);
                 //hwModel.setGetImage(image);
@@ -587,7 +582,7 @@ public class ClassroomHomeworkScreen extends AppCompatActivity implements Classr
                     @Override
                     public void onFailure(Call<UpdateRespond> call, Throwable t) {
                         // Handle failure
-                        Log.d("Error", t.getMessage());
+                        //Log.d("Error", t.getMessage());
                     }
                 });
                 dialog.dismiss();
