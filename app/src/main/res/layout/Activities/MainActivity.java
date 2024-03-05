@@ -10,10 +10,14 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.birdaha.R;
-import com.example.birdaha.Users.Parent;
-import com.example.birdaha.Users.Student;
-import com.example.birdaha.Users.Teacher;
-import com.example.birdaha.Users.User;
+
+import studenttrackingsystem.Activities.ParentMainActivity;
+import studenttrackingsystem.Activities.StudentMainActivity;
+import studenttrackingsystem.Activities.TeacherMainActivity;
+import studenttrackingsystem.Users.Parent;
+import studenttrackingsystem.Users.Student;
+import studenttrackingsystem.Users.Teacher;
+import studenttrackingsystem.Users.User;
 import com.google.android.material.button.MaterialButton;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,31 +42,31 @@ public class MainActivity extends AppCompatActivity {
                 if(checkEditText()){
                     User user = identifyUser();
                     if(user == null){
-                        Toast.makeText(MainActivity.this, "Invalid username.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(studenttrackingsystem.Activities.MainActivity.this, "Invalid username.", Toast.LENGTH_SHORT).show();
                     }
                     else{
                         if(user instanceof Student){
-                            Toast.makeText(MainActivity.this, "Student logged in!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(MainActivity.this, StudentMainActivity.class);
+                            Toast.makeText(studenttrackingsystem.Activities.MainActivity.this, "Student logged in!", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(studenttrackingsystem.Activities.MainActivity.this, StudentMainActivity.class);
                             intent.putExtra("user",user); // Send the object information to StudentProfile class
                             startActivity(intent);
                         }
                         else if(user instanceof Teacher){
-                            Toast.makeText(MainActivity.this, "Teacher logged in!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(MainActivity.this, TeacherMainActivity.class);
+                            Toast.makeText(studenttrackingsystem.Activities.MainActivity.this, "Teacher logged in!", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(studenttrackingsystem.Activities.MainActivity.this, TeacherMainActivity.class);
                             intent.putExtra("user",user);
                             startActivity(intent);
                         }
                         else if(user instanceof Parent){
-                            Toast.makeText(MainActivity.this, "Parent logged in!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(MainActivity.this, ParentMainActivity.class);
+                            Toast.makeText(studenttrackingsystem.Activities.MainActivity.this, "Parent logged in!", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(studenttrackingsystem.Activities.MainActivity.this, ParentMainActivity.class);
                             intent.putExtra("user",user);
                             startActivity(intent);
                         }
                     }
                 }
                 else{
-                    Toast.makeText(MainActivity.this, "Please enter your username or password!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(studenttrackingsystem.Activities.MainActivity.this, "Please enter your username or password!", Toast.LENGTH_SHORT).show();
                 }
             }
         });

@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.birdaha"
+    namespace = "com.senayduranokullari.studenttrackingsystem"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.birdaha"
+        applicationId = "com.senayduranokullari.studenttrackingsystem"
         minSdk = 26
         targetSdk = 34
         versionCode = 1

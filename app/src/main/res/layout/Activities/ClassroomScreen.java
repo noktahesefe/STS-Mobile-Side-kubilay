@@ -8,6 +8,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.birdaha.R;
 
+import studenttrackingsystem.Activities.ClassRoomAnnouncementScreen;
+import studenttrackingsystem.Activities.ClassroomHomeworkScreen;
+
 public class ClassroomScreen extends AppCompatActivity {
 
     Button classroomAnnouncementsButton;
@@ -22,12 +25,12 @@ public class ClassroomScreen extends AppCompatActivity {
         classroomHomeworksButton = findViewById(R.id.classroom_homeworks);
 
         classroomAnnouncementsButton.setOnClickListener(v -> {
-            Intent intent = new Intent(ClassroomScreen.this, ClassRoomAnnouncementScreen.class);
+            Intent intent = new Intent(studenttrackingsystem.Activities.ClassroomScreen.this, ClassRoomAnnouncementScreen.class);
             startActivity(intent);
         });
 
         classroomHomeworksButton.setOnClickListener(v -> {
-            Intent intent = new Intent(ClassroomScreen.this, ClassroomHomeworkScreen.class);
+            Intent intent = new Intent(studenttrackingsystem.Activities.ClassroomScreen.this, ClassroomHomeworkScreen.class);
             startActivity(intent);
         });
 

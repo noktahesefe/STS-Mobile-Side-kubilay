@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    tools:context=".Activities.MainActivity">
+    tools:context="studenttrackingsystem.Activities.MainActivity">
 
     <!-- TextView for Header (No changes made here) -->
     <TextView

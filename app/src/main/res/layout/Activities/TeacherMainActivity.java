@@ -14,11 +14,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.example.birdaha.Fragments.HomePageFragment;
-import com.example.birdaha.Fragments.NotificationFragment;
-import com.example.birdaha.Fragments.TeacherProfileFragment;
-import com.example.birdaha.Helper.FragmentNavigationManager;
-import com.example.birdaha.Interface.NavigationManager;
+import studenttrackingsystem.Fragments.HomePageFragment;
+import studenttrackingsystem.Fragments.NotificationFragment;
+import studenttrackingsystem.Fragments.TeacherProfileFragment;
+import studenttrackingsystem.Helper.FragmentNavigationManager;
+import studenttrackingsystem.Interface.NavigationManager;
 import com.example.birdaha.R;
 
 

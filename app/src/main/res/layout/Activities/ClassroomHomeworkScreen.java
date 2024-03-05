@@ -11,8 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.birdaha.Adapters.HomeworkAdapter;
-import com.example.birdaha.General.HwModel;
+import studenttrackingsystem.Adapters.HomeworkAdapter;
+import studenttrackingsystem.General.HwModel;
 import com.example.birdaha.R;
 
 import java.util.ArrayList;

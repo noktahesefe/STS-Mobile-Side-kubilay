@@ -4,8 +4,8 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.birdaha.Fragments.EventFragment;
-import com.example.birdaha.Fragments.GeneralAnnouncementFragment;
+import studenttrackingsystem.Fragments.EventFragment;
+import studenttrackingsystem.Fragments.GeneralAnnouncementFragment;
 import com.example.birdaha.R;
 
 public class HomePage extends AppCompatActivity {

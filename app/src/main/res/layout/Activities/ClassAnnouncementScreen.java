@@ -6,8 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.birdaha.Adapters.ClassAnnouncementAdapter;
-import com.example.birdaha.General.ClassAnnouncementModel;
+import studenttrackingsystem.Adapters.ClassAnnouncementAdapter;
+import studenttrackingsystem.General.ClassAnnouncementModel;
 import com.example.birdaha.R;
 
 import java.util.ArrayList;
