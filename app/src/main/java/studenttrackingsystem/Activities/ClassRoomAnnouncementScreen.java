@@ -24,7 +24,7 @@ import studenttrackingsystem.General.AnnouncementsTeacher;
 import studenttrackingsystem.General.ClassAnnouncementModel;
 import studenttrackingsystem.General.UpdateRespond;
 import studenttrackingsystem.Helper.LocalDataManager;
-import com.senayduranokullari.studenttrackingsystem.R;
+import studenttrackingsystem.R;
 import studenttrackingsystem.Users.Teacher;
 import studenttrackingsystem.Utilities.AnnouncementSerialize;
 import studenttrackingsystem.Utilities.ClassAnnouncementViewInterface;

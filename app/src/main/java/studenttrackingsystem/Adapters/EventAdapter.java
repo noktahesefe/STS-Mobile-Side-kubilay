@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import studenttrackingsystem.Utilities.EventRecyclerViewInterface;
 import studenttrackingsystem.General.Event;
-import com.senayduranokullari.studenttrackingsystem.R;
+import studenttrackingsystem.R;
 
 import java.util.List;
 

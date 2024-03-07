@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import studenttrackingsystem.Activities.MainActivity;
 import studenttrackingsystem.Helper.LocalDataManager;
-import com.senayduranokullari.studenttrackingsystem.R;
+import studenttrackingsystem.R;
 import studenttrackingsystem.Users.ChangePasswordParent;
 import studenttrackingsystem.Users.ChangePasswordStudent;
 import studenttrackingsystem.Users.ChangePasswordTeacher;

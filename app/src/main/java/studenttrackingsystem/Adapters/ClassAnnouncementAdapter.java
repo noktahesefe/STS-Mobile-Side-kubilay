@@ -15,7 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.senayduranokullari.studenttrackingsystem.R;
+import studenttrackingsystem.R;
 
 import studenttrackingsystem.Activities.ClassRoomAnnouncementScreen;
 import studenttrackingsystem.Utilities.ClassAnnouncementViewInterface;

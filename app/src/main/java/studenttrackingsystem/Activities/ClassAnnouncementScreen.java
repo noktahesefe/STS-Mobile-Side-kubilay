@@ -23,7 +23,7 @@ import studenttrackingsystem.General.NotificationDataModel;
 import studenttrackingsystem.General.NotificationModel;
 import studenttrackingsystem.General.StudentSharedPrefModel;
 import studenttrackingsystem.Helper.LocalDataManager;
-import com.senayduranokullari.studenttrackingsystem.R;
+import studenttrackingsystem.R;
 import studenttrackingsystem.Users.Student;
 import studenttrackingsystem.Utilities.AnnouncementSerialize;
 import studenttrackingsystem.Utilities.ClassAnnouncementViewInterface;

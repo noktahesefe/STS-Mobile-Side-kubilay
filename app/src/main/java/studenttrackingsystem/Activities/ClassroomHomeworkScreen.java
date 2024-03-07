@@ -36,7 +36,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.senayduranokullari.studenttrackingsystem.R;
+import studenttrackingsystem.R;
 import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;

@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import studenttrackingsystem.Adapters.EventAdapter;
 import studenttrackingsystem.General.Event;
-import com.senayduranokullari.studenttrackingsystem.R;
+import studenttrackingsystem.R;
 import studenttrackingsystem.Utilities.EventRecyclerViewInterface;
 
 import java.util.ArrayList;

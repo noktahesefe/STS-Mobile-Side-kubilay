@@ -30,7 +30,7 @@ import studenttrackingsystem.Classrooms.Classroom;
 import studenttrackingsystem.Adapters.HomeworkAdapter;
 import studenttrackingsystem.General.HwModel;
 import studenttrackingsystem.General.UpdateRespond;
-import com.senayduranokullari.studenttrackingsystem.R;
+import studenttrackingsystem.R;
 import studenttrackingsystem.Users.Teacher;
 
 import java.io.ByteArrayOutputStream;

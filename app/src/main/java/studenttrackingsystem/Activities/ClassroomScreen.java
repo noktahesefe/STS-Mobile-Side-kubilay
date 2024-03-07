@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import studenttrackingsystem.Classrooms.Classroom;
 
-import com.senayduranokullari.studenttrackingsystem.R;
+import studenttrackingsystem.R;
 import studenttrackingsystem.Users.Teacher;
 
 public class ClassroomScreen extends AppCompatActivity {

@@ -19,7 +19,7 @@ import studenttrackingsystem.Activities.ClassroomHomeworkScreen;
 import studenttrackingsystem.Utilities.ClassroomHomeworkViewInterface;
 import studenttrackingsystem.General.HwModel;
 import studenttrackingsystem.General.UpdateRespond;
-import com.senayduranokullari.studenttrackingsystem.R;
+import studenttrackingsystem.R;
 import studenttrackingsystem.Users.Teacher;
 
 import java.time.LocalDate;

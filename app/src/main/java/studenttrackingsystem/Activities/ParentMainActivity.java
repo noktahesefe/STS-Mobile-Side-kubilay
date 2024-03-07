@@ -32,7 +32,7 @@ import studenttrackingsystem.Fragments.NotificationFragment;
 import studenttrackingsystem.Fragments.StudentProfileFragment;
 import studenttrackingsystem.Helper.FragmentNavigationManager;
 import studenttrackingsystem.Interface.NavigationManager;
-import com.senayduranokullari.studenttrackingsystem.R;
+import studenttrackingsystem.R;
 import studenttrackingsystem.Users.Parent;
 import studenttrackingsystem.Users.Student;
 import studenttrackingsystem.Utilities.NotificationService.NotificationJobService;

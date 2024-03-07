@@ -19,7 +19,7 @@ import studenttrackingsystem.Utilities.TeacherClassroomsRecyclerViewInterface;
 
 import studenttrackingsystem.Adapters.TeacherClassroomsAdapter;
 
-import com.senayduranokullari.studenttrackingsystem.R;
+import studenttrackingsystem.R;
 import studenttrackingsystem.Users.Teacher;
 
 import java.util.List;

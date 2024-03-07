@@ -15,7 +15,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import studenttrackingsystem.Activities.MainActivity;
 import studenttrackingsystem.Helper.LocalDataManager;
-import com.senayduranokullari.studenttrackingsystem.R;
+import studenttrackingsystem.R;
 
 import java.util.List;
 

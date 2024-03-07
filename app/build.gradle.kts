@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.senayduranokullari.studenttrackingsystem"
+    namespace = "studenttrackingsystem"
     compileSdk = 34
 
     defaultConfig {

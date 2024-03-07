@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import studenttrackingsystem.Classrooms.Classroom;
 import studenttrackingsystem.Utilities.TeacherClassroomsRecyclerViewInterface;
 
-import com.senayduranokullari.studenttrackingsystem.R;
+import studenttrackingsystem.R;
 import studenttrackingsystem.Users.Teacher;
 
 import java.util.List;

@@ -17,7 +17,7 @@ import android.widget.TextView;
 import studenttrackingsystem.Adapters.GeneralAnnouncementAdapter;
 import studenttrackingsystem.Utilities.GeneralAnnouncementViewInterface;
 import studenttrackingsystem.General.GeneralAnnouncement;
-import com.senayduranokullari.studenttrackingsystem.R;
+import studenttrackingsystem.R;
 
 import java.util.ArrayList;
 import java.util.List;

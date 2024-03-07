@@ -40,7 +40,7 @@ import studenttrackingsystem.General.GeneralAnnouncement;
 import studenttrackingsystem.General.HomeworksStudent;
 import studenttrackingsystem.General.HomeworksTeacher;
 import studenttrackingsystem.Helper.LocalDataManager;
-import com.senayduranokullari.studenttrackingsystem.R;
+import studenttrackingsystem.R;
 import studenttrackingsystem.Users.Parent;
 import studenttrackingsystem.Users.Student;
 import studenttrackingsystem.Users.Teacher;

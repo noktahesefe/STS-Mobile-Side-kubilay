@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import studenttrackingsystem.Utilities.ClassroomHomeworkViewInterface;
 import studenttrackingsystem.General.HwModel;
-import com.senayduranokullari.studenttrackingsystem.R;
+import studenttrackingsystem.R;
 
 import java.time.LocalDate;
 import java.time.ZoneId;

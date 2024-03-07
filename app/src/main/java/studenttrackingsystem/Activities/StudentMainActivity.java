@@ -31,7 +31,7 @@ import studenttrackingsystem.Fragments.StudentProfileFragment;
 import studenttrackingsystem.Helper.FragmentNavigationManager;
 import studenttrackingsystem.Helper.ProfilePictureChangeEvent;
 import studenttrackingsystem.Interface.NavigationManager;
-import com.senayduranokullari.studenttrackingsystem.R;
+import studenttrackingsystem.R;
 import studenttrackingsystem.Users.Student;
 import studenttrackingsystem.Utilities.NotificationService.NotificationJobService;
 import studenttrackingsystem.Utilities.NotificationService.Service;

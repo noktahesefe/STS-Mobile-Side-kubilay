@@ -37,7 +37,7 @@ import studenttrackingsystem.Classrooms.Classroom;
 import studenttrackingsystem.General.ProfilePictureRespond;
 import studenttrackingsystem.General.SendProfilePictureStudent;
 import studenttrackingsystem.Helper.ProfilePictureChangeEvent;
-import com.senayduranokullari.studenttrackingsystem.R;
+import studenttrackingsystem.R;
 import studenttrackingsystem.Users.Student;
 
 import org.greenrobot.eventbus.EventBus;

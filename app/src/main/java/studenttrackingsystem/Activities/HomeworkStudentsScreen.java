@@ -20,7 +20,7 @@ import studenttrackingsystem.General.HomeworkResult;
 import studenttrackingsystem.General.HomeworkResultModel;
 import studenttrackingsystem.General.StudentModel;
 import studenttrackingsystem.General.UpdateRespond;
-import com.senayduranokullari.studenttrackingsystem.R;
+import studenttrackingsystem.R;
 
 import studenttrackingsystem.Utilities.HomeworkStudentsViewInterface;
 import com.google.gson.Gson;

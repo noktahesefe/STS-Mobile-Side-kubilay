@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import studenttrackingsystem.Utilities.HomeworkStudentsViewInterface;
 import studenttrackingsystem.General.StudentModel;
-import com.senayduranokullari.studenttrackingsystem.R;
+import studenttrackingsystem.R;
 
 import java.util.ArrayList;
 import java.util.List;

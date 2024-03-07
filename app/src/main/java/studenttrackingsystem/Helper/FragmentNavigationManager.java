@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import studenttrackingsystem.Interface.NavigationManager;
 
-import com.senayduranokullari.studenttrackingsystem.R;
+import studenttrackingsystem.R;
 
 
 /**

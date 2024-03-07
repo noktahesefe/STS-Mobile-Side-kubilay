@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
 
-import com.senayduranokullari.studenttrackingsystem.R;
+import studenttrackingsystem.R;
 
 import studenttrackingsystem.Classrooms.Classroom;
 import studenttrackingsystem.Adapters.ClassAnnouncementAdapter;

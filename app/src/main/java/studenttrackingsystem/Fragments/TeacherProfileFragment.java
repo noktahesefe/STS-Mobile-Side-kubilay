@@ -31,7 +31,7 @@ import com.bumptech.glide.Glide;
 import studenttrackingsystem.General.ProfilePictureRespond;
 import studenttrackingsystem.General.SendProfilePictureTeacher;
 import studenttrackingsystem.Helper.ProfilePictureChangeEvent;
-import com.senayduranokullari.studenttrackingsystem.R;
+import studenttrackingsystem.R;
 
 import studenttrackingsystem.Users.Teacher;
 
